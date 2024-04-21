@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="394.0" prefWidth="600.0" stylesheets="/client/scenes/stylesheets/SplittyStylesheet.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SettingsOverviewCtrl">
+   <children>
+      <Label fx:id="settingsLabel" alignment="CENTER" layoutX="462.0" layoutY="65.0" prefHeight="62.0" prefWidth="157.0" text="Settings" textFill="#efecec" AnchorPane.leftAnchor="462.0" AnchorPane.rightAnchor="461.0" AnchorPane.topAnchor="65.0">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <Label fx:id="languageLabel" layoutX="406.0" layoutY="149.0" prefHeight="62.0" prefWidth="113.0" text="Language:" textFill="#efecec" AnchorPane.leftAnchor="400.0">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <Label fx:id="serverLabel" layoutX="406.0" layoutY="225.0" prefHeight="62.0" prefWidth="113.0" text="Server:" textFill="#efecec" AnchorPane.leftAnchor="400.0">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="languageBox" layoutX="579.0" layoutY="165.0" onAction="#changeLang" prefHeight="25.0" prefWidth="200.0" />
+      <Button fx:id="backButton" layoutX="482.0" layoutY="19.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="70.0" text="Back" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0" />
+      <TextField fx:id="serverURL" layoutX="579.0" layoutY="243.0" onAction="#saveURL" prefHeight="25.0" prefWidth="200.0" promptText="Server URL" />
+      <Pane layoutX="386.0" layoutY="498.0" prefHeight="88.0" prefWidth="310.0" style="-fx-border-color: red;">
+         <children>
+            <Label fx:id="serverNote2" layoutX="19.0" layoutY="14.0" text="Current server:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="serverNote" layoutX="18.0" layoutY="47.0" text="• Use the format: http://your.address:port/">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="currentServer" layoutX="115.0" layoutY="14.0" text="cServer" />
+         </children>
+      </Pane>
+      <Button fx:id="changeButton" layoutX="637.0" layoutY="279.0" mnemonicParsing="false" onAction="#saveURL" prefHeight="26.0" prefWidth="84.0" text="Change" />
+      <Label fx:id="currencyLabel" layoutX="394.0" layoutY="308.0" prefHeight="62.0" prefWidth="113.0" text="Currency:" textFill="#efecec" AnchorPane.leftAnchor="400.0">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <Button fx:id="downloadButton" layoutX="579.0" layoutY="198.0" mnemonicParsing="false" onAction="#downloadLangTemplate" prefHeight="0.0" prefWidth="174.0" text="Download language template" />
+      <ComboBox fx:id="currency" layoutX="579.0" layoutY="326.0" prefHeight="25.0" prefWidth="200.0" />
+      <Label fx:id="themeLabel" layoutX="396.0" layoutY="363.0" prefHeight="62.0" prefWidth="149.0" text="Theme" textFill="#efecec">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font></Label>
+      <Button fx:id="testMailButton" layoutX="579.0" layoutY="432.0" mnemonicParsing="false" onAction="#testMail" />
+      <Label fx:id="testEmailLabel" layoutX="400.0" layoutY="414.0" prefHeight="62.0" prefWidth="113.0" text="Email:" textFill="#efecec">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="themeSwitch" layoutX="579.0" layoutY="382.0" prefWidth="150.0" />
+      <Label fx:id="emailStatus" layoutX="779.0" layoutY="436.0" prefHeight="18.0" prefWidth="122.0" />
+   </children>
+</AnchorPane>

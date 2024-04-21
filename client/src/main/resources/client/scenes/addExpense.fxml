@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.controlsfx.control.CheckComboBox?>
+
+<StackPane styleClass="root" stylesheets="/client/scenes/stylesheets/SplittyStylesheet.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddExpenseCtrl">
+    <AnchorPane prefHeight="750.0" prefWidth="600.0">
+        <children>
+            <TextField fx:id="title" layoutX="549.0" layoutY="150.0" prefHeight="25.0" prefWidth="200.0" promptText="Expense Title" AnchorPane.topAnchor="150.0">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </TextField>
+            <TextField fx:id="amount" layoutX="549.0" layoutY="230.0" prefHeight="50.0" prefWidth="140.0" promptText="0.00" AnchorPane.topAnchor="230.0" />
+            <ComboBox fx:id="currency" layoutX="689.0" layoutY="230.0" prefHeight="50.0" prefWidth="60.0" AnchorPane.topAnchor="230.0" />
+            <Text fx:id="expenseAmount" fill="WHITE" layoutX="388.0" layoutY="264.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount" wrappingWidth="100.92882537841797">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Text>
+            <Text fx:id="expenseDate" fill="WHITE" layoutX="388.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" wrappingWidth="84.92882537841797">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Text>
+            <DatePicker fx:id="date" layoutX="549.0" layoutY="310.0" prefHeight="50.0" prefWidth="200.0" AnchorPane.topAnchor="310.0" />
+            <ComboBox fx:id="sponsorSelect" layoutX="549.0" layoutY="390.0" onAction="#sponsorChanged" prefHeight="50.0" prefWidth="200.0" promptText="Select Sponsor" AnchorPane.topAnchor="390.0" />
+            <Text fx:id="expenseSponsor" fill="WHITE" layoutX="388.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sponsor" wrappingWidth="100.92882537841797">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Text>
+            <Text fx:id="expenseDebtors" fill="WHITE" layoutX="388.0" layoutY="514.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Debtors" wrappingWidth="100.92882537841797">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Text>
+            <CheckComboBox fx:id="debtorSelect" layoutX="549.0" layoutY="490.0" prefHeight="50.0" prefWidth="200.0" title="Select Debtors" />
+            <Button fx:id="createExpenseButton" layoutX="465.0" layoutY="650.0" mnemonicParsing="false" onAction="#createExpense" prefHeight="50.0" prefWidth="150.0" text="Confirm">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </Button>
+            <Button fx:id="cancelButton" layoutX="761.0" layoutY="49.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+            <Text fx:id="addExpenseHead" fill="WHITE" layoutX="441.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Expense" wrappingWidth="354.92884063720703" AnchorPane.leftAnchor="441.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="75.0">
+                <font>
+                    <Font name="System Bold" size="32.0" />
+                </font>
+            </Text>
+            <Text fx:id="expenseTitle" fill="WHITE" fontSmoothingType="LCD" layoutX="388.0" layoutY="185.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" wrappingWidth="100.92882537841797">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Text>
+            <ComboBox fx:id="tagSelect" layoutX="549.0" layoutY="570.0" prefHeight="50.0" prefWidth="150.0" promptText="Select Tag" />
+            <Text fx:id="expenseTag" fill="WHITE" layoutX="388.0" layoutY="604.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tag" wrappingWidth="100.92882537841797">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Text>
+            <Button fx:id="createNewTagButton" layoutX="699.0" layoutY="570.0" mnemonicParsing="false" onAction="#createNewTag" prefHeight="50.0" prefWidth="50.0" text="+">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Button>
+            <CheckBox fx:id="addAll" layoutX="549.0" layoutY="468.0" mnemonicParsing="false" onAction="#addAll" text="Add All" />
+            <CheckBox fx:id="addOthers" layoutX="649.0" layoutY="468.0" mnemonicParsing="false" onAction="#addOthers" text="Add All Others" />
+         <Button fx:id="undoTi" styleClass="undoButton" onAction="#undoTitle" layoutX="766.0" layoutY="154.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="40.0" text="↩" />
+         <Button fx:id="undoAC" styleClass="undoButton" onAction="#undoAmountCurrency" layoutX="766.0" layoutY="232.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="40.0" text="↩" />
+         <Button fx:id="undoDa" styleClass="undoButton" onAction="#undoDate" layoutX="766.0" layoutY="313.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="40.0" text="↩" />
+         <Button fx:id="undoSp" styleClass="undoButton" onAction="#undoSponsor" layoutX="766.0" layoutY="392.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="40.0" text="↩" />
+         <Button fx:id="undoDe" styleClass="undoButton" onAction="#undoDebtor" layoutX="766.0" layoutY="482.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="40.0" text="↩" />
+         <Button fx:id="undoTa" styleClass="undoButton" onAction="#undoTag" layoutX="766.0" layoutY="573.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="40.0" text="↩" />
+        </children>
+    </AnchorPane>
+</StackPane>

@@ -1,0 +1,77 @@
+plugins {
+    id 'org.kordamp.gradle.jacoco' version '0.54.0'
+}
+
+allprojects {
+	repositories {
+		mavenCentral()
+	}
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'checkstyle'
+	apply plugin: 'jacoco'
+	
+	
+	group = 'oopp'
+	version = '0.0.1-SNAPSHOT'
+	sourceCompatibility = '11'
+	checkstyle {
+		toolVersion "9.2.1"
+
+		ignoreFailures = false
+		maxErrors = 0
+		maxWarnings = 69
+		configFile = '../checkstyle.xml' as File
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+		finalizedBy jacocoTestReport 
+	}
+	jacocoTestReport {
+		reports {
+			xml.required = false
+			csv.required = false
+			html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+		}
+	}
+	
+	dependencies {
+		implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+		testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+		testImplementation group: 'io.projectreactor', name: 'reactor-test', version: '3.1.0.RELEASE'
+
+		testImplementation 'org.mockito:mockito-core:5.11.0'
+		testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.11.0'
+		testImplementation group: 'org.testfx', name: 'testfx-core', version: '4.0.18'
+		testImplementation group: 'org.testfx', name: 'testfx-junit5', version: '4.0.18'
+		testImplementation group: 'org.testfx', name: 'openjfx-monocle', version: '21.0.2'
+		implementation 'org.openjfx:javafx-controls:21.0.2'
+		implementation 'org.openjfx:javafx-fxml:21.0.2'
+		testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0-rc1'
+
+		implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '3.2.4'
+
+		testImplementation group: 'org.testfx', name: 'testfx-core', version: '4.0.18'
+		testImplementation group: 'org.testfx', name: 'testfx-junit5', version: '4.0.18'
+		testImplementation group: 'org.testfx', name: 'openjfx-monocle', version: '21.0.2'
+
+
+
+		testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.11.0'
+
+
+		testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+
+
+	}
+}
