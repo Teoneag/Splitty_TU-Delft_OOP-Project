@@ -16,4 +16,6 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	implementation project(":commons")
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.google.inject:guice:6.0.0'
+	implementation group: 'com.google.guava', name: 'guava', version: '33.0.0-jre'
 }

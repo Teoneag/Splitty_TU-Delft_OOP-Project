@@ -35,7 +35,6 @@ public class AdminOverviewCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final LanguageService languageService;
-    private final ConfigService configService;
     private final ErrorService errorService;
 
     private ObservableList<Event> data;
@@ -83,7 +82,6 @@ public class AdminOverviewCtrl implements Initializable {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.languageService = languageService;
-        this.configService = configService;
         this.errorService = errorService;
         this.map = configService.getLanguage();
     }
@@ -94,7 +92,7 @@ public class AdminOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageService.setLanguagesComboBox(languageBox);
-        addEventlistener();
+        addEventListener();
         colInviteCode.setCellValueFactory(q -> new SimpleStringProperty(String.valueOf(q.getValue().getInviteCode())));
         colTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getTitle()));
         colDescription.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getDescription()));
@@ -148,7 +146,7 @@ public class AdminOverviewCtrl implements Initializable {
     /***
      * Add an event listener to the table for each row
      */
-    public void addEventlistener() {
+    public void addEventListener() {
         table.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 int rowIndex = table.getSelectionModel().getSelectedIndex();
@@ -163,7 +161,7 @@ public class AdminOverviewCtrl implements Initializable {
     }
 
     /**
-     * shows a label when an invitecode of an event is copied to the clipboard
+     * shows a label when an inviteCode of an event is copied to the clipboard
      * label will fade out after 2 seconds
      */
     public void showFadeLabel() {
@@ -177,7 +175,7 @@ public class AdminOverviewCtrl implements Initializable {
     }
 
     /**
-     * gets the invitecode of the selected row from the table and copies it to the clipboard
+     * gets the inviteCode of the selected row from the table and copies it to the clipboard
      *
      * @param str invite to copy and set to clipboard
      */
@@ -202,9 +200,7 @@ public class AdminOverviewCtrl implements Initializable {
         }
 
         table.setItems(data);
-        server.longPollingRegisterEvent(e -> {
-            data.setAll(e);
-        });
+        server.longPollingRegisterEvent(e -> data.setAll(e));
     }
 
     public void stop() {

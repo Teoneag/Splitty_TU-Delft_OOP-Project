@@ -18,7 +18,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 import java.awt.*;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
 import java.security.SecureRandom;
@@ -32,7 +31,7 @@ public class AddEventCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final EventService eventService;
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     @FXML
     private TextField eventTitle;
@@ -56,8 +55,9 @@ public class AddEventCtrl implements Initializable {
 
     /**
      * Constructor for AddEventCtrl
-     * @param server server
-     * @param mainCtrl mainCtrl
+     *
+     * @param server       server
+     * @param mainCtrl     mainCtrl
      * @param eventService eventService
      * @param errorService errorService
      */
@@ -70,30 +70,24 @@ public class AddEventCtrl implements Initializable {
     }
 
     /**
-     * initialize the add event screen with the language from the json file
-     *
-     * @param url
-     * @param resourceBundle
+     * Initialize
+     * @param url url
+     * @param resourceBundle resourceBundle
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Platform.runLater(() -> eventTitle.requestFocus());
 
-        eventTitle.textProperty().addListener((observable, oldValue, newValue) -> {
-            eventService.titleCheck(eventTitle, titleErrorMessageAddEvent);
-        });
+        eventTitle.textProperty().addListener((observable, oldValue, newValue) -> eventService.titleCheck(eventTitle, titleErrorMessageAddEvent));
 
-        eventDescription.textProperty().addListener((observable, oldValue, newValue) -> {
-            eventService.descriptionCheck(eventDescription, descriptionErrorMessageAddEvent);
-        });
+        eventDescription.textProperty().addListener((observable, oldValue, newValue) -> eventService.descriptionCheck(eventDescription, descriptionErrorMessageAddEvent));
     }
 
     /**
      * Set the language of the AddEvent screen
      *
      * @param map the language map which contains the translation
-     * @throws IOException if the language file could not be loaded
      */
     public void setLanguage(HashMap<String, Object> map) {
 
@@ -120,8 +114,7 @@ public class AddEventCtrl implements Initializable {
      */
     public void createEvent() {
         try {
-            if (!eventService.validateTitleAndDesc(eventTitle, titleErrorMessageAddEvent,
-                    eventDescription, descriptionErrorMessageAddEvent)) {
+            if (!eventService.validateTitleAndDesc(eventTitle, titleErrorMessageAddEvent, eventDescription, descriptionErrorMessageAddEvent)) {
                 return;
             }
             Event event = server.addEvent(eventTitle.getText(), eventDescription.getText());
@@ -177,26 +170,14 @@ public class AddEventCtrl implements Initializable {
         mainCtrl.showOverview();
     }
 
-//    /**
-//     * gets the event information from the application filled in by the user
-//     * @return the event with the information provided by the user
-//     */
-//    public Event getEvent() {
-//        var title = eventTitle.getText();
-//        var description = eventDescription.getText();
-//        return new Event(title, description);
-//    }
-
     /**
      * create a random invite code for event.
-     * source: https://stackoverflow.com/questions/31213329/generation-of-referral-or-coupon-code
+     * source: <a href="https://stackoverflow.com/questions/31213329/generation-of-referral-or-coupon-code">...</a>
      *
-     * @param codeLength
      * @return random code containing letters and numbers
      */
     public String createRandomCode(int codeLength) {
-        char[] chars =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
+        char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
         StringBuilder sb = new StringBuilder();
         Random random = new SecureRandom();
         for (int i = 0; i < codeLength; i++) {

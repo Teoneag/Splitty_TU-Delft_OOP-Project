@@ -1,7 +1,13 @@
 package commons;
 
-import jakarta.persistence.*;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ForeignKey;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -108,22 +114,20 @@ public class Expense {
      * Adds a Participant to the debtor set
      *
      * @param debtor Participant to add
-     * @return true on successful add, false if already in set or Set.add() otherwise fails
      */
-    public boolean addDebtor(Participant debtor) {
-        if (debtor == null) return false;
-        return debtors.add(debtor);
+    public void addDebtor(Participant debtor) {
+        if (debtor == null) return;
+        debtors.add(debtor);
     }
 
     /**
      * Removes a Participant from the debtor set
      *
      * @param debtor Participant to remove
-     * @return true on successful remove, false if not in set or Set.remove() otherwise fails
      */
-    public boolean removeDebtor(Participant debtor) {
-        if (debtor == null) return false;
-        return debtors.remove(debtor);
+    public void removeDebtor(Participant debtor) {
+        if (debtor == null) return;
+        debtors.remove(debtor);
     }
 
     public long getId() {

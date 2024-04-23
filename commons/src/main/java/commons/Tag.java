@@ -1,6 +1,12 @@
 package commons;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ForeignKey;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -15,7 +21,7 @@ public class Tag {
     private long id;
     private String name;
     private int color;
-    @JoinColumn(foreignKey = @ForeignKey(name = "poep_inviteCode"), nullable = false)
+    @JoinColumn(foreignKey = @ForeignKey(name = "event"), nullable = false)
     @ManyToOne
     private Event event;
 

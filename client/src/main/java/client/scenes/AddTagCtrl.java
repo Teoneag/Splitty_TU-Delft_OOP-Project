@@ -7,20 +7,16 @@ import client.services.ErrorService;
 import client.services.ServerUtils;
 import com.google.inject.Inject;
 import commons.Event;
-import commons.Expense;
 import commons.Tag;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.ResourceBundle;
 
 public class AddTagCtrl {
 
@@ -28,7 +24,6 @@ public class AddTagCtrl {
     private final MainCtrl mainCtrl;
     private final ErrorService errorService;
     private Event event;
-    private Expense expense;
     private Tag tag;
     private boolean fromManage;
 
@@ -48,29 +43,17 @@ public class AddTagCtrl {
      * @param server       The server utilities.
      * @param mainCtrl     The main controller.
      * @param event        The event to which the tag belongs.
-     * @param expense      The expense associated with the tag (null if not associated with any expense).
      * @param tag          The tag to be added or edited.
      * @param errorService The error service.
      */
     @Inject
-    public AddTagCtrl(ServerUtils server, MainCtrl mainCtrl, Event event, Expense expense, Tag tag,
+    public AddTagCtrl(ServerUtils server, MainCtrl mainCtrl, Event event, Tag tag,
                       ErrorService errorService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.event = event;
-        this.expense = expense;
         this.tag = tag;
         this.errorService = errorService;
-    }
-
-    /**
-     * Initializes the controller.
-     *
-     * @param location  The location of the FXML file.
-     * @param resources The resources used by the controller.
-     */
-    public void initialize(URL location, ResourceBundle resources) {
-
     }
 
     /**
@@ -80,7 +63,6 @@ public class AddTagCtrl {
      */
     public void refresh(Event event) {
         this.event = event;
-        this.expense = null;
         tag = new Tag();
         fromManage = false;
     }
@@ -89,11 +71,9 @@ public class AddTagCtrl {
      * Refreshes the event and expense, and resets the tag.
      *
      * @param event   The event to refresh.
-     * @param expense The expense associated with the tag.
      */
-    public void refreshEdit(Event event, Expense expense) {
+    public void refreshEdit(Event event) {
         this.event = event;
-        this.expense = expense;
         tag = new Tag();
         fromManage = false;
     }
@@ -141,7 +121,6 @@ public class AddTagCtrl {
      */
     public void editTag(Event event, Tag tag) {
         this.event = event;
-        this.expense = null;
         this.tag = tag;
         tagName.setText(tag.getName());
         tagColor.setValue(javaFXColorToAwtColor(tag));
@@ -207,7 +186,6 @@ public class AddTagCtrl {
      * Set the language of the page
      *
      * @param map the language map which contains the translation
-     * @throws IOException if the language file is not found
      */
     public void setLanguage(HashMap<String, Object> map) {
         tagName.setText((String) map.get("tagName"));

@@ -35,7 +35,7 @@ public class Main extends Application {
      * @throws URISyntaxException exception
      * @throws IOException        exception
      */
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) throws Exception {
         launch();
     }
 

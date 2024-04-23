@@ -53,7 +53,7 @@ class ErrorServiceTest {
     @Test
     public void testPassword() {
         Platform.runLater(() -> {
-            alert = errorService.wrongPassword("Admin Login");
+            alert = errorService.wrongPassword();
 
             assertEquals("Admin Login", alert.getTitle());
             assertEquals("Toegang geweigerd", alert.getHeaderText());
@@ -191,11 +191,12 @@ class ErrorServiceTest {
             assertEquals("Verwijder deelnemer", alert.getTitle());
             assertEquals("Weet je zeker dat je deze deelnemer wilt verwijderen?",
                 alert.getHeaderText());
-            assertEquals("Voornaam: a\n" +
-                "Achternaam: b\n" +
-                "Email: null\n" +
-                "IBAN: null\n" +
-                "BIC: null", alert.getContentText());
+            assertEquals("""
+                    Voornaam: a
+                    Achternaam: b
+                    Email: null
+                    IBAN: null
+                    BIC: null""", alert.getContentText());
         });
     }
 

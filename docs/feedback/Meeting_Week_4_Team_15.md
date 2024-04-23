@@ -13,7 +13,7 @@ Feedback: There has been a chair and a minute taker.
 
 Mark: Good
 
-Feedback: The agenda was added in the repository in time and it follows the template. It is concise and clear but,  I think an improvement would be to not have the bullet point "Agenda"  since it diminishes the contents in it. Having just the sub-btasks under agenda be bigger tasks would make it better.
+Feedback: The agenda was added in the repository in time, and it follows the template. It is concise and clear but,  I think an improvement would be to not have the bullet point "Agenda"  since it diminishes the contents in it. Having just the sub-tasks under agenda be bigger tasks would make it better.
 
 #### Performance of the *Previous* Minute Taker
 
@@ -28,7 +28,7 @@ Feedback: The notes have been merged into the agenda file and there is a good am
 
 Mark: Very Good
 
-Feedback: I think the chair did a good performance, he ensured the agenda topics were covered and they were covered for (roughly) the appropriate amount of time. He also managed to keep the flow of the discussion and to follow with topics which was good. I think an improvement would be to try to get people's noses out of their laptops and poke them if they zone out or focus on something instead of paying attention to the topic at hand.
+Feedback: I think the chair did a good performance, he ensured the agenda topics were covered, and they were covered for (roughly) the appropriate amount of time. He also managed to keep the flow of the discussion and to follow with topics which was good. I think an improvement would be to try to get people's noses out of their laptops and poke them if they zone out or focus on something instead of paying attention to the topic at hand.
 
 
 #### Attitude & Relation

@@ -1,11 +1,11 @@
-| Key | Value |
-| --- | --- |
-| Date: | 20.02.2024 |
-| Time: | 15:45 |
-| Location: | Delft Drebbelweg PC 1 cubicle 4 |
-| Chair | Teodor NEAGOE |
-| Minute Taker | Nicolas LAPLAGNE |
-| Attendees: | all? :)) |
+| Key          | Value                           |
+|--------------|---------------------------------|
+| Date:        | 20.02.2024                      |
+| Time:        | 15:45                           |
+| Location:    | Delft Drebbelweg PC 1 cubicle 4 |
+| Chair        | Teodor NEAGOE                   |
+| Minute Taker | Nicolas LAPLAGNE                |
+| Attendees:   | all? :))                        |
 
 # Agenda Items:
 - Opening by chair (1 min)
@@ -16,7 +16,7 @@
 - Approval of last minutes - Did everyone read the minutes from the previous meeting? (0 min)
 - Announcements by the TA (1 min)
 - Presentation of the current app to TA (1 min)
-- Talking Points: (Inform/ brainstorm/ decision making/ discuss)
+- Talking Points: (Inform/ brainstorm/ decision-making/ discuss)
 - <Agenda - code of conduct> (10 min)
 - <Agenda - everyone should check the software prerequirisites> (5 min)
 
@@ -34,7 +34,7 @@
     * look at next assignment
 
 - <Agenda - work> (1 hours)
-    * work on the splitted tasks and see how everyone is doing
+    * work on the split tasks and see how everyone is doing
 
 - Summarize action points: Who , what , when? (2 min)
 - Feedback round: What went well and what can be improved next time? (10 min)

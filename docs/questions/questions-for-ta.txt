@@ -1,5 +1,0 @@
-- full screen - optional
-- commits name
-- icons
-- googl.inject: guice to 6.0.0 from 7.0.0
-- logs for the server, client

@@ -1,5 +1,5 @@
 ## **TA announcements**
-- merge MR request before the week ends so it counts automatically to that week without needing a TA to check it manually
+- merge MR request before the week ends, so it counts automatically to that week without needing a TA to check it manually
 
 ## **Showing Ta application**
 -   Ta liked the progress :))
@@ -10,7 +10,7 @@
 - we have 3 weeks of coding left
   - we have to start working on extensions
 - implementation rubric
-  - all of the features have a degree of how good they are implemented
+  - all the features have a degree of how good they are implemented
   - check this for the basic requirements before starting on extensions
   - check edge cases: some titles for event can break it
     - errors
@@ -35,10 +35,10 @@
 ### **Code Contributions and Code Reviews Assignment**
 - isolation & build server: excellent
 - TA summary
-  - commits that were really small (they cluttered up the repository)
+  - commits that were tiny (they cluttered up the repository)
   - review
     - we have description in some MRs but need to be more detailed
-    - it's not good to have 8 issues solved by a MR
+    - it's not good to have 8 issues solved by an MR
     - comments should be more challenging, more like a conversation (spam comments from WP on GitLab)
   - isolation: good
   - technology: later today

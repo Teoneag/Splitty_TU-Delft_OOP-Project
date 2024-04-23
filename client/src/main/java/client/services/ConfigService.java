@@ -1,5 +1,6 @@
 package client.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
@@ -184,7 +185,8 @@ public class ConfigService {
         ObjectMapper mapper = new ObjectMapper();
         HashMap<String, Object> map = new HashMap<>();
         try {
-            map = mapper.readValue(Paths.get(filePath).toFile(), HashMap.class);
+            map = mapper.readValue(Paths.get(filePath).toFile(), new TypeReference<>() {
+            });
             return map;
         } catch (Exception e) {
             return map;

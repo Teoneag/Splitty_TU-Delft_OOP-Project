@@ -229,9 +229,9 @@ public class EventController {
         Map<Long, Long> map = null;
         Map<Long, Long> map2 = null;
         try {
-            map = mapper.readValue(participantMap, new TypeReference<Map<Long, Long>>() {
+            map = mapper.readValue(participantMap, new TypeReference<>() {
             });
-            map2 = mapper.readValue(tagMap, new TypeReference<Map<Long, Long>>() {
+            map2 = mapper.readValue(tagMap, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -252,7 +252,7 @@ public class EventController {
      * @return response entity
      */
     @PutMapping(path = {"", "/"})
-    public ResponseEntity<Event> update(@RequestBody Event event) throws JsonProcessingException {
+    public ResponseEntity<Event> update(@RequestBody Event event) {
         if (!repo.existsByInviteCode(event.getInviteCode()) || repo.findByInviteCode(event.getInviteCode()).isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

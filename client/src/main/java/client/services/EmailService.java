@@ -21,7 +21,7 @@ public class EmailService {
      *
      * @return - true if the email was sent, false otherwise
      */
-    public boolean sendDelfaultEmail() {
+    public boolean sendDefaultEmail() {
         String receiver = configService.getEmail();
         if(receiver == null || receiver.isEmpty()) {
             return false;

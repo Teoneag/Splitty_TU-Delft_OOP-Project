@@ -31,7 +31,7 @@
 ## GIT use
 - Rebase - still unsure depending on complexity, but ideally use whenever possible
 - Make sure to merge to main before midnight Sunday each week
-- Each issue should be a seperate branch
+- Each issue should be a separate branch
 ## Work Splitting
 - Meeting Wednesday 21st, after OOPP lecture, CSE Offices
     - Schema first, then divide tasks
@@ -39,7 +39,7 @@
 ## Meeting Feedback
 - Try to be more concise
 - Go through agenda + TA questions first, then move onto more specific discussions
-- General consensus - did well
+- Consensus - did well
 - From TA: Tuesday meetings should be more about planning the week, other meetings can be used for more focused topics
 ## Next Week
 - Chairman - Hugo

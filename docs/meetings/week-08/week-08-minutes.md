@@ -16,7 +16,7 @@
 
 ## **Basic requirements**
 - These are pretty much done
-- These are pass fail, so we do not need excelent
+- These are pass fail, so we do not need excellent
   - But testing these features is important
 
 ## **Extensions**
@@ -35,7 +35,7 @@
 ## **Teamwork self-reflection**
 - Similar to buddy check
 - We need to write 2200-2700 words
-- Assignment is on brightspace
+- Assignment is on brights pace
 - Due friday (Formative)
 
 ## **Project pitch**
@@ -57,8 +57,8 @@
 
 - We need more services
 - Services before testing
-  - 700+ lines for eventoverviewctrl...
-  - Serverutils to services
+  - 700+ lines for EventOverviewCtrl...
+  - ServerUtils to services
 - We should not add random issues just to add issues
   - We should go back to using milestones
   

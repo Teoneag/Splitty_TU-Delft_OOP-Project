@@ -12,13 +12,14 @@ import server.database.EventRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class TestEventRepository implements EventRepository {
     
-    public List<Event> events = new ArrayList<>();
-    public List<String> calledMethods = new ArrayList<>();
+    public final List<Event> events = new ArrayList<>();
+    public final List<String> calledMethods = new ArrayList<>();
     
     private void call(String method) {
         calledMethods.add(method);
@@ -26,17 +27,13 @@ public class TestEventRepository implements EventRepository {
     
     @Override
     public boolean existsByInviteCode(String inviteCode) {
+        if (Objects.equals(inviteCode, "BOOB69")) return true;
         return false;
     }
     
     @Override
     public Optional<Event> findByInviteCode(String inviteCode) {
         return Optional.empty();
-    }
-    
-    @Override
-    public void deleteByInviteCode(String inviteCode) {
-    
     }
     
     /**

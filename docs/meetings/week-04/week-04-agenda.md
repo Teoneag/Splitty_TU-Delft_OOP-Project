@@ -1,11 +1,11 @@
-| Key | Value                           |
-| --- |---------------------------------|
-| Date: | 05.03.2024                      |
-| Time: | 15:45                           |
-| Location: | Delft Drebbelweg PC 1 cubicle 4 |
-| Chair | Noam Dickmann                   |
+| Key          | Value                           |
+|--------------|---------------------------------|
+| Date:        | 05.03.2024                      |
+| Time:        | 15:45                           |
+| Location:    | Delft Drebbelweg PC 1 cubicle 4 |
+| Chair        | Noam Dickmann                   |
 | Minute Taker | Sofyan Ali                      |
-| Attendees: | everyone                        |
+| Attendees:   | everyone                        |
 
 # Agenda Items:
 

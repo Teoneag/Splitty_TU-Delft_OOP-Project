@@ -93,9 +93,7 @@ public class SettingsOverviewCtrl implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         currency.getItems().addAll("EUR", "USD", "CHF", "GBP");
         currency.setValue(configService.getConfigCurrency());
-        currency.valueProperty().addListener((obs, oldVal, newVal) -> {
-            configService.setConfigCurrency(newVal);
-        });
+        currency.valueProperty().addListener((obs, oldVal, newVal) -> configService.setConfigCurrency(newVal));
         languageService.setLanguagesComboBox(languageBox);
         themeSwitch.getItems().addAll("normal", "contrast");
         this.languageMap = configService.getLanguage();
@@ -196,7 +194,7 @@ public class SettingsOverviewCtrl implements Initializable {
             fadeTransition.setFromValue(1.0);
             fadeTransition.setToValue(0.0);
             fadeTransition.setOnFinished(e -> emailStatus.setTextFill(color));
-            if(!emailService.sendDelfaultEmail()){
+            if(!emailService.sendDefaultEmail()){
                 // TODO: show No email was sent
                 Platform.runLater(() ->{
                     emailStatus.setTextFill(javafx.scene.paint.Color.RED);

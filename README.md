@@ -4,13 +4,54 @@ Splitty is an expense management app that can be used to create and join events 
 <img src="client/src/main/resources/images/Splitty_Icon2.png" alt="App icon">
 
 ## ToDo
-- show error messages
-- fix expense limit
-- fix language
-- fix test
+- ToDos from the project
+  - show error messages
+- Bugs
+  - solve all warnings (hide)
+  - fix expense limit
+- Theme
+  - right click on text filed
+- Refactor
+  - language switching (use bind)
+  - undo (use stack)
+  - navigation (use stack)
+- Testing
+  - Java with Gradle
 - looking at other projects for best practices
+- all pages
+  - add right click context
+- admin
+  - rename to export
+  - add default value to change server
+  - make impossible to change to non-existing server
+- navigation bar
+  - currency
+  - language
+  - settings
+- event overview
+  - make layout better
+- debts
+  - see all debts
+  - settle debts: close event before settling debts
+- statics
+  - add tag
+  - when remove tag if used change to no tag
+- add participant
+  - romanian translation termite
+  - email verification
+  - show that email was send
+- add expense
+  - don't let people get here without having participants
+  - layout
+- home
+  - remove recent event
+- ReadMe
+  - add link to backlog (task vs result)
+
 
 ## Done
+- remove print statements
+- move to permanent database
 
 ## Project Execution
 
@@ -86,14 +127,14 @@ There is a hidden feature! We don't want to spoil the surprise, but to find it t
 
 On this app 3 languages are currently supported: English, Dutch and Romanian.
 
-Changing the language can be done in the settings, the home overview and the event overview. You will see a language indicator with a flag so you know which language is currently configured. Changing the language is live so you don't have to worry about restarting the app. If you have changed the language and restart the app, this language will also be persisted so you don't have to worry about changing the language everytime you use the app.
+Changing the language can be done in the settings, the home overview and the event overview. You will see a language indicator with a flag, so you know which language is currently configured. Changing the language is live, so you don't have to worry about restarting the app. If you have changed the language and restart the app, this language will also be persisted, so you don't have to worry about changing the language everytime you use the app.
 
-If you would like to add your own language to this project, there is a language template that you can download from the settings page. You can then fill the template in your own lanuage and send it to us so we can add it in a future update.
+If you would like to add your own language to this project, there is a language template that you can download from the settings page. You can then fill the template in your own language and send it to us, so we can add it in a future update.
 
 
 ### Detailed Expenses
 
-Expenses can be given a date. Expenses can be split between everyone or just a small group of people. You can select who. To make it easy for you, we made some buttons to select/unselect everyone quickly. For settling debts, payments can also be made simply by choosing the person who pays and who recieves the money.
+Expenses can be given a date. Expenses can be split between everyone or just a small group of people. You can select who. To make it easy for you, we made some buttons to select/unselect everyone quickly. For settling debts, payments can also be made simply by choosing the person who pays and who receives the money.
 
 In the event overview you can see all of these expenses. Those expenses can also be filtered.
 
@@ -114,13 +155,13 @@ be shown in the original currency, so that you can manage expenses in the curren
 
 ### Open Debts
 
-On the open debts screen within an expense you can see the fastest way to settle your debts. Just select your name in the drop down and only debts related to you will be shown. If someone owes you money, clicking on their name will show your their email if they have one. If you owe them money, clicking on their name will show you their bank details if they have either a BIC or an IBAN.
+On the open debts screen within an expense you can see the fastest way to settle your debts. Just select your name in the drop-down and only debts related to you will be shown. If someone owes you money, clicking on their name will show you're their email if they have one. If you owe them money, clicking on their name will show you their bank details if they have either a BIC or an IBAN.
 
 To settle your debts you can click on the add payment button at the bottom of the page and add a payment to whoever you owe money.
 
 ### Statistics
 
-Tags can be added to expenses so you can organise expenses by type. You will be able to see those tags in the event overview. There are three standard tags per event: food, entrance fees, and travel to simplify your life. When creating an expense, if you don't find any tags that suit your needs, you can just create a new one.
+Tags can be added to expenses, so you can organise expenses by type. You will be able to see those tags in the event overview. There are three standard tags per event: food, entrance fees, and travel to simplify your life. When creating an expense, if you don't find any tags that suit your needs, you can just create a new one.
 
 Once you have added expenses you will be able to see how much you have spent on each type of expense in the statistics page in a table and in a pie chart. There you can also edit the name and colour of the tags you have made as well as delete them.
 

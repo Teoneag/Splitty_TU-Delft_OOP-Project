@@ -1,5 +1,5 @@
 |              |                                 |
-| ------------ | ------------------------------- |
+|--------------|---------------------------------|
 | Date:        | 19.03.2024                      |
 | Time:        | 15:45                           |
 | Location:    | Delft Drebbelweg PC 1 cubicle 4 |
@@ -52,7 +52,7 @@
 - Code Contributions and Code Reviews Assignment (2 min)
     * focused commits - small commits for each little bit
     * isolated features - feature branches
-    * MR reviewability - few formatting changes, few commits, no conflicts
+    * MR reliability - few formatting changes, few commits, no conflicts
     * reviews - timely, lead to changes, involve more than two people
     * build server - main pipeline ideally never fails, fixed quickly
 - HCI (3 min) - continue discussion on wednesday

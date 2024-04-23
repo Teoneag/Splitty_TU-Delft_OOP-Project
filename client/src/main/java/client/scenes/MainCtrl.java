@@ -455,7 +455,7 @@ public class MainCtrl {
 
     public void showAddTag(Event event, Expense expense) {
         primaryStage.setTitle("Splitty");
-        addtagCtrl.refreshEdit(event, expense);
+        addtagCtrl.refreshEdit(event);
         primaryStage.setScene(addTagOverview);
     }
     public void showAddTagNoExpense(Event event) {

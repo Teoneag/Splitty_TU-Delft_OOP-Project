@@ -1,8 +1,8 @@
 package client.scenes;
 
-import client.services.ErrorService;
 import client.services.ConfigService;
 import client.services.EmailService;
+import client.services.ErrorService;
 import client.services.ServerUtils;
 import com.google.inject.Inject;
 import commons.Event;
@@ -16,9 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.net.ConnectException;
+import java.util.HashMap;
 
 
 public class AddParticipantCtrl implements Initializable {
@@ -81,7 +80,6 @@ public class AddParticipantCtrl implements Initializable {
      * Set the language of the labels and buttons
      *
      * @param map the language map which contains the translation
-     * @throws IOException if the language file is not found
      */
     public void setLanguage(HashMap<String, Object> map) {
         firstNameLabel.setText((String) map.get("first_name"));

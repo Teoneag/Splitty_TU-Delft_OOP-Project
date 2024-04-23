@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -73,7 +73,7 @@ class TagControllerTest {
         ResponseEntity<List<Tag>> response = tagController.getTagByEventInviteCode("123");
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(null, response.getBody());
+        assertNull(response.getBody());
 
     }
 
@@ -108,7 +108,7 @@ class TagControllerTest {
         ResponseEntity<Tag> response = tagController.getTagById(id);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(null, response.getBody());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -125,7 +125,7 @@ class TagControllerTest {
         ResponseEntity<Tag> response = tagController.getTagById(2);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(null, response.getBody());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -161,7 +161,7 @@ class TagControllerTest {
         ResponseEntity<Tag> response = tagController.getPaymentTag("123");
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(null, response.getBody());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -197,7 +197,7 @@ class TagControllerTest {
         ResponseEntity<Tag> response = tagController.updateTag(null);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(null, response.getBody());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -212,7 +212,7 @@ class TagControllerTest {
         ResponseEntity<Tag> response = tagController.updateTag(tag);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(null, response.getBody());
+        assertNull(response.getBody());
 
     }
 

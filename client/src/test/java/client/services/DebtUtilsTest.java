@@ -1,30 +1,22 @@
 package client.services;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import javafx.application.Application;
-import javafx.stage.Stage;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.framework.junit5.ApplicationTest;
-
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
-import javafx.application.Platform;
 import javafx.scene.control.TextArea;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.testfx.framework.junit5.ApplicationExtension;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(ApplicationExtension.class)
 public class DebtUtilsTest {
@@ -47,22 +39,18 @@ public class DebtUtilsTest {
         System.setProperty("monocle.platform", "Headless");
         System.setProperty("prism.order", "sw");
     }
-    
+
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        
-        when(configService.getConfigCurrency()).thenReturn("USD");
-        
-        event = new Event("EVENT1", "title", "description");
-        this.debtUtils = new DebtUtils(server, configService);
+    public void setUp() throws Exception {
+        try (AutoCloseable ignored = MockitoAnnotations.openMocks(this)) {
+            when(configService.getConfigCurrency()).thenReturn("USD");
+
+            event = new Event("EVENT1", "title", "description");
+            this.debtUtils = new DebtUtils(server, configService);
+        }
     }
-    
-    @AfterAll
-    public static void cleanUp() {
-        
-    }
-    
+
+
     @Test
     public void testExpenseTotal() {
         int amount = 10;

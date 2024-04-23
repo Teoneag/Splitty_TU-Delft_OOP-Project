@@ -18,7 +18,7 @@ The tool used to check lines of code has a broad overview. So there shouldn't be
 ### Scrum
 
 - Backlog points are big features
-- For scrum we want to split up features into smaller bits and work on those
+- For scrum, we want to split up features into smaller bits and work on those
 - These bits will be issues that we work on
 - Tag use:
     - TODO - when you want something to be done

@@ -34,8 +34,6 @@ public class Participant {
     public Participant(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-//        participatingExpenses = new HashSet<>();
-//        sponsoredExpenses = new HashSet<>();
     }
 
     /**

@@ -1,11 +1,11 @@
-| Key | Value                           |
-| --- |---------------------------------|
-| Date: | 27.02.2024                      |
-| Time: | 15:45                           |
-| Location: | Delft Drebbelweg PC 1 cubicle 4 |
-| Chair | Hugo KLIJN                      |
+| Key          | Value                           |
+|--------------|---------------------------------|
+| Date:        | 27.02.2024                      |
+| Time:        | 15:45                           |
+| Location:    | Delft Drebbelweg PC 1 cubicle 4 |
+| Chair        | Hugo KLIJN                      |
 | Minute Taker | Rodrigue Vande Capelle          |
-| Attendees: | everyone                        |
+| Attendees:   | everyone                        |
 
 # Agenda Items:
 - Opening by chair (1 min)

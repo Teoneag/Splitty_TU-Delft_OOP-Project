@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class EventServiceTest {
 
     @InjectMocks
-    private EventService eventService = new EventService();
+    private final EventService eventService = new EventService();
 
 
     @Test

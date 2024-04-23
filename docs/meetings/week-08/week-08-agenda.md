@@ -21,9 +21,9 @@
   - Live language switch is implemented (almost)
     - Only issue is with the flags
   - calculations for debts are done
-    - need some fine tuning 
+    - need some fine-tuning 
       - translations, currency and payments
-    - websocktes?
+    - websockets?
 
   
 - Basic Requirements (2 min)
@@ -34,7 +34,7 @@
 - extensions (10 min)
   - Live language switch is implemented, only missing a small thing 
     - flag emojis don't render on windows
-      - icon libraries - teo's had trouble before, user could just provide country code (UK, NL, RO, etc)
+      - icon libraries - teo's had trouble before, user could just provide country code (UK, NL, RO, etc.)
       - images - user would have to provide image for language, no way to standardise
     - question regarding the combobox
   - foreign currency is also implemented
@@ -54,7 +54,7 @@
     - we have insufficient for everything, why?
     - how can we tackle this?
     
-- This weeks planning (What to do?) (5 min)
+- This week's planning (What to do?) (5 min)
   - Testing
   - services (backend and maybe also front end)
   - what remains?

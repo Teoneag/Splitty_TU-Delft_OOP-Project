@@ -20,7 +20,6 @@ import java.util.*;
 public class DebtOverviewCtrl implements Initializable{
     private final ServerUtils server;
     private final DebtUtils debt;
-    private final StyleUtils style;
     private final MainCtrl mainCtrl;
     private final ErrorService errorService;
     private Event event;
@@ -30,8 +29,6 @@ public class DebtOverviewCtrl implements Initializable{
     private HashMap<String, Object> languageMap;
 
 //    TODO change debt calculation to use buffered transaction/participant lists to minimize server interactions
-//    private List<Expense> transactions;
-//    private List<Participant> participants;
 
     @FXML
     private Text eventTotal;
@@ -94,7 +91,6 @@ public class DebtOverviewCtrl implements Initializable{
                              ErrorService errorService) {
         this.server = server;
         this.debt = debt;
-        this.style = style;
         this.mainCtrl = mainCtrl;
         this.errorService = errorService;
     }

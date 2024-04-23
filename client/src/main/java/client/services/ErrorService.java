@@ -22,23 +22,22 @@ public class ErrorService {
 
     /**
      * Method for creating an alert for when the user enters the wrong password
-     * for HomeoverviewCtrl
+     * for HomeOverviewCtrl
      *
-     * @param result the result of the login attempt
      * @return the alert
      */
-    public Alert wrongPassword(String result) {
+    public Alert wrongPassword() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(map.get("adminLoginAlertTitle").toString());
         alert.setHeaderText(map.get("adminLoginHeader").toString());
-        result = map.get("adminLoginContent").toString();
+        String result = map.get("adminLoginContent").toString();
         alert.setContentText(result);
         return alert;
     }
 
     /**
-     * Method for creating an alert for when the user enters the wrong invitecode
-     * for HomeoverviewCtrl
+     * Method for creating an alert for when the user enters the wrong inviteCode
+     * for HomeOverviewCtrl
      *
      * @param inviteCode the invite code entered by the user
      * @return the alert
@@ -57,8 +56,8 @@ public class ErrorService {
     }
 
     /**
-     * Method for creating an alert for when the user enters the wrong invitecode
-     * for HomeoverviewCtrl
+     * Method for creating an alert for when the user enters the wrong inviteCode
+     * for HomeOverviewCtrl
      *
      * @param e the exception thrown
      * @return the alert
@@ -103,7 +102,7 @@ public class ErrorService {
     }
 
     /**
-     * Method for creating an alert for when the user enters else rather then server url
+     * Method for creating an alert for when the user enters else rather than server url
      * for SettingsOverviewCtrl
      *
      * @param message the message to be displayed from the exception
@@ -118,7 +117,7 @@ public class ErrorService {
     }
 
     /**
-     * Method for creating an alert for when an unknown exepction is thrown after the server url is entered
+     * Method for creating an alert for when an unknown exception is thrown after the server url is entered
      * for SettingsOverviewCtrl
      *
      * @return the alert

@@ -12,7 +12,7 @@ Feedback: Pass
 
 Mark: Very good
 
-Feedback: The agenda followed the repository in time and followed the template nicely.  As an improvement you can make it more specific where you plan for the next sprint and where you review last weeks work, the agenda was mostly focused on the feedback rubrics (as there was plenty to talk about).
+Feedback: The agenda followed the repository in time and followed the template nicely.  As an improvement you can make it more specific where you plan for the next sprint and where you review last week's work, the agenda was mostly focused on the feedback rubrics (as there was plenty to talk about).
 
 
 #### Performance of the *Previous* Minute Taker

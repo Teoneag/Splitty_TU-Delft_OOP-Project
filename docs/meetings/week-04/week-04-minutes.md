@@ -1,10 +1,10 @@
-## **Team announcemnet**
+## **Team announcement**
 -   Finished code of conduct, great feedback
 -   Minutes are good of last week
 
-## **TA anouncments**
+## **TA announcements**
 
-* Buddycheck to do, deadline is Friday 8-03-2024
+* Buddy check to do, deadline is Friday 8-03-2024
     * Follow model
     * Don't say anything about others (like he/she was bad etc.)
     * Be polite, constructive etc
@@ -43,7 +43,7 @@
 
 -   Planning is okay, but not working on it is not a problem, especially because of midterms
 
-## **Weeky planning**
+## **Week planning**
 
 -   Weekly mr meeting didn't happen because people couldn't join
 * If meetings are not possible, just approve it after looking at it
@@ -56,7 +56,7 @@
 
 ## **Q from nico**
 
-* Why separate tables for events, expens
+* Why separate tables for events, expense
     * Rod: idk
     * Teo will look at it
 

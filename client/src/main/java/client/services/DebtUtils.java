@@ -124,8 +124,8 @@ public class DebtUtils {
 
         int i = 0;
         while (!sponsors.isEmpty() && !debtors.isEmpty()) {
-            Participant debtor = debtors.get(0);
-            Participant sponsor = sponsors.get(0);
+            Participant debtor = debtors.getFirst();
+            Participant sponsor = sponsors.getFirst();
 
             float transferAmount = Math.min(groupDebts.get(debtor), -1 * groupDebts.get(sponsor));
             if (debtor.equals(targetParticipant)) {
@@ -182,7 +182,7 @@ public class DebtUtils {
     /**
      * Returns the expandable info for the debt overview as fxml element, styled with the correct colour
      * If the picked participant owes money then the info will include the bank details of the sponsor if available
-     * If the picked participant is owed money, the contact information of the debtor is showed
+     * Is the picked participant is owed money, the contact information of the debtor is showed
      * @param participant participant that owes/is owed by the picked participant
      * @param amount the amount that is owed
      * @return the string with the required information as described

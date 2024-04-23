@@ -18,7 +18,6 @@ import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
 import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -106,17 +105,7 @@ public class AddExpenseCtrl implements Initializable {
             amount.setText(String.valueOf(newAmount));
         });
 
-        StringConverter<Participant> pConverter = new StringConverter<>() {
-            @Override
-            public String toString(Participant p) {
-                return p.getFirstName() + " " + p.getLastName();
-            }
-
-            @Override
-            public Participant fromString(String string) {
-                return null;
-            }
-        };
+        final StringConverter<Participant> pConverter = AddPaymentCtrl.pConverter();
         sponsorSelect.setConverter(pConverter);
         debtorSelect.setConverter(pConverter);
 
@@ -140,7 +129,6 @@ public class AddExpenseCtrl implements Initializable {
      * Set the language of the page
      *
      * @param map the language map which contains the translation
-     * @throws IOException if the language file is not found
      */
     public void setLanguage(HashMap<String, Object> map) {
         expenseTitle.setText((String) map.get("expenseTitle"));

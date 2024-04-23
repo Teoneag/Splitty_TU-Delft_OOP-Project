@@ -207,15 +207,7 @@ public class EventOverviewCtrl implements Initializable {
                     } else {
                         setText(getItem());
                         Color c = new Color(getTableRow().getItem().getTag().getColor());
-                        String textColor = c.getRed()*0.299 + c.getGreen()*0.587 + c.getBlue()*0.114 > 145
-                                ? "black" : "white";
-                        String cString = String.format(
-                                "-fx-background-color: rgba(%d,%d,%d,1); " +
-                                "-fx-background-radius: 5px; " +
-                                "-fx-text-fill: %s",
-                                c.getRed(), c.getGreen(), c.getBlue(), textColor
-                        );
-                        setStyle(cString);
+                        setStyle(cString(c));
                     }
                 });
             }
@@ -243,6 +235,17 @@ public class EventOverviewCtrl implements Initializable {
         });
 
         setFilterControls();
+    }
+
+    public static String cString(Color c) {
+        String textColor = c.getRed()*0.299 + c.getGreen()*0.587 + c.getBlue()*0.114 > 145
+                ? "black" : "white";
+        return String.format(
+                "-fx-background-color: rgba(%d,%d,%d,1); " +
+                        "-fx-background-radius: 5px; " +
+                        "-fx-text-fill: %s",
+                c.getRed(), c.getGreen(), c.getBlue(), textColor
+        );
     }
 
     /**

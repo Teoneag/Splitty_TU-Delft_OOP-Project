@@ -10,21 +10,17 @@ import jakarta.ws.rs.ProcessingException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.util.StringConverter;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.List;
 
-public class AddPaymentCtrl implements Initializable{
+public class AddPaymentCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final ConfigService configService;
@@ -78,7 +74,13 @@ public class AddPaymentCtrl implements Initializable{
             amount.setText(String.valueOf(newAmount));
         });
 
-        StringConverter<Participant> pConverter = new StringConverter<>() {
+        final StringConverter<Participant> pConverter = pConverter();
+        sponsorSelect.setConverter(pConverter);
+        debtorSelect.setConverter(pConverter);
+    }
+
+    public static StringConverter<Participant> pConverter() {
+        return new StringConverter<>() {
             @Override
             public String toString(Participant p) {
                 return p.getFirstName() + " " + p.getLastName();
@@ -89,15 +91,12 @@ public class AddPaymentCtrl implements Initializable{
                 return null;
             }
         };
-        sponsorSelect.setConverter(pConverter);
-        debtorSelect.setConverter(pConverter);
     }
 
     /**
      * Set the language of the page
      *
      * @param map the language map which contains the translation
-     * @throws IOException if the language file is not found
      */
     public void setLanguage(HashMap<String, Object> map) {
         addPaymentHead.setText((String) map.get("paymentTitle"));
@@ -112,8 +111,8 @@ public class AddPaymentCtrl implements Initializable{
         cancelButton.setText((String) map.get("cancelButton"));
 
         // Set button sizes based on text length
-//        mainCtrl.setDynamicButtonSize(createExpenseButton);
-//        mainCtrl.setDynamicButtonSize(cancelButton);
+        mainCtrl.setDynamicButtonSize(createExpenseButton);
+        mainCtrl.setDynamicButtonSize(cancelButton);
     }
 
     public void goBack() {
@@ -123,13 +122,12 @@ public class AddPaymentCtrl implements Initializable{
     /**
      * Constructor
      *
-     * @param server            serverUtils
-     * @param mainCtrl          main controller
-     * @param configService     configService
+     * @param server        serverUtils
+     * @param mainCtrl      main controller
+     * @param configService configService
      */
     @Inject
-    public AddPaymentCtrl(ServerUtils server, MainCtrl mainCtrl,
-                          ConfigService configService) {
+    public AddPaymentCtrl(ServerUtils server, MainCtrl mainCtrl, ConfigService configService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.configService = configService;
@@ -138,7 +136,7 @@ public class AddPaymentCtrl implements Initializable{
     /**
      * Refreshes the page with the new event, and updates the list of participants from the server
      *
-     * @param event new event to create the event in
+     * @param event     new event to create the event in
      * @param fromEvent is this from the event overview?
      */
     public void refresh(Event event, boolean fromEvent) {
@@ -198,11 +196,7 @@ public class AddPaymentCtrl implements Initializable{
             newDebtors.add(newDebtor);
             expense.setDebtors(newDebtors);
 
-            expense.setTitle(expense.formattedAmount() +
-                    " from " + expense.getSponsor().getFirstName() +
-                    " to " + expense.getDebtors().stream().findFirst().orElseThrow().getFirstName() +
-                    " on " + expense.getDate().toString()
-            );
+            expense.setTitle(expense.formattedAmount() + " from " + expense.getSponsor().getFirstName() + " to " + expense.getDebtors().stream().findFirst().orElseThrow().getFirstName() + " on " + expense.getDate().toString());
 
             expense.setTag(paymentTag);
 
@@ -213,10 +207,8 @@ public class AddPaymentCtrl implements Initializable{
                 server.updateExpense(expense);
             }
 
-            if (fromEvent)
-                mainCtrl.showEventOverview(event);
-            else
-                mainCtrl.showDebtOverview(event);
+            if (fromEvent) mainCtrl.showEventOverview(event);
+            else mainCtrl.showDebtOverview(event);
 
         } catch (NumberFormatException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -244,10 +236,8 @@ public class AddPaymentCtrl implements Initializable{
      */
     public void cancel() {
         try {
-            if (fromEvent)
-                mainCtrl.showEventOverview(event);
-            else
-                mainCtrl.showDebtOverview(event);
+            if (fromEvent) mainCtrl.showEventOverview(event);
+            else mainCtrl.showDebtOverview(event);
         } catch (Exception e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);

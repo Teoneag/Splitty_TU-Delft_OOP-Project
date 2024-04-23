@@ -18,10 +18,10 @@ import java.util.Map;
 public class CurrencyService {
 
     private final WebClient webClient;
-    private final String apiKey = "8a8af079f5fc4dbcacfa59ea01c8064d";
-    private final String baseUrl = "https://openexchangerates.org/api/latest.json?app_id=" + apiKey;
 
     public CurrencyService(WebClient.Builder webClientBuilder) {
+        String apiKey = "8a8af079f5fc4dbcacfa59ea01c8064d";
+        String baseUrl = "https://openexchangerates.org/api/latest.json?app_id=" + apiKey;
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
@@ -54,7 +54,7 @@ public class CurrencyService {
      */
     private float fetchAndCacheRate(String from, String to, Path cachePath) throws IOException {
         Mono<Map<String, Object>> responseMono = webClient.get().retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                .bodyToMono(new ParameterizedTypeReference<>() {
                 });
 
         Map<String, Object> responseBody = responseMono.block();

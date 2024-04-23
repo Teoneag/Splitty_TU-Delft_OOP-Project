@@ -3,8 +3,8 @@
 ## **TA announcements**
 - Implemented features & product pitch formative deadline this week
 - Don't need to use mockito or stubs for testing, but it could make your life easier 
-- Check brightspace for presentation schedule (we are on friday)
-- look at template slides on brightspace and submit our own before friday
+- Check brights pace for presentation schedule (we are on friday)
+- look at template slides on brights pace and submit our own before friday
 - about testing as you go so add it to merge requests
 - make services for all controllers before we test them in the backend most important
 - Regarding HCI feedback is explicit. Do specific rubric stuff. Catch when the server stops running
@@ -26,7 +26,7 @@
 - server switching (kinda works)
 - UI updated (not merged at the time of meeting)
 
-## **Extenstions**
+## **Extensions**
 - Divide extensions in milestones
 - Focus merge requests on first part of the week because of easter break
 - Live language switching should be close to done (only need flag icons)
@@ -47,14 +47,14 @@
 - Pick extensions that are closest to done and finish them first
 
 ## **Project Pitch**
-- we focus on a certain set of slides, so we don't need to be together and have a meeting to discuss flow of presnetaion
+- we focus on a certain set of slides, so we don't need to be together and have a meeting to discuss flow of presentation
 - use google slides
 - we can have a mockup presentation in week 9 (TA recommendation)
 
 # **Ending**
 
 ## **Small discussions**
-- expense will repersist removal of a participant
+- expense will persist removal of a participant
 - we need to figure out what to do when a user tries to leave an event when they have debt
   - give a popup when someone tries leaving an event while having debt
 - UI event: errors only should show when typing. 

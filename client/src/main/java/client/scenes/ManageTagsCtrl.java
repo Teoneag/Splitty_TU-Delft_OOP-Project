@@ -16,20 +16,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.text.Text;
 
-
 import java.awt.*;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
-
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class ManageTagsCtrl implements Initializable {
 
@@ -96,15 +95,7 @@ public class ManageTagsCtrl implements Initializable {
                     } else {
                         setText(getItem());
                         Color c = new Color(getTableRow().getItem().getColor());
-                        String textColor = c.getRed()*0.299 + c.getGreen()*0.587 + c.getBlue()*0.114 > 145
-                                ? "black" : "white";
-                        String cString = String.format(
-                                "-fx-background-color: rgba(%d,%d,%d,1); " +
-                                "-fx-background-radius: 5px; " +
-                                "-fx-text-fill: %s",
-                                c.getRed(), c.getGreen(), c.getBlue(), textColor
-                        );
-                        setStyle(cString);
+                        setStyle(EventOverviewCtrl.cString(c));
                     }
                 });
             }
@@ -283,7 +274,6 @@ public class ManageTagsCtrl implements Initializable {
      * Set the language of the page
      *
      * @param map the language map which contains the translation
-     * @throws IOException if the language file is not found
      */
     public void setLanguage(HashMap<String, Object> map) {
         tagName.setText((String) map.get("tagNameColumn"));

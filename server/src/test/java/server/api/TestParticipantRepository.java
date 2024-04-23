@@ -1,22 +1,21 @@
 package server.api;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-
 import commons.Participant;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery;
-
 import server.database.ParticipantRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
 public class TestParticipantRepository implements ParticipantRepository {
-    public List<Participant> participants = new ArrayList<>();
-    public List<String> calledMethods = new ArrayList<>();
+    public final List<Participant> participants = new ArrayList<>();
+    public final List<String> calledMethods = new ArrayList<>();
     
     private void call(String method) {
         calledMethods.add(method);
@@ -95,7 +94,7 @@ public class TestParticipantRepository implements ParticipantRepository {
     @Override
     public <S extends Participant> S save(S entity) {
         call("save");
-        entity.setId((long) participants.size());
+        entity.setId(participants.size());
         participants.add(entity);
         return entity;
     }

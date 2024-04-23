@@ -19,7 +19,7 @@ In italics, you will find some additional explanations of the agenda points. You
 *Make sure everything that needs to be discussed is in the agenda or add it if something is missing.*
 
 # Points of action
-*The items below are things you should look into after the first meeting. During the meeting you can divide (some of) the work between the team members, so that everybody has something to do afterwards.*
+*The items below are things you should look into after the first meeting. During the meeting you can divide (some of) the work between the team members, so that everybody has something to do afterward.*
 
  - Read Resources and Tools (on BrightSpace)
  - Make sure you have a Mattermost channel (your TA will create one for you)

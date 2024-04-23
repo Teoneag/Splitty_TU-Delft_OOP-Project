@@ -16,7 +16,6 @@
 package client.scenes;
 
 import client.services.ConfigService;
-import client.services.ErrorService;
 import client.services.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

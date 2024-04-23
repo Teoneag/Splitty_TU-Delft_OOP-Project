@@ -21,7 +21,7 @@ class ExpenseTest {
     }
 
     /**
-     * Test of the second construcor in the expense class
+     * Test of the second constructor in the expense class
      */
     @Test
     void otherConstructor(){
@@ -353,7 +353,7 @@ class ExpenseTest {
      */
     @Test
     void testToString() {
-        // Setup the participants, event, and expense
+        // Set up the participants, event, and expense
         Participant sponsor = new Participant("a", "b");
         Event event = new Event("BOOB69", "testTitle", "testDesc");
         Set<Participant> debtors = new HashSet<>();

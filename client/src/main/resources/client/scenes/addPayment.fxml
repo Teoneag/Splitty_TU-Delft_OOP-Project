@@ -6,43 +6,54 @@
 
 <StackPane styleClass="root" stylesheets="/client/scenes/stylesheets/SplittyStylesheet.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddPaymentCtrl">
     <AnchorPane prefHeight="750.0" prefWidth="600.0">
-        <children>
-            <Text fx:id="expenseAmount" fill="WHITE" layoutX="388.0" layoutY="264.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amount" wrappingWidth="100.92882537841797" AnchorPane.topAnchor="238.1015625">
-                <font>
-                    <Font size="24.0" />
-                </font>
-            </Text>
-            <TextField fx:id="amount" layoutX="549.0" layoutY="230.0" prefHeight="50.0" prefWidth="140.0" promptText="0.00" AnchorPane.topAnchor="230.0" />
-            <ComboBox fx:id="currency" layoutX="689.0" layoutY="230.0" prefHeight="50.0" prefWidth="60.0" AnchorPane.topAnchor="230.0" />
-            <Text fx:id="expenseDate" fill="WHITE" layoutX="388.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" wrappingWidth="84.92882537841797">
-                <font>
-                    <Font size="24.0" />
-                </font>
-            </Text>
-            <DatePicker fx:id="date" layoutX="549.0" layoutY="310.0" prefHeight="50.0" prefWidth="200.0" AnchorPane.topAnchor="310.0" />
-            <ComboBox fx:id="sponsorSelect" layoutX="549.0" layoutY="390.0" prefHeight="50.0" prefWidth="200.0" promptText="Select Sender" AnchorPane.topAnchor="390.0" />
-            <Text fx:id="expenseSponsor" fill="WHITE" layoutX="388.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sponsor" wrappingWidth="100.92882537841797">
-                <font>
-                    <Font size="24.0" />
-                </font>
-            </Text>
-            <Text fx:id="expenseDebtors" fill="WHITE" layoutX="388.0" layoutY="504.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recipient" wrappingWidth="100.92882537841797">
-                <font>
-                    <Font size="24.0" />
-                </font>
-            </Text>
-            <ComboBox fx:id="debtorSelect" layoutX="549.0" layoutY="470.0" prefHeight="50.0" prefWidth="200.0" promptText="Select Recipient" />
-            <Button fx:id="createExpenseButton" layoutX="465.0" layoutY="650.0" mnemonicParsing="false" onAction="#createExpense" prefHeight="50.0" prefWidth="150.0" text="Confirm">
-                <font>
-                    <Font size="16.0" />
-                </font>
-            </Button>
-            <Button fx:id="cancelButton" layoutX="761.0" layoutY="49.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" AnchorPane.rightAnchor="275.06156886354785" AnchorPane.topAnchor="49.0" />
-            <Text fx:id="addPaymentHead" fill="WHITE" layoutX="441.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add Payment" wrappingWidth="354.92884063720703" AnchorPane.leftAnchor="441.0" AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="75.0">
-                <font>
-                    <Font name="System Bold" size="32.0" />
-                </font>
-            </Text>
-        </children>
+        <Text fx:id="expenseAmount" fill="WHITE" layoutX="388.0" layoutY="264.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Amount" wrappingWidth="100.92882537841797" AnchorPane.topAnchor="238.1015625">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Text>
+        <TextField fx:id="amount" layoutX="549.0" layoutY="230.0" prefHeight="50.0" prefWidth="140.0" promptText="0.00"
+                   AnchorPane.topAnchor="230.0"/>
+        <ComboBox fx:id="currency" layoutX="689.0" layoutY="230.0" prefHeight="50.0" prefWidth="60.0"
+                  AnchorPane.topAnchor="230.0"/>
+        <Text fx:id="expenseDate" fill="WHITE" layoutX="388.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Date" wrappingWidth="84.92882537841797">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Text>
+        <DatePicker fx:id="date" layoutX="549.0" layoutY="310.0" prefHeight="50.0" prefWidth="200.0"
+                    AnchorPane.topAnchor="310.0"/>
+        <ComboBox fx:id="sponsorSelect" layoutX="549.0" layoutY="390.0" prefHeight="50.0" prefWidth="200.0"
+                  promptText="Select Sender" AnchorPane.topAnchor="390.0"/>
+        <Text fx:id="expenseSponsor" fill="WHITE" layoutX="388.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Sponsor" wrappingWidth="100.92882537841797">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Text>
+        <Text fx:id="expenseDebtors" fill="WHITE" layoutX="388.0" layoutY="504.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Recipient" wrappingWidth="100.92882537841797">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Text>
+        <ComboBox fx:id="debtorSelect" layoutX="549.0" layoutY="470.0" prefHeight="50.0" prefWidth="200.0"
+                  promptText="Select Recipient"/>
+        <Button fx:id="createExpenseButton" layoutX="465.0" layoutY="650.0" mnemonicParsing="false"
+                onAction="#createExpense" prefHeight="50.0" prefWidth="150.0" text="Confirm">
+            <font>
+                <Font size="16.0"/>
+            </font>
+        </Button>
+        <Button fx:id="cancelButton" layoutX="761.0" layoutY="49.0" mnemonicParsing="false" onAction="#cancel"
+                text="Cancel" AnchorPane.rightAnchor="275.06156886354785" AnchorPane.topAnchor="49.0"/>
+        <Text fx:id="addPaymentHead" fill="WHITE" layoutX="441.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Add Payment" wrappingWidth="354.92884063720703" AnchorPane.leftAnchor="441.0"
+              AnchorPane.rightAnchor="291.0" AnchorPane.topAnchor="75.0">
+            <font>
+                <Font name="System Bold" size="32.0"/>
+            </font>
+        </Text>
     </AnchorPane>
 </StackPane>

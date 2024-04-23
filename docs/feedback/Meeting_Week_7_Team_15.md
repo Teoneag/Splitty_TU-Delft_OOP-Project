@@ -12,7 +12,7 @@ Feedback: There has been a chair and a minute taker
 
 Mark: Excellent
 
-Feedback: The agenda was added to the repository in time and it followed the template nicely. Good job !
+Feedback: The agenda was added to the repository in time, and it followed the template nicely. Good job !
 
 
 #### Performance of the *Previous* Minute Taker
@@ -20,7 +20,7 @@ Feedback: The agenda was added to the repository in time and it followed the tem
 
 Mark: Very good
 
-Feedback: The notes have been been merged into the agenda file and contain a good amount of detail. They are clear.
+Feedback: The notes have been merged into the agenda file and contain a good amount of detail. They are clear.
 
 
 #### Chair performance

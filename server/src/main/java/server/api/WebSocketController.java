@@ -22,14 +22,14 @@ import java.util.List;
 @Controller
 public class WebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
-    private ParticipantRepository participantRepo;
-    private ExpenseRepository expenseRepo;
+    private final ParticipantRepository participantRepo;
+    private final ExpenseRepository expenseRepo;
 
     /**
-     * Constructor for the WebSocketController
-     * @param participantRepo
-     * @param expenseRepo
-     * @param messagingTemplate
+     * Constructor for WebSocketController
+     * @param participantRepo participantRepo
+     * @param expenseRepo expenseRepo
+     * @param messagingTemplate messagingTemplate
      */
     @Autowired
     public WebSocketController(ParticipantRepository participantRepo, ExpenseRepository expenseRepo,

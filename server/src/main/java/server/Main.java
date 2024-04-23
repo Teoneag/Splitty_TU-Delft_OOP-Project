@@ -15,20 +15,22 @@
  */
 package server;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import server.services.RandomGeneratorService;
-
+import com.google.inject.Inject;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"commons", "server"})
 public class Main {
+    private final RandomGeneratorService randomGeneratorService;
 
-    @Autowired
-    private RandomGeneratorService randomGeneratorService;
+    @Inject
+    public Main(RandomGeneratorService randomGeneratorService) {
+        this.randomGeneratorService = randomGeneratorService;
+    }
 
     /**
      * @param args args

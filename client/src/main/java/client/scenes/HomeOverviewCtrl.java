@@ -214,7 +214,7 @@ public class HomeOverviewCtrl implements Initializable {
             mainCtrl.showAdminOverview();
         } else {
             //pop-up window telling that password is incorrect
-            Alert alert = errorService.wrongPassword(result);
+            Alert alert = errorService.wrongPassword();
             alert.showAndWait();
         }
     }

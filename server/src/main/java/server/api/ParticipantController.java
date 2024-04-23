@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import server.database.EventRepository;
 import server.database.ParticipantRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/participants")
@@ -103,7 +100,7 @@ public class ParticipantController {
     /**
      * Updates a participant with the new given details
      * @param participantId The id of the participant
-     * @param participant The participant with the updatess
+     * @param participant The participant with the updates
      * @return The server response (updated participant or a badRequest)
      */
     @PutMapping(path = {"/{participantId}"})
@@ -137,7 +134,7 @@ public class ParticipantController {
         }
         Participant deleted = participantRepo.findById(id).orElse(null);
         participantRepo.deleteById(id);
-        websocketController.sendUpdatedParticipants(deleted.getEventInviteCode());
+        websocketController.sendUpdatedParticipants(Objects.requireNonNull(deleted).getEventInviteCode());
         return ResponseEntity.ok(deleted);
         
     }

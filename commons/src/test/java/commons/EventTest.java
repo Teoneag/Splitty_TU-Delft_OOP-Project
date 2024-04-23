@@ -35,7 +35,7 @@ class EventTest {
         event.setDescription(newDescription);
         assertEquals(newDescription, event.getDescription());
 
-        String newInviteCode = "NEWINVITECODE123";
+        String newInviteCode = "696969";
         event.setInviteCode(newInviteCode);
         assertEquals(newInviteCode, event.getInviteCode());
 
@@ -76,7 +76,7 @@ class EventTest {
     @Test
     void testEqualsAndHashCode() {
         Event event2 = new Event("BOOB69", "Test Event", "This is a test event");
-        assertTrue(event.equals(event2));
+        assertEquals(event, event2);
         assertEquals(event.hashCode(), event2.hashCode());
     }
 

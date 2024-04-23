@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.*;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -23,8 +24,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 class EventControllerTest {
     @Mock
@@ -165,7 +166,7 @@ class EventControllerTest {
         ResponseEntity<Event> response = eventController.getEventByInviteCode(null);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals(null, response.getBody());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -195,9 +196,7 @@ class EventControllerTest {
         when(eventRepository.findByInviteCode(inviteCode)).thenReturn(Optional.empty());
 
         // Attempt to fetch expenses, expecting an IllegalArgumentException
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            eventController.getExpenses(inviteCode);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> eventController.getExpenses(inviteCode));
 
         // Check that the message in the exception is as expected
         assertEquals("Event with inviteCode " + inviteCode + " does not exist", exception.getMessage());
@@ -258,8 +257,8 @@ class EventControllerTest {
         String currency = "USD";
         Event event = new Event();
         event.setInviteCode(inviteCode);
-        List<Expense> expenses = Arrays.asList(new Expense());
-        List<Expense> convertedExpenses = Arrays.asList(new Expense());
+        List<Expense> expenses = List.of(new Expense());
+        List<Expense> convertedExpenses = List.of(new Expense());
 
         // Ensure the repository confirms the existence of the event and retrieves it.
         when(eventRepository.existsByInviteCode(inviteCode)).thenReturn(true);
@@ -282,8 +281,8 @@ class EventControllerTest {
         String currency = "EUR";
         Event event = new Event();
         event.setInviteCode(inviteCode);
-        List<Expense> transactions = Arrays.asList(new Expense());
-        List<Expense> convertedTransactions = Arrays.asList(new Expense());
+        List<Expense> transactions = List.of(new Expense());
+        List<Expense> convertedTransactions = List.of(new Expense());
 
         when(eventRepository.existsByInviteCode(inviteCode)).thenReturn(true);
         when(eventRepository.findByInviteCode(inviteCode)).thenReturn(Optional.of(event));  // Correctly retrieve the Event
@@ -484,7 +483,7 @@ class EventControllerTest {
         expense.setSponsor(sponsor);
         expense.setDebtors(debtors);
         expense.setTag(tag);
-        List<Expense> expenses = Arrays.asList(expense);
+        List<Expense> expenses = List.of(expense);
 
         // Prepare JSON maps
         String participantMapJson = "{\"1\":\"2\", \"2\":\"3\"}"; // Ensuring all IDs are covered
@@ -492,15 +491,16 @@ class EventControllerTest {
 
         // Use a real ObjectMapper to parse the JSON
         ObjectMapper realMapper = new ObjectMapper();
-        Map<Long, Long> participantMap = realMapper.readValue(participantMapJson, new TypeReference<Map<Long, Long>>() {});
-        Map<Long, Long> tagMap = realMapper.readValue(tagMapJson, new TypeReference<Map<Long, Long>>() {});
+        Map<Long, Long> participantMap = realMapper.readValue(participantMapJson, new TypeReference<>() {
+        });
+        Map<Long, Long> tagMap = realMapper.readValue(tagMapJson, new TypeReference<>() {
+        });
 
         // Create new Tag and ensure it's returned
         Tag newTag = new Tag(); // Create a new tag to be returned
         newTag.setId(2);
         when(tagsRepo.findById("2")).thenReturn(Optional.of(newTag));  // Ensure this Optional is not empty
-        when(expenseRepository.saveAll(any(List.class))).thenReturn(expenses);
-
+        when(expenseRepository.saveAll(ArgumentMatchers.<List<commons.Expense>>any())).thenReturn(expenses);
         // Execute
 //        ResponseEntity<List<Expense>> response = eventController.addExpenses(expenses, participantMapJson, tagMapJson);
 
