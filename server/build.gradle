@@ -1,21 +1,23 @@
 plugins {
-	id 'java'
 	id 'org.springframework.boot' version '3.2.2'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
-java {
-	sourceCompatibility = '21'
-}
-
 dependencies {
+	// Project dependencies
+	implementation project(':commons')
+
+	// External dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	runtimeOnly 'com.h2database:h2'
-	implementation project(":commons")
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'com.google.inject:guice:6.0.0'
-	implementation group: 'com.google.guava', name: 'guava', version: '33.0.0-jre'
+	implementation 'com.google.guava:guava:33.0.0-jre' // Use consistent notation
+
+	// H2 Database dependency for runtime
+	runtimeOnly 'com.h2database:h2'
+
+	// Test dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
