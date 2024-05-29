@@ -9,11 +9,11 @@ import javafx.scene.control.TextArea;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class DebtUtils {
+final public class DebtService {
 
     private final ServerUtils server;
     private final ConfigService configService;
-    private HashMap<String, Object> languageMap;
+    private final I18NService i8NService;
 
     /**
      * constructor
@@ -22,13 +22,10 @@ public class DebtUtils {
      * @param configService configService
      */
     @Inject
-    public DebtUtils(ServerUtils server, ConfigService configService) {
+    public DebtService(ServerUtils server, ConfigService configService, I18NService i18NService) {
         this.server = server;
         this.configService = configService;
-    }
-    
-    public void setLanguageMap(HashMap<String, Object> languageMap) {
-        this.languageMap = languageMap;
+        this.i8NService = i18NService;
     }
 
     /**
@@ -38,12 +35,13 @@ public class DebtUtils {
      * @return the sum of all expense amounts
      */
     public float expenseTotal(Event event) {
+        if (event == null || event.getInviteCode() == null) return 0;
         float total = 0;
 
         total += (float) server.getExpensesByCurrency(event.getInviteCode())
-                .stream()
-                .mapToDouble(Expense::getAmount)
-                .sum();
+            .stream()
+            .mapToDouble(Expense::getAmount)
+            .sum();
 
         return total;
     }
@@ -64,19 +62,19 @@ public class DebtUtils {
         if (participant != null) {
             // Expenses debtor needs to repay & payments they have received
             debt += (float) transactions
-                    .stream()
-                    .filter(e -> e.getDebtors().contains(participant))
-                    .mapToDouble(e -> server.getRate(e.getCurrency().toString(), userCurrency, e.getDate().toString())
-                            * e.amountPerDebtor())
-                    .sum();
+                .stream()
+                .filter(e -> e.getDebtors().contains(participant))
+                .mapToDouble(e -> server.getRate(e.getCurrency().toString(), userCurrency, e.getDate().toString())
+                    * e.amountPerDebtor())
+                .sum();
 
             // Expenses debtor paid for & payments they have sent
             debt -= (float) transactions
-                    .stream()
-                    .filter(e -> e.getSponsor().equals(participant))
-                    .mapToDouble(e -> server.getRate(e.getCurrency().toString(), userCurrency, e.getDate().toString())
-                            * e.getAmount())
-                    .sum();
+                .stream()
+                .filter(e -> e.getSponsor().equals(participant))
+                .mapToDouble(e -> server.getRate(e.getCurrency().toString(), userCurrency, e.getDate().toString())
+                    * e.getAmount())
+                .sum();
         }
 
         return debt;
@@ -158,7 +156,7 @@ public class DebtUtils {
     public String formattedAmount(float amount) {
         DecimalFormat df = new DecimalFormat("#0.00");
         return Currency.getInstance(configService.getConfigCurrency()).getSymbol() + " " +
-                df.format(amount);
+            df.format(amount);
     }
 
     /**
@@ -171,20 +169,21 @@ public class DebtUtils {
      */
     public String getInstructionLine(Participant picked, Participant participant, float amount) {
         if (amount > 0) {
-            return picked.getFullName() + languageMap.get("owes")
-                    + participant.getFullName() + " " + formattedAmount(amount);
+            return picked.getFullName() + i8NService.get("owes")  + " "
+                + participant.getFullName() + " " + formattedAmount(amount);
         } else {
-            return picked.getFullName() + languageMap.get("isOwedBy") + participant.getFullName()
-                    + " " + formattedAmount(-1 * amount);
+            return picked.getFullName() + i8NService.get("is.owed.by") + " " + participant.getFullName()
+                + " " + formattedAmount(-1 * amount);
         }
     }
-    
+
     /**
      * Returns the expandable info for the debt overview as fxml element, styled with the correct colour
      * If the picked participant owes money then the info will include the bank details of the sponsor if available
      * Is the picked participant is owed money, the contact information of the debtor is showed
+     *
      * @param participant participant that owes/is owed by the picked participant
-     * @param amount the amount that is owed
+     * @param amount      the amount that is owed
      * @return the string with the required information as described
      */
     public TextArea getTextAreaInfo(Participant participant, float amount) {
@@ -192,23 +191,22 @@ public class DebtUtils {
         res.setDisable(true);
         if (amount > 0) {
             if (participant.getBic().isEmpty() && participant.getIban().isEmpty()) {
-                res.setText(languageMap.get("noBankDetails") + participant.getFullName());
+                res.setText(i8NService.get("noBankDetails") + " " + participant.getFullName());
                 res.setStyle("-fx-text-fill: red");
                 return res;
             }
-            res.setText(languageMap.get("bankDetails") + participant.getFullName()
-                    + ((participant.getIban().isEmpty()) ? "" : "\nIBAN: " + participant.getIban())
-                    + (participant.getBic().isEmpty() ? "" : "\nBIC: " + participant.getBic())
-                    + (participant.getEmail().isEmpty() ? "" : "\nEmail: " + participant.getEmail()));
-        }
-        else {
+            res.setText(i8NService.get("bankDetails") + " " + participant.getFullName()
+                + ((participant.getIban().isEmpty()) ? "" : "\nIBAN: " + participant.getIban())
+                + (participant.getBic().isEmpty() ? "" : "\nBIC: " + participant.getBic())
+                + (participant.getEmail().isEmpty() ? "" : "\nEmail: " + participant.getEmail()));
+        } else {
             if (participant.getEmail().isEmpty()) {
-                res.setText(participant.getFullName() + languageMap.get("noMail"));
+                res.setText(participant.getFullName() + i8NService.get("noMail") + " ");
                 res.setStyle("-fx-text-fill: red");
                 return res;
             }
-            res.setText(languageMap.get("contactInformation") + participant.getFullName()
-                    + "\nEmail: " + participant.getEmail());
+            res.setText(i8NService.get("contactInformation") + " " + participant.getFullName()
+                + "\nEmail: " + participant.getEmail());
         }
         return res;
     }

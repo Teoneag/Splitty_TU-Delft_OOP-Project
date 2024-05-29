@@ -3,55 +3,107 @@ Splitty is an expense management app that can be used to create and join events 
 
 <img src="client/src/main/resources/images/Splitty_Icon2.png" alt="App icon">
 
+## Give credit to
+- https://www.sothawo.com/2016/09/how-to-implement-a-javafx-ui-where-the-language-can-be-changed-dynamically/
+
 ## ToDo
-- ToDos from the project
-  - show error messages
-- Bugs
-  - solve all warnings (hide)
-  - fix expense limit
-- Theme
-  - right click on text filed
-- Refactor
-  - language switching (use bind)
-  - undo (use stack)
-  - navigation (use stack)
-- Testing
-  - Java with Gradle
-- looking at other projects for best practices
-- all pages
-  - add right click context
-- admin
-  - rename to export
-  - add default value to change server
+- mnemonic parsing and accelerator (add documentation + make them work for all pages and all languages)
+- undo (use stack)
+- fix currency
+- settings
+  - make server change work without restarting
   - make impossible to change to non-existing server
-- navigation bar
-  - currency
-  - language
-  - settings
-- event overview
-  - make layout better
 - debts
   - see all debts
   - settle debts: close event before settling debts
-- statics
+  - fix white corners
+- statistics
   - add tag
   - when remove tag if used change to no tag
 - add participant
   - romanian translation termite
   - email verification
   - show that email was send
+    - show sending email, error, success
+- add tag
+  - remove the page?
 - add expense
   - don't let people get here without having participants
-  - layout
-- home
-  - remove recent event
+  - add warning labels here as well
+- ToDos from the project
+- Bugs
+  - fix expense limit
+- Testing
+  - Java with Gradle
+  - GitHub testing
+- looking at other projects for best practices
 - ReadMe
   - add link to backlog (task vs result)
+  - (ASCII art, demo online, ss and gif from the app)
+- put somewhere eventRequest
+- common classes: do I need event user and so on?
+- request only recent events
+  - remove the ones not found
 
+### Later
+- theme
+  - light theme: make it look good
+  - make border red when wrong input in text field
+  - add tool tips for everything
+  - resize: full screen, smaller screen...
+  - show change theme on app bar
+  - replace emojis with icons
+  - make the shortcuts page only a semi-transparent overlay
+- add new language: from download language template to importing it with the new flag
+- edit menu: undo, redo
+- reorder recent events
+- refactor
+  - refactor messages_en.properties: use naming like 
+    - prompt.search_query=Enter search query
+  - Only retrieve events with the invite codes u provide
+  - rename every i18nService to languageService
+  - refactor config service
+- fix
+  - import event errors (google drive dirs)
+  - email logic (settings page)
+  - warning
+      warning: unknown enum constant GenerationType.AUTO
+      reason: class file for jakarta.persistence.GenerationType not found
+      warning: unknown enum constant GenerationType.AUTO
+      warning: unknown enum constant GenerationType.AUTO
 
 ## Done
+- after admin password blue set terminal color to white again
+- print please wait, server starting - actually just re-enabled the info statements
+- finish re-doing all the pages
 - remove print statements
 - move to permanent database
+- admin
+  - rename to export
+- settings
+  - add default value to change server
+  - download language template: fix file not found error
+  - email send label
+- event
+  - make last updated date work
+- home
+  - remove recent event
+  - handle enter for all text fields
+  - verify invite code length
+  - if title good remove showing error
+- navigation bar
+  - currency
+  - language
+  - settings
+- Refactor
+  - language switching (use bind)
+  - add the menubar in a better way
+    - make menuBar tab traversable
+- Theme:
+  - eye on home
+  - right click on text filed
+  - style recent event list: box with the same looks as the background
+  - menu bar color
 
 ## Project Execution
 

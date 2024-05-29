@@ -15,17 +15,16 @@
  */
 package client.scenes;
 
-import client.services.ConfigService;
-import client.services.ErrorService;
-import client.services.EventService;
+import client.services.*;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
 import commons.Tag;
+import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.stage.Stage;
@@ -33,7 +32,6 @@ import javafx.util.Pair;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.HashMap;
 
 
 public class MainCtrl {
@@ -42,206 +40,162 @@ public class MainCtrl {
     private final ConfigService configService;
     private final ErrorService errorService;
     private final EventService eventService;
+    private final CurrencyService currencyService;
+    private final I18NService i18NService;
+    private final ServerUtils serverUtils;
 
-    private Scene homePageOverview;
-    private HomeOverviewCtrl homeCtrl;
+    private Scene pageWithMenu;
+    private PageWithMenuCtrl pageWithMenuCtrl;
 
-    private Scene addEventOverview;
-    private AddEventCtrl addEventCtrl;
+    private Node home;
+    private HomeCtrl homeCtrl;
 
-    private Scene eventOverview;
-    private EventOverviewCtrl eventCtrl;
+    private Node event;
+    private EventCtrl eventCtrl;
 
-    private Scene addExpenseOverview;
+    private Node addExpense;
     private AddExpenseCtrl addExpenseCtrl;
 
-    private Scene addParticipantOverview;
+    private Node addParticipant;
     private AddParticipantCtrl addParticipantCtrl;
 
-    private Scene adminOverview;
-    private AdminOverviewCtrl adminCtrl;
+    private Node admin;
+    private AdminCtrl adminCtrl;
 
-    private Scene settingsOverview;
-    private SettingsOverviewCtrl settingsCtrl;
+    private Node settings;
+    private SettingsCtrl settingsCtrl;
 
-    private Scene shortcutsPageOverview;
+    private Node shortcuts;
     private ShortcutsCtrl shortcutsPageCtrl;
 
-    private Scene debtOverview;
-    private DebtOverviewCtrl debtOverviewCtrl;
+    private Node debt;
+    private DebtCtrl debtCtrl;
 
-    private Scene addTagOverview;
+    private Node addTag;
     private AddTagCtrl addtagCtrl;
-    private HashMap<String, Object> map;
 
-    private Scene manageTagsOverview;
-    private ManageTagsCtrl manageTagsCtrl;
+    private Node manageTags;
+    private Statistics statistics;
 
-    private Scene addPaymentOverview;
+    private Node addPayment;
     private AddPaymentCtrl addPaymentCtrl;
 
+    public String email = "";
+
     @Inject
-    public MainCtrl(ConfigService configService, EventService eventService) {
+    public MainCtrl(ConfigService configService, EventService eventService, ErrorService errorService,
+                    CurrencyService currencyService, I18NService i18NService, ServerUtils serverUtils) {
         this.configService = configService;
-        this.errorService = new ErrorService();
+        this.errorService = errorService;
         this.eventService = eventService;
+        this.currencyService = currencyService;
+        this.i18NService = i18NService;
+        this.serverUtils = serverUtils;
     }
 
 
     /**
-     * @param primaryStage     primaryStage
-     * @param overview         overview
-     * @param addEvent         addEvent
-     * @param eventPage        eventPage
-     * @param addExpense       addExpense
-     * @param addParticipant   - addParticipant controller view pair
-     * @param adminOverview    - adminOverview controller view pair
-     * @param settingsOverview - settingsOverview controller view pair
-     * @param shortcuts        - shortcuts controller view pair
-     * @param debtOverview     - debt controller view pair
+     * @param primaryStage   primaryStage
+     * @param home           overview
+     * @param event          eventPage
+     * @param addExpense     addExpense
+     * @param addParticipant - addParticipant controller view pair
+     * @param admin          - adminOverview controller view pair
+     * @param settings       - settingsOverview controller view pair
+     * @param shortcuts      - shortcuts controller view pair
+     * @param debt           - debt controller view pair
      */
 
-    public void initialize(Stage primaryStage, Pair<HomeOverviewCtrl, Parent> overview,
-                           Pair<AddEventCtrl, Parent> addEvent,
-                           Pair<EventOverviewCtrl, Parent> eventPage,
-                           Pair<AddExpenseCtrl, Parent> addExpense,
-                           Pair<AddParticipantCtrl, Parent> addParticipant,
-                           Pair<AdminOverviewCtrl, Parent> adminOverview,
-                           Pair<SettingsOverviewCtrl, Parent> settingsOverview,
-                           Pair<ShortcutsCtrl, Parent> shortcuts,
-                           Pair<DebtOverviewCtrl, Parent> debtOverview,
-                           Pair<AddTagCtrl, Parent> addTagOverview,
-                           Pair<ManageTagsCtrl, Parent> manageTagsOverview,
-                           Pair<AddPaymentCtrl, Parent> addPaymentOverview) throws IOException {
+    public void initialize(Stage primaryStage, Pair<PageWithMenuCtrl, Parent> pageWithMenu, Pair<HomeCtrl, Parent> home, Pair<EventCtrl, Parent> event, Pair<AddExpenseCtrl, Parent> addExpense, Pair<AddParticipantCtrl, Parent> addParticipant, Pair<AdminCtrl, Parent> admin, Pair<SettingsCtrl, Parent> settings, Pair<ShortcutsCtrl, Parent> shortcuts, Pair<DebtCtrl, Parent> debt, Pair<AddTagCtrl, Parent> addTag, Pair<Statistics, Parent> manageTags, Pair<AddPaymentCtrl, Parent> addPayment) throws IOException {
 
         this.primaryStage = primaryStage;
 
-        this.eventCtrl = eventPage.getKey();
-        this.eventOverview = new Scene(eventPage.getValue());
+        this.pageWithMenuCtrl = pageWithMenu.getKey();
+        this.pageWithMenu = new Scene(pageWithMenu.getValue(), 1080, 720);
 
-        this.homeCtrl = overview.getKey();
-        this.homePageOverview = new Scene(overview.getValue());
+        this.homeCtrl = home.getKey();
+        this.home = home.getValue();
 
-        this.addEventCtrl = addEvent.getKey();
-        this.addEventOverview = new Scene(addEvent.getValue());
+        this.eventCtrl = event.getKey();
+        this.event = event.getValue();
 
         this.addExpenseCtrl = addExpense.getKey();
-        this.addExpenseOverview = new Scene(addExpense.getValue());
+        this.addExpense = addExpense.getValue();
 
         this.addParticipantCtrl = addParticipant.getKey();
-        this.addParticipantOverview = new Scene(addParticipant.getValue());
+        this.addParticipant = addParticipant.getValue();
 
-        this.adminCtrl = adminOverview.getKey();
-        this.adminOverview = new Scene(adminOverview.getValue());
+        this.adminCtrl = admin.getKey();
+        this.admin = admin.getValue();
 
-        this.settingsOverview = new Scene(settingsOverview.getValue());
-        this.settingsCtrl = settingsOverview.getKey();
+        this.settingsCtrl = settings.getKey();
+        this.settings = settings.getValue();
 
         this.shortcutsPageCtrl = shortcuts.getKey();
-        this.shortcutsPageOverview = new Scene(shortcuts.getValue());
+        this.shortcuts = shortcuts.getValue();
 
-        this.debtOverviewCtrl = debtOverview.getKey();
-        this.debtOverview = new Scene(debtOverview.getValue());
+        this.debtCtrl = debt.getKey();
+        this.debt = debt.getValue();
 
-        this.addtagCtrl = addTagOverview.getKey();
-        this.addTagOverview = new Scene(addTagOverview.getValue());
+        this.addtagCtrl = addTag.getKey();
+        this.addTag = addTag.getValue();
 
-        this.manageTagsCtrl = manageTagsOverview.getKey();
-        this.manageTagsOverview = new Scene(manageTagsOverview.getValue());
+        this.statistics = manageTags.getKey();
+        this.manageTags = manageTags.getValue();
 
-        this.addPaymentCtrl = addPaymentOverview.getKey();
-        this.addPaymentOverview = new Scene(addPaymentOverview.getValue());
+        this.addPaymentCtrl = addPayment.getKey();
+        this.addPayment = addPayment.getValue();
 
-        KeyCombination backCombination = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN);
-        KeyCombination forwardCombination = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN); // TODO
-        KeyCombination ctrlP = new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN);
-        KeyCombination ctrlE = new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN);
+        // ToDo by using - mnemonic parsing and accelerator (add documentation + make them work for all pages and all languages)
+//        KeyCombination backCombination = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN);
+//        KeyCombination forwardCombination = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN);
+//        KeyCombination ctrlP = new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN);
+//        KeyCombination ctrlE = new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN);
+//
+//        final int MOUSE_BACK_BUTTON = MouseButton.BACK.ordinal();
+//
+//        showShortcuts(this.home);
+//
+//        addKeyEventFilter(this.event, backCombination, eventCtrl::goBack);
+//        addKeyEventFilter(this.event, ctrlP, eventCtrl::addParticipant);
+//        addKeyEventFilter(this.event, ctrlE, eventCtrl::addExpense);
+//        addMouseEventFilter(this.event, MOUSE_BACK_BUTTON, eventCtrl::goBack);
+//        showShortcuts(this.event);
+//
+//        addKeyEventFilter(this.addParticipant, backCombination, addParticipantCtrl::goBack);
+//        addMouseEventFilter(this.addParticipant, MOUSE_BACK_BUTTON, addParticipantCtrl::goBack);
+//        showShortcuts(this.addParticipant);
+//
+//        addKeyEventFilter(this.addExpense, backCombination, addExpenseCtrl::goBack);
+//        addMouseEventFilter(this.addExpense, MOUSE_BACK_BUTTON, addExpenseCtrl::goBack);
+//        showShortcuts(this.addExpense);
+//
+//        addKeyEventFilter(this.admin, backCombination, adminCtrl::goBack);
+//        addMouseEventFilter(this.admin, MOUSE_BACK_BUTTON, adminCtrl::goBack);
+//        showShortcuts(this.admin);
+//
+//        addKeyEventFilter(this.shortcuts, backCombination, shortcutsPageCtrl::goBack);
+//        addMouseEventFilter(this.shortcuts, MOUSE_BACK_BUTTON, shortcutsPageCtrl::goBack);
+//        showShortcuts(this.shortcuts);
+//
+//        addKeyEventFilter(this.settings, backCombination, settingsCtrl::goBack);
+//        addMouseEventFilter(this.settings, MOUSE_BACK_BUTTON, settingsCtrl::goBack);
+//        showShortcuts(this.settings);
 
-        final int MOUSE_BACK_BUTTON = MouseButton.BACK.ordinal();
-
-        showShortcuts(homePageOverview);
-
-        addKeyEventFilter(addEventOverview, backCombination, addEventCtrl::goBack);
-        addMouseEventFilter(addEventOverview, MOUSE_BACK_BUTTON, addEventCtrl::goBack);
-        showShortcuts(addEventOverview);
-
-        addKeyEventFilter(eventOverview, backCombination, eventCtrl::goBack);
-        addKeyEventFilter(eventOverview, ctrlP, eventCtrl::addParticipant);
-        addKeyEventFilter(eventOverview, ctrlE, eventCtrl::addExpense);
-        addMouseEventFilter(eventOverview, MOUSE_BACK_BUTTON, eventCtrl::goBack);
-        showShortcuts(eventOverview);
-
-        addKeyEventFilter(addParticipantOverview, backCombination, addParticipantCtrl::goBack);
-        addMouseEventFilter(addParticipantOverview, MOUSE_BACK_BUTTON, addParticipantCtrl::goBack);
-        showShortcuts(addParticipantOverview);
-
-        addKeyEventFilter(addExpenseOverview, backCombination, addExpenseCtrl::goBack);
-        addMouseEventFilter(addExpenseOverview, MOUSE_BACK_BUTTON, addExpenseCtrl::goBack);
-        showShortcuts(addExpenseOverview);
-
-        addKeyEventFilter(this.adminOverview, backCombination, adminCtrl::goBack);
-        addMouseEventFilter(this.adminOverview, MOUSE_BACK_BUTTON, adminCtrl::goBack);
-        showShortcuts(this.adminOverview);
-
-        addKeyEventFilter(this.shortcutsPageOverview, backCombination, shortcutsPageCtrl::goBack);
-        addMouseEventFilter(this.shortcutsPageOverview, MOUSE_BACK_BUTTON, shortcutsPageCtrl::goBack);
-        showShortcuts(this.shortcutsPageOverview);
-
-        switchLanguage();
-        addKeyEventFilter(this.settingsOverview, backCombination, settingsCtrl::goBack);
-        addMouseEventFilter(this.settingsOverview, MOUSE_BACK_BUTTON, settingsCtrl::goBack);
-        showShortcuts(this.settingsOverview);
-
-        showOverview();
+        showPageWithMenu();
+        showHome();
         primaryStage.show();
+
     }
 
     public void setTheme(String theme) {
-        String themeA = "client/scenes/src/main/java/client/stylesheet/SplittyStylesheet.css";
-        if(theme.equals("contrast")) {
-            themeA = "client/scenes/src/main/java/client/stylesheet/contrastSheet.css";
-        }
-        setStylesheet(themeA);
+        Platform.runLater(() -> pageWithMenu.getStylesheets().setAll("/stylesheets/" + theme + ".css"));
     }
 
-    public void setStylesheet(String theme) {
-        primaryStage.getScene().getStylesheets().clear();
-        primaryStage.getScene().getStylesheets().add(theme);
-//        settingsOverview.getStylesheets().set(0, theme);
+    public void setCurrency(String currency) {
+        configService.setConfigCurrency(currency);
+        // ToDO update live currency for table
     }
-
-    /**
-     * Switches the language of the application
-     */
-    public void switchLanguage() {
-        this.map = configService.getLanguage();
-        String language = configService.getConfigLanguage();
-        errorService.changeLanguage(this.map);
-
-        settingsCtrl.setLanguage(map, language);
-        shortcutsPageCtrl.setLanguage(map);
-        addEventCtrl.setLanguage(map);
-        addExpenseCtrl.setLanguage(map);
-        addParticipantCtrl.setLanguage(map);
-        adminCtrl.setLanguage(map, language);
-        eventCtrl.setLanguage(map, language);
-        homeCtrl.setLanguage(map, language);
-        debtOverviewCtrl.setLanguage(map);
-        addPaymentCtrl.setLanguage(map);
-        addtagCtrl.setLanguage(map);
-        manageTagsCtrl.setLanguage(map);
-//        manageTagsCtrl.setPieChartTitleLanguage(map);
-    }
-
-    /**
-     * Set the size of a button based on the length of the text
-     *
-     * @param button the button to set the size of
-     */
-    public void setDynamicButtonSize(Button button) {
-        button.setPrefWidth(button.getText().length() * 14); // Adjust multiplier for appropriate scaling
-    }
-
 
     /**
      * Shows the shortcuts page
@@ -252,8 +206,8 @@ public class MainCtrl {
         KeyCombination ctrlShiftSlash = new KeyCodeCombination(KeyCode.SLASH, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
         KeyCombination ctrlSlash = new KeyCodeCombination(KeyCode.SLASH, KeyCombination.CONTROL_DOWN);
 
-        addKeyEventFilter(scene, ctrlShiftSlash, homeCtrl::showShortcuts);
-        addKeyEventFilter(scene, ctrlSlash, homeCtrl::showShortcuts);
+        addKeyEventFilter(scene, ctrlShiftSlash, this::showShortcuts);
+        addKeyEventFilter(scene, ctrlSlash, this::showShortcuts);
     }
 
     /**
@@ -288,21 +242,56 @@ public class MainCtrl {
         });
     }
 
+    public void showPageWithMenu() {
+        i18NService.setLanguage(configService.getConfigLanguage());
+        primaryStage.getIcons().add(new Image("images/Splitty_Icon.png"));
+        primaryStage.setScene(pageWithMenu);
+    }
+
+    /**
+     * Creates a popup to inform the user that the server is currently unavailable
+     */
+    public void serverConnectionAlert() {
+        Alert alert = errorService.serverConnectionError();
+        alert.showAndWait();
+        i18NService.setText(primaryStage, "Splitty");
+        pageWithMenuCtrl.setCenter(home);
+    }
 
     /**
      * shows the home page
      * Set title to Splitty
      */
-    public void showOverview() {
-        primaryStage.setTitle("Splitty");
-        primaryStage.getIcons().add(new Image("images/Splitty_Icon.png"));
-        primaryStage.setScene(homePageOverview);
+    public void showHome() {
+        i18NService.setText(primaryStage, "splitty");
+        pageWithMenuCtrl.setCenter(home, true);
+        homeCtrl.focusTitleField();
         homeCtrl.refresh();
     }
 
-    public void showNoConnectionOverview() {
-        primaryStage.setTitle("Splitty");
-        primaryStage.setScene(homePageOverview);
+    /**
+     * Shows the settings overview
+     */
+    public void showSettings() {
+        i18NService.setTranslation(primaryStage, "settings.title");
+        pageWithMenuCtrl.setCenter(settings);
+    }
+
+    /**
+     * Shows the shortcuts page
+     */
+    public void showShortcuts() {
+        i18NService.setTranslation(primaryStage, "shortcuts.title");
+        pageWithMenuCtrl.setCenter(shortcuts);
+    }
+
+    /**
+     * Shows the admin overview
+     */
+    public void showAdminOverview() {
+        i18NService.setTranslation(primaryStage, "admin.overview");
+        adminCtrl.refresh();
+        pageWithMenuCtrl.setCenter(admin);
     }
 
     /**
@@ -310,16 +299,9 @@ public class MainCtrl {
      *
      * @param inviteCode the invite code of the event
      */
-    public void showEventOverview(String inviteCode) {
-        try {
-            eventService.addToRecentEvents(inviteCode);
-            eventCtrl.refresh(inviteCode);
-            primaryStage.setTitle(map.get("eventTitle").toString());
-            primaryStage.setScene(eventOverview);
-        } catch (Exception e) {
-            // ToDo: show Error: e.getMessage()
-        }
-
+    public void showEvent(String inviteCode) {
+        Event event = serverUtils.getEvent(inviteCode);
+        showEvent(event);
     }
 
     /**
@@ -327,63 +309,16 @@ public class MainCtrl {
      *
      * @param event the event to show
      */
-    public void showEventOverview(Event event) {
+    public void showEvent(Event event) {
+        i18NService.setTranslation(primaryStage, "event.overview");
         eventService.addToRecentEvents(event.getInviteCode());
+        if (!email.isEmpty()) {
+            eventCtrl.showEmailSent(email);
+            email = "";
+        }
         eventCtrl.refresh(event);
-        primaryStage.setTitle(map.get("eventTitle").toString());
-        primaryStage.setScene(eventOverview);
+        pageWithMenuCtrl.setCenter(this.event);
     }
-
-    /**
-     * When called changes the shown scene to the "addEventOverview" scene
-     */
-    public void showAddEvent() {
-        primaryStage.setTitle(map.get("createEventTitle").toString());
-        primaryStage.setScene(addEventOverview);
-    }
-
-    /**
-     * shows the page to add an expense
-     *
-     * @param event parent event
-     */
-    public void showAddExpense(Event event) {
-        addExpenseCtrl.refresh(event);
-        primaryStage.setTitle(map.get("createExpenseTitle").toString());
-        primaryStage.setScene(addExpenseOverview);
-    }
-    
-    public void showSettleDebt(Event event) {
-        addPaymentCtrl.refresh(event, false);
-        primaryStage.setTitle("Settling Debts");
-        primaryStage.setScene(addPaymentOverview);
-        
-    }
-
-
-    /**
-     * shows the addExpense page but fills in the values from the current expense
-     *
-     * @param event   parent event
-     * @param expense expense to edit
-     */
-    public void showEditExpense(Event event, Expense expense) {
-        addExpenseCtrl.edit(event, expense);
-        primaryStage.setTitle(map.get("expenseEditTitle").toString());
-        primaryStage.setScene(addExpenseOverview);
-    }
-
-    /**
-     * shows the addExpense page but uses a reduced refresh method to preserve pre-tag creation values
-     *
-     * @param tag the newly added tag
-     */
-    public void showAddExpenseReduced(Tag tag) {
-        addExpenseCtrl.reducedRefresh(tag);
-        primaryStage.setTitle(map.get("createExpenseTitle").toString());
-        primaryStage.setScene(addExpenseOverview);
-    }
-
 
     /**
      * Shows the adding participant screen and updates the controller to have the correct event
@@ -391,9 +326,9 @@ public class MainCtrl {
      * @param event - The event to add a participant to
      */
     public void showAddParticipant(Event event) {
+        i18NService.setTranslation(primaryStage, "add.participant");
         addParticipantCtrl.addParticipant(event);
-        primaryStage.setTitle(map.get("createParticipantTitle").toString());
-        primaryStage.setScene(addParticipantOverview);
+        pageWithMenuCtrl.setCenter(addParticipant);
     }
 
     /**
@@ -403,34 +338,50 @@ public class MainCtrl {
      * @param participant The participant that is being edited
      */
     public void showEditParticipant(Event event, Participant participant) {
+        i18NService.setTranslation(primaryStage, "edit.participant");
         addParticipantCtrl.edit(event, participant);
-        primaryStage.setTitle(map.get("participantEditTitle").toString());
-        primaryStage.setScene(addParticipantOverview);
+        pageWithMenuCtrl.setCenter(addParticipant);
     }
 
     /**
-     * Shows the admin overview
+     * shows the page to add an expense
+     *
+     * @param event parent event
      */
-    public void showAdminOverview() {
-        adminCtrl.refresh();
-        primaryStage.setTitle(map.get("adminTitle").toString());
-        primaryStage.setScene(adminOverview);
+    public void showAddExpense(Event event) {
+        i18NService.setTranslation(primaryStage, "add.expense");
+        addExpenseCtrl.refresh(event);
+        pageWithMenuCtrl.setCenter(addExpense);
     }
 
     /**
-     * Shows the settings overview
+     * shows the addExpense page but uses a reduced refresh method to preserve pre-tag creation values
+     *
+     * @param tag the newly added tag
      */
-    public void showSettingsOverview() {
-        primaryStage.setTitle(map.get("settingsTitle").toString());
-        primaryStage.setScene(settingsOverview);
+    public void showAddExpenseReduced(Tag tag) {
+        i18NService.setTranslation(primaryStage, "add.expense");
+        addExpenseCtrl.reducedRefresh(tag);
+        pageWithMenuCtrl.setCenter(addExpense);
     }
 
     /**
-     * Shows the shortcuts page
+     * shows the addExpense page but fills in the values from the current expense
+     *
+     * @param event   parent event
+     * @param expense expense to edit
      */
-    public void showShortcuts() {
-        primaryStage.setTitle(map.get("shortcutTitle").toString());
-        primaryStage.setScene(shortcutsPageOverview);
+    public void showEditExpense(Event event, Expense expense) {
+        i18NService.setTranslation(primaryStage, "edit.expense");
+        addExpenseCtrl.edit(event, expense);
+        pageWithMenuCtrl.setCenter(addExpense);
+    }
+
+    public void showSettleDebt(Event event) {
+        i18NService.setTranslation(primaryStage, "settle.debts");
+        addPaymentCtrl.refresh(event, false);
+        pageWithMenuCtrl.setCenter(addPayment);
+
     }
 
     /**
@@ -439,51 +390,44 @@ public class MainCtrl {
      * @param event event
      */
     public void showDebtOverview(Event event) {
-        primaryStage.setTitle(map.get("debtTitle").toString());
-        debtOverviewCtrl.refresh(event);
-        primaryStage.setScene(debtOverview);
-    }
-
-    /**
-     * Creates a popup to inform the user that the server is currently unavailable
-     */
-    public void serverConnectionAlert() {
-        Alert alert = errorService.serverConnectionError();
-        alert.showAndWait();
-        showNoConnectionOverview();
+        i18NService.setTranslation(primaryStage, "debt.overview");
+        debtCtrl.refresh(event);
+        pageWithMenuCtrl.setCenter(debt);
     }
 
     public void showAddTag(Event event, Expense expense) {
-        primaryStage.setTitle("Splitty");
+        i18NService.setTranslation(primaryStage, "add.tag");
         addtagCtrl.refreshEdit(event);
-        primaryStage.setScene(addTagOverview);
+        pageWithMenuCtrl.setCenter(addTag);
     }
+
     public void showAddTagNoExpense(Event event) {
-        primaryStage.setTitle("Splitty");
+        i18NService.setTranslation(primaryStage, "add.tag");
         addtagCtrl.refresh(event);
-        primaryStage.setScene(addTagOverview);
+        pageWithMenuCtrl.setCenter(addTag);
     }
 
     public void showManageTags(Event event) {
-        primaryStage.setTitle("Splitty");
-        manageTagsCtrl.refresh(event);
-        primaryStage.setScene(manageTagsOverview);
+        i18NService.setTranslation(primaryStage, "statistics");
+        statistics.refresh(event);
+        pageWithMenuCtrl.setCenter(manageTags);
     }
 
     public void showEditTag(Event event, Tag tag) {
+        i18NService.setTranslation(primaryStage, "edit.tag");
         addtagCtrl.editTag(event, tag);
-        primaryStage.setScene(addTagOverview);
+        pageWithMenuCtrl.setCenter(addTag);
     }
 
     public void showAddPayment(Event event, boolean fromEvent) {
-        primaryStage.setTitle("Add Payment");
+        i18NService.setTranslation(primaryStage, "add.payment");
         addPaymentCtrl.refresh(event, fromEvent);
-        primaryStage.setScene(addPaymentOverview);
+        pageWithMenuCtrl.setCenter(addPayment);
     }
 
     public void showEditPayment(Event event, Expense expense) {
-        primaryStage.setTitle("Edit Payment");
+        i18NService.setTranslation(primaryStage, "edit.payment");
         addPaymentCtrl.edit(event, expense);
-        primaryStage.setScene(addPaymentOverview);
+        pageWithMenuCtrl.setCenter(addPayment);
     }
 }

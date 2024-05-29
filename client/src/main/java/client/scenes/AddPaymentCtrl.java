@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.services.ConfigService;
+import client.services.CurrencyService;
+import client.services.I18NService;
 import client.services.ServerUtils;
 import commons.Event;
 import commons.Expense;
@@ -24,6 +26,8 @@ public class AddPaymentCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final ConfigService configService;
+    private final CurrencyService currencyService;
+    private final I18NService i18NService;
 
     private Event event;
     private Expense expense;
@@ -57,6 +61,23 @@ public class AddPaymentCtrl implements Initializable {
     private Button cancelButton;
 
     /**
+     * Constructor
+     *
+     * @param server        serverUtils
+     * @param mainCtrl      main controller
+     * @param configService configService
+     */
+    @Inject
+    public AddPaymentCtrl(ServerUtils server, MainCtrl mainCtrl, ConfigService configService,
+                          CurrencyService currencyService, I18NService i18NService) {
+        this.server = server;
+        this.mainCtrl = mainCtrl;
+        this.configService = configService;
+        this.currencyService = currencyService;
+        this.i18NService = i18NService;
+    }
+
+    /**
      * Initialize
      *
      * @param location  The location used to resolve relative paths for the root object, or
@@ -66,7 +87,8 @@ public class AddPaymentCtrl implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        currency.getItems().addAll("EUR", "USD", "CHF", "GBP");
+        setLanguage();
+        currency.getItems().addAll(currencyService.getCurrencies());
         currency.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue == null || newValue == null || oldValue.equals(newValue)) return;
             float rate = server.getRate(newValue, oldValue, expense.getDate().toString());
@@ -83,6 +105,7 @@ public class AddPaymentCtrl implements Initializable {
         return new StringConverter<>() {
             @Override
             public String toString(Participant p) {
+                if (p == null) return "";
                 return p.getFirstName() + " " + p.getLastName();
             }
 
@@ -95,42 +118,24 @@ public class AddPaymentCtrl implements Initializable {
 
     /**
      * Set the language of the page
-     *
-     * @param map the language map which contains the translation
      */
-    public void setLanguage(HashMap<String, Object> map) {
-        addPaymentHead.setText((String) map.get("paymentTitle"));
-        expenseAmount.setText((String) map.get("expenseAmount"));
-        expenseDate.setText((String) map.get("expenseDate"));
-        expenseSponsor.setText((String) map.get("expenseSponsor"));
-        expenseDebtors.setText((String) map.get("recipient"));
-        debtorSelect.setPromptText((String) map.get("recipientSelect"));
-        sponsorSelect.setPromptText((String) map.get("sponsorSelect"));
+    public void setLanguage() {
+        i18NService.setTranslation(addPaymentHead, "paymentTitle");
+        i18NService.setTranslation(expenseAmount, "amount");
+        i18NService.setTranslation(expenseDate, "date");
+        i18NService.setTranslation(expenseSponsor, "sponsor");
+        i18NService.setTranslation(expenseDebtors, "debtors");
 
-        createExpenseButton.setText((String) map.get("confirmExpenseButton"));
-        cancelButton.setText((String) map.get("cancelButton"));
+        // ToDo
+        debtorSelect.setPromptText((String) i18NService.get("recipientSelect"));
+        sponsorSelect.setPromptText((String) i18NService.get("sponsorSelect"));
 
-        // Set button sizes based on text length
-        mainCtrl.setDynamicButtonSize(createExpenseButton);
-        mainCtrl.setDynamicButtonSize(cancelButton);
+        i18NService.setTranslation(createExpenseButton, "confirm");
+        i18NService.setTranslation(cancelButton, "cancel");
     }
 
     public void goBack() {
-        mainCtrl.showEventOverview(event);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param server        serverUtils
-     * @param mainCtrl      main controller
-     * @param configService configService
-     */
-    @Inject
-    public AddPaymentCtrl(ServerUtils server, MainCtrl mainCtrl, ConfigService configService) {
-        this.server = server;
-        this.mainCtrl = mainCtrl;
-        this.configService = configService;
+        mainCtrl.showEvent(event);
     }
 
     /**
@@ -207,7 +212,7 @@ public class AddPaymentCtrl implements Initializable {
                 server.updateExpense(expense);
             }
 
-            if (fromEvent) mainCtrl.showEventOverview(event);
+            if (fromEvent) mainCtrl.showEvent(event);
             else mainCtrl.showDebtOverview(event);
 
         } catch (NumberFormatException e) {
@@ -236,7 +241,7 @@ public class AddPaymentCtrl implements Initializable {
      */
     public void cancel() {
         try {
-            if (fromEvent) mainCtrl.showEventOverview(event);
+            if (fromEvent) mainCtrl.showEvent(event);
             else mainCtrl.showDebtOverview(event);
         } catch (Exception e) {
             var alert = new Alert(Alert.AlertType.ERROR);

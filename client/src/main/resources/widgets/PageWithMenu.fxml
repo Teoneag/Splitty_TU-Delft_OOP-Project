@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="client.scenes.PageWithMenuCtrl">
+  <top>
+    <HBox styleClass="custom-menu-bar" BorderPane.alignment="CENTER">
+      <MenuBar focusTraversable="true">
+        <Menu fx:id="fileMenu" text="File">
+          <MenuItem fx:id="settings" onAction="#showSettings" text="Settings"/>
+        </Menu>
+        <Menu fx:id="helpMenu" text="Help">
+          <MenuItem fx:id="shortcuts" onAction="#showShortcuts" text="Shortcuts"/>
+        </Menu>
+      </MenuBar>
+      <Region HBox.hgrow="ALWAYS"/>
+      <MenuBar focusTraversable="true">
+        <Menu fx:id="currencyMenu" text="EUR"/>
+        <Menu fx:id="languageMenu" text="English"/>
+      </MenuBar>
+    </HBox>
+  </top>
+  <center>
+    <AnchorPane style="-fx-padding: 50;">
+      <StackPane fx:id="stackPane" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+      <Button fx:id="backButton" onAction="#backToHome" text="Go back" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0"/>
+    </AnchorPane>
+  </center>
+</BorderPane>

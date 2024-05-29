@@ -1,8 +1,6 @@
 package client.scenes;
 
-import client.services.ConfigService;
-import client.services.ErrorService;
-import client.services.ServerUtils;
+import client.services.*;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Expense;
@@ -13,78 +11,79 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
-import org.springframework.stereotype.Controller;
 
 import java.net.ConnectException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
-@Controller
 public class AddExpenseCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final ConfigService configService;
     private final ErrorService errorService;
+    private final CurrencyService currencyService;
+    private final I18NService i18NService;
 
     private Event event;
     private Expense expense;
 
     @FXML
-    private TextField title;
+    private Label addExpenseLabel;
     @FXML
-    private TextField amount;
+    private Label titleLabel;
     @FXML
-    private ComboBox<String> currency;
+    private TextField titleField;
     @FXML
-    private DatePicker date;
+    private Label amountLabel;
     @FXML
-    private ComboBox<Participant> sponsorSelect;
+    private TextField amountField;
     @FXML
-    private CheckComboBox<Participant> debtorSelect;
+    private ChoiceBox<String> currencyChoiceBox;
     @FXML
-    private ComboBox<Tag> tagSelect;
+    private Label dateLabel;
     @FXML
-    private Text addExpenseHead;
+    private DatePicker datePicker;
     @FXML
-    private Text expenseTitle;
+    private Label sponsorLabel;
     @FXML
-    private Text expenseAmount;
-    @FXML
-    private Text expenseDate;
-    @FXML
-    private Text expenseSponsor;
-    @FXML
-    private Text expenseDebtors;
-    @FXML
-    private Button createExpenseButton;
-    @FXML
-    private Button cancelButton;
+    private ChoiceBox<Participant> sponsorSelect;
     @FXML
     private CheckBox addAll;
     @FXML
     private CheckBox addOthers;
-    private HashMap<String, Object> map;
+    @FXML
+    private Label debtorsLabel;
+    @FXML
+    private CheckComboBox<Participant> debtorSelect;
+    @FXML
+    private Label tagLabel;
+    @FXML
+    private ChoiceBox<Tag> tagSelect;
+    @FXML
+    private Button cancelButton;
+    @FXML
+    private Button createButton;
 
     /**
      * Constructor
      *
-     * @param server            serverUtils
-     * @param mainCtrl          main controller
-     * @param configService     config service
-     * @param errorService      error service
+     * @param server        serverUtils
+     * @param mainCtrl      main controller
+     * @param configService config service
+     * @param errorService  error service
      */
     @Inject
-    public AddExpenseCtrl(ServerUtils server, MainCtrl mainCtrl,
-                          ConfigService configService, ErrorService errorService) {
+    public AddExpenseCtrl(ServerUtils server, MainCtrl mainCtrl, ConfigService configService, ErrorService errorService, CurrencyService currencyService, I18NService i18NService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.configService = configService;
         this.errorService = errorService;
+        this.currencyService = currencyService;
+        this.i18NService = i18NService;
     }
 
     /**
@@ -97,13 +96,9 @@ public class AddExpenseCtrl implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        currency.getItems().addAll("EUR", "USD", "CHF", "GBP");
-        currency.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue == null || newValue == null || oldValue.equals(newValue) || amount.getText().isEmpty()) return;
-            float rate = server.getRate(newValue, oldValue, date.getValue().toString());
-            float newAmount = Float.parseFloat(amount.getText()) / rate;
-            amount.setText(String.valueOf(newAmount));
-        });
+        setLanguage();
+
+        currencyChoiceBox.getItems().addAll(currencyService.getCurrencies());
 
         final StringConverter<Participant> pConverter = AddPaymentCtrl.pConverter();
         sponsorSelect.setConverter(pConverter);
@@ -114,6 +109,7 @@ public class AddExpenseCtrl implements Initializable {
         StringConverter<Tag> tConverter = new StringConverter<>() {
             @Override
             public String toString(Tag t) {
+                if (t == null) return "";
                 return t.getName();
             }
 
@@ -127,32 +123,20 @@ public class AddExpenseCtrl implements Initializable {
 
     /**
      * Set the language of the page
-     *
-     * @param map the language map which contains the translation
      */
-    public void setLanguage(HashMap<String, Object> map) {
-        expenseTitle.setText((String) map.get("expenseTitle"));
-        expenseAmount.setText((String) map.get("expenseAmount"));
-        expenseDate.setText((String) map.get("expenseDate"));
-        expenseSponsor.setText((String) map.get("expenseSponsor"));
-        expenseDebtors.setText((String) map.get("expenseDebtors"));
-        title.setPromptText((String) map.get("titlePrompt"));
-        debtorSelect.setTitle((String) map.get("debtorsSelect"));
-        sponsorSelect.setPromptText((String) map.get("sponsorsSelect"));
-
-        this.map = map;
-        errorService.changeLanguage(map);
-
-        createExpenseButton.setText((String) map.get("confirmExpenseButton"));
-        cancelButton.setText((String) map.get("cancelButton"));
-
-        // Set button sizes based on text length
-        mainCtrl.setDynamicButtonSize(createExpenseButton);
-        mainCtrl.setDynamicButtonSize(cancelButton);
-    }
-
-    public void goBack() {
-        mainCtrl.showEventOverview(event);
+    public void setLanguage() {
+        i18NService.setTranslation(addExpenseLabel, "add.expense");
+        i18NService.setTranslation(titleLabel, "title");
+        i18NService.setTranslation(titleField, "expense.title");
+        i18NService.setTranslation(amountLabel, "amount");
+        i18NService.setTranslation(dateLabel, "date");
+        i18NService.setTranslation(sponsorLabel, "sponsor");
+        i18NService.setTranslation(addAll, "add.all");
+        i18NService.setTranslation(addOthers, "add.all.others");
+        i18NService.setTranslation(debtorsLabel, "debtors");
+        i18NService.setTranslation(tagLabel, "tag");
+        i18NService.setTranslation(cancelButton, "cancel");
+        i18NService.setTranslation(createButton, "confirm");
     }
 
     /**
@@ -161,13 +145,12 @@ public class AddExpenseCtrl implements Initializable {
      * @param event new event to create the event in
      */
     public void refresh(Event event) {
-        addExpenseHead.setText(map.get("expenseCreate").toString());
         this.event = event;
         expense = new Expense();
-        title.clear();
-        amount.clear();
-        currency.setValue(configService.getConfigCurrency());
-        date.setValue(LocalDate.now());
+        titleField.clear();
+        amountField.clear();
+        currencyChoiceBox.setValue(configService.getConfigCurrency());
+        datePicker.setValue(LocalDate.now());
         sponsorSelect.getSelectionModel().clearSelection();
         debtorSelect.getCheckModel().clearChecks();
         addAll.setSelected(false);
@@ -185,14 +168,14 @@ public class AddExpenseCtrl implements Initializable {
      * @param expense expense being edited
      */
     public void edit(Event event, Expense expense) {
-        addExpenseHead.setText(map.get("expenseEdit").toString());
+        addExpenseLabel.textProperty().bind(i18NService.createStringBinding("expenseEdit"));
         this.event = event;
         this.expense = server.getExpense(expense.getId());
         expense = this.expense;
-        title.setText(expense.getTitle());
-        currency.setValue(expense.getCurrency().getCurrencyCode());
-        amount.setText(Float.toString(expense.getAmount()));
-        date.setValue(expense.getDate());
+        titleField.setText(expense.getTitle());
+        currencyChoiceBox.setValue(expense.getCurrency().getCurrencyCode());
+        amountField.setText(Float.toString(expense.getAmount()));
+        datePicker.setValue(expense.getDate());
         repopulateDropdowns();
         sponsorSelect.getSelectionModel().select(expense.getSponsor());
         debtorSelect.getCheckModel().clearChecks();
@@ -221,32 +204,49 @@ public class AddExpenseCtrl implements Initializable {
      */
     public void createExpense() {
         try {
-            String newTitle = title.getText();
-            if (newTitle.trim().isEmpty()) throw new IllegalArgumentException(map.get("noTitle").toString());
+            String newTitle = titleField.getText();
+            if (newTitle.trim().isEmpty()) {
+                // ToDo
+                throw new IllegalArgumentException(i18NService.get("noTitle"));
+            }
             expense.setTitle(newTitle);
 
-            if (amount.getText().isEmpty()) throw new IllegalArgumentException(map.get("noAmount").toString());
-            float newAmount = Float.parseFloat(amount.getText());
-            if (newAmount < 0) throw new IllegalArgumentException(map.get("positiveAmount").toString());
+            if (amountField.getText().isEmpty()) {
+                // ToDo
+//                throw new IllegalArgumentException(map.get("noAmount").toString());
+            }
+            float newAmount = Float.parseFloat(amountField.getText());
+            if (newAmount < 0) {
+                // ToDo
+                throw new IllegalArgumentException(i18NService.get("positiveAmount"));
+            }
             expense.setAmount(newAmount);
 
             // Don't know how to check if is valid date
-            expense.setDate(date.getValue());
+            expense.setDate(datePicker.getValue());
 
             // Cannot give bad input - can only select from given options and cannot select empty
-            expense.setCurrency(Currency.getInstance(currency.getSelectionModel().getSelectedItem()));
+            expense.setCurrency(Currency.getInstance(currencyChoiceBox.getSelectionModel().getSelectedItem()));
 
             Participant newSponsor = sponsorSelect.getSelectionModel().getSelectedItem();
-            if (newSponsor == null) throw new IllegalArgumentException(map.get("noSponsor").toString());
+            if (newSponsor == null) {
+                // ToDo
+                throw new IllegalArgumentException(i18NService.get("noSponsor"));
+
+            }
             expense.setSponsor(newSponsor);
 
             Set<Participant> newDebtors = new HashSet<>(debtorSelect.getCheckModel().getCheckedItems());
-            if (newDebtors.isEmpty()) throw new IllegalArgumentException(map.get("noDebtors").toString());
+            if (newDebtors.isEmpty()) {
+                // ToDo
+                throw new IllegalArgumentException(i18NService.get("noDebtors"));
+            }
             expense.setDebtors(newDebtors);
 
             Tag tag = tagSelect.getSelectionModel().getSelectedItem();
             if (tag == null) {
-                throw new IllegalArgumentException(map.get("noTag").toString());
+                // ToDo
+                throw new IllegalArgumentException(i18NService.get("noTag"));
             }
             expense.setTag(tag);
 
@@ -256,7 +256,7 @@ public class AddExpenseCtrl implements Initializable {
             } else {
                 server.updateExpense(expense);
             }
-            mainCtrl.showEventOverview(event);
+            mainCtrl.showEvent(event);
         } catch (NumberFormatException e) {
             Alert alert = errorService.numberFormatError();
             alert.showAndWait();
@@ -278,7 +278,7 @@ public class AddExpenseCtrl implements Initializable {
      */
     public void cancel() {
         try {
-            mainCtrl.showEventOverview(event);
+            mainCtrl.showEvent(event);
         } catch (Exception e) {
             Alert alert = errorService.generalError(e.getMessage());
             alert.showAndWait();
@@ -296,8 +296,9 @@ public class AddExpenseCtrl implements Initializable {
             debtorSelect.getItems().clear();
             sponsorSelect.getItems().addAll(participants);
             debtorSelect.getItems().addAll(participants);
-            sponsorSelect.setPromptText(map.get("sponsorsSelect").toString());
-            debtorSelect.setTitle(map.get("debtorsSelect").toString());
+            // ToDo
+//            sponsorSelect.setPromptText(map.get("sponsorsSelect").toString());
+//            debtorSelect.setTitle(map.get("debtorsSelect").toString());
         } catch (ProcessingException e) {
             if (e.getCause().getClass() == ConnectException.class) {
                 mainCtrl.serverConnectionAlert();
@@ -324,7 +325,7 @@ public class AddExpenseCtrl implements Initializable {
      * Create a new tag and show the add tag screen
      */
     public void createNewTag() {
-        if(expense.getId() <= 0){
+        if (expense.getId() <= 0) {
             mainCtrl.showAddTagNoExpense(event);
         } else {
             mainCtrl.showAddTag(event, server.getExpense(expense.getId()));
@@ -363,15 +364,14 @@ public class AddExpenseCtrl implements Initializable {
     public void editChecks() {
         addAll.setSelected(debtorSelect.getCheckModel().getCheckedIndices().size() == debtorSelect.getItems().size());
         if (!sponsorSelect.getSelectionModel().isEmpty())
-            addOthers.setSelected(debtorSelect.getCheckModel().getCheckedIndices().size()
-                    == debtorSelect.getItems().size() - 1
-                    && !debtorSelect.getCheckModel().isChecked(sponsorSelect.getValue()));
+            addOthers.setSelected(debtorSelect.getCheckModel().getCheckedIndices().size() == debtorSelect.getItems().size() - 1 && !debtorSelect.getCheckModel().isChecked(sponsorSelect.getValue()));
     }
 
     /**
      * set visibility of addOthers box based on whether a sponsor is selected or not
      */
-    public void sponsorChanged() {
+    @FXML
+    private void sponsorChanged() {
         addOthers.setVisible(!(sponsorSelect.getSelectionModel().isEmpty() || sponsorSelect.getValue() == null));
     }
 
@@ -379,25 +379,19 @@ public class AddExpenseCtrl implements Initializable {
      * undo title to value from start of add/edit
      */
     public void undoTitle() {
-        if (expense.getTitle() == null)
-            title.clear();
-        else
-            title.setText(expense.getTitle());
+        if (expense.getTitle() == null) titleField.clear();
+        else titleField.setText(expense.getTitle());
     }
 
     /**
      * undo amount and currency to values from start of add/edit
      */
     public void undoAmountCurrency() {
-        if (expense.getAmount() == 0)
-            amount.clear();
-        else
-            amount.setText(Float.toString(expense.getAmount()));
+        if (expense.getAmount() == 0) amountField.clear();
+        else amountField.setText(Float.toString(expense.getAmount()));
 
-        if (expense.getCurrency() == null)
-            currency.setValue(configService.getConfigCurrency());
-        else
-            currency.setValue(expense.getCurrency().getCurrencyCode());
+        if (expense.getCurrency() == null) currencyChoiceBox.setValue(configService.getConfigCurrency());
+        else currencyChoiceBox.setValue(expense.getCurrency().getCurrencyCode());
 
     }
 
@@ -405,20 +399,16 @@ public class AddExpenseCtrl implements Initializable {
      * undo date to value from start of add/edit
      */
     public void undoDate() {
-        if (expense.getDate() == null)
-            date.setValue(LocalDate.now());
-        else
-            date.setValue(expense.getDate());
+        if (expense.getDate() == null) datePicker.setValue(LocalDate.now());
+        else datePicker.setValue(expense.getDate());
     }
 
     /**
      * undo sponsor to value from start of add/edit
      */
     public void undoSponsor() {
-        if (expense.getSponsor() == null)
-            sponsorSelect.getSelectionModel().clearSelection();
-        else
-            sponsorSelect.setValue(expense.getSponsor());
+        if (expense.getSponsor() == null) sponsorSelect.getSelectionModel().clearSelection();
+        else sponsorSelect.setValue(expense.getSponsor());
     }
 
     /**
@@ -426,9 +416,8 @@ public class AddExpenseCtrl implements Initializable {
      */
     public void undoDebtor() {
         debtorSelect.getCheckModel().clearChecks();
-        if (expense.getDebtors() != null)
-            for(Participant p : expense.getDebtors())
-                debtorSelect.getCheckModel().check(p);
+        if (expense.getDebtors() != null) for (Participant p : expense.getDebtors())
+            debtorSelect.getCheckModel().check(p);
 
     }
 
@@ -436,10 +425,8 @@ public class AddExpenseCtrl implements Initializable {
      * undo tag to value from start of add/edit
      */
     public void undoTag() {
-        if (expense.getTag() == null)
-            tagSelect.getSelectionModel().clearSelection();
-        else
-            tagSelect.setValue(expense.getTag());
+        if (expense.getTag() == null) tagSelect.getSelectionModel().clearSelection();
+        else tagSelect.setValue(expense.getTag());
     }
 
 }

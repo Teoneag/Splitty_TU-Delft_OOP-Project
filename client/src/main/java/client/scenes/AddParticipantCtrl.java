@@ -1,9 +1,6 @@
 package client.scenes;
 
-import client.services.ConfigService;
-import client.services.EmailService;
-import client.services.ErrorService;
-import client.services.ServerUtils;
+import client.services.*;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Participant;
@@ -17,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.ConnectException;
-import java.util.HashMap;
 
 
 public class AddParticipantCtrl implements Initializable {
@@ -25,35 +21,37 @@ public class AddParticipantCtrl implements Initializable {
     private final EmailService emailService;
     private final ConfigService configService;
     private final MainCtrl mainCtrl;
+
     private Event event;
     private Participant participant;
     private final ErrorService errorService;
+    private final I18NService i18NService;
 
     @FXML
-    private TextField firstName;
-    @FXML
-    private TextField lastName;
-    @FXML
-    private TextField email;
-    @FXML
-    private TextField iban;
-    @FXML
-    private TextField bic;
+    private Label addParticipantLabel;
     @FXML
     private Label firstNameLabel;
     @FXML
+    private TextField firstNameField;
+    @FXML
     private Label lastNameLabel;
+    @FXML
+    private TextField lastNameField;
     @FXML
     private Label emailLabel;
     @FXML
+    private TextField emailField;
+    @FXML
     private Label ibanLabel;
+    @FXML
+    private TextField ibanField;
     @FXML
     private Label bicLabel;
     @FXML
-    private Button submitButton;
+    private TextField bicField;
     @FXML
-    private Button backButton;
-    
+    private Button submitButton;
+
     @FXML
     private Label firstNameErrorLabel;
     @FXML
@@ -66,103 +64,89 @@ public class AddParticipantCtrl implements Initializable {
     private Label bicErrorLabel;
 
     /**
-     * initialize the add participant screen with the language from the json file
-     *
-     * @param location the location
-     * @param resources the resources
-     */
-    @Override
-    public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
-
-    }
-
-    /**
-     * Set the language of the labels and buttons
-     *
-     * @param map the language map which contains the translation
-     */
-    public void setLanguage(HashMap<String, Object> map) {
-        firstNameLabel.setText((String) map.get("first_name"));
-        lastNameLabel.setText((String) map.get("last_name"));
-        emailLabel.setText((String) map.get("email"));
-        ibanLabel.setText((String) map.get("iban"));
-        bicLabel.setText((String) map.get("bic"));
-        submitButton.setText((String) map.get("submit"));
-        backButton.setText((String) map.get("backToEvent"));
-        
-        firstNameErrorLabel.setText(map.get("first_name").toString() +  map.get("tooLong"));
-        lastNameErrorLabel.setText(map.get("last_name").toString() +  map.get("tooLong"));
-        emailErrorLabel.setText(map.get("email").toString() +  map.get("tooLong"));
-        ibanErrorLabel.setText(map.get("iban").toString() +  map.get("tooLong"));
-        bicErrorLabel.setText(map.get("bic").toString() + map.get("tooLong"));
-        
-        errorService.changeLanguage(map);
-
-        mainCtrl.setDynamicButtonSize(submitButton);
-        mainCtrl.setDynamicButtonSize(backButton);
-    }
-
-    /**
      * Injectable constructor
      *
-     * @param server   server
-     * @param emailService emailService
-     * @param mainCtrl mainCtrl
-     * @param event    parent event
+     * @param server        server
+     * @param emailService  emailService
+     * @param mainCtrl      mainCtrl
+     * @param event         parent event
      * @param configService configService
-     * @param errorService errorService
+     * @param errorService  errorService
      */
     @Inject
-    public AddParticipantCtrl(ServerUtils server, MainCtrl mainCtrl, Event event,
-                              EmailService emailService, ConfigService configService, ErrorService errorService) {
+    public AddParticipantCtrl(ServerUtils server, MainCtrl mainCtrl, Event event, EmailService emailService, ConfigService configService, ErrorService errorService, I18NService i18NService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.event = event;
         this.emailService = emailService;
         this.configService = configService;
         this.errorService = errorService;
+        this.i18NService = i18NService;
+    }
+
+    /**
+     * initialize the add participant screen with the language from the json file
+     *
+     * @param location  the location
+     * @param resources the resources
+     */
+    @Override
+    public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+        setLanguage();
+        errorService.bindFirstNameCheck(firstNameField, firstNameErrorLabel);
+        errorService.bindGenericCheck(lastNameField, lastNameErrorLabel);
+        errorService.bindGenericCheck(emailField, emailErrorLabel);
+        errorService.bindGenericCheck(ibanField, ibanErrorLabel);
+        errorService.bindGenericCheck(bicField, bicErrorLabel);
+    }
+
+    /**
+     * Set the language of the labels and buttons
+     */
+    public void setLanguage() {
+        i18NService.setTranslation(addParticipantLabel, "add.participant");
+        i18NService.setTranslation(firstNameLabel, "first.name");
+        i18NService.setTranslation(lastNameLabel, "last.name");
+        i18NService.setTranslation(emailLabel, "email");
+        i18NService.setTranslation(ibanLabel, "iban");
+        i18NService.setTranslation(bicLabel, "bic");
+        i18NService.setTranslation(submitButton, "submit");
     }
 
     /**
      * Should show the event from which the event was called
      */
     public void goBack() {
-        resetFields();
-        mainCtrl.showEventOverview(event);
+        firstNameField.clear();
+        lastNameField.clear();
+        emailField.clear();
+        ibanField.clear();
+        bicField.clear();
+        mainCtrl.showEvent(event);
     }
 
     /**
      * Submits the created participant to the server
      */
-    public void submitParticipant() {
-        if (firstName.getText().isBlank()) {
-            Alert alert = errorService.noFirstName();
-            alert.showAndWait();
-        }
-        
-        if (doesNotSatisfyTextRequirements()) return;
-        
+    public void handleSubmit() {
+        if (!errorService.validateFirstName(firstNameField, firstNameErrorLabel)) return;
+
         String prevMail = participant.getEmail();
 
-        participant.setFirstName(firstName.getText());
-        participant.setLastName(lastName.getText());
-        participant.setEmail(email.getText());
-        participant.setIban(iban.getText());
-        participant.setBic(bic.getText());
+        participant.setFirstName(firstNameField.getText());
+        participant.setLastName(lastNameField.getText());
+        participant.setEmail(emailField.getText());
+        participant.setIban(ibanField.getText());
+        participant.setBic(bicField.getText());
         participant.setEventInviteCode(event.getInviteCode());
 
         String currentMail = participant.getEmail();
         new Thread(() -> {
-            if(!currentMail.equals(prevMail)
-                    && !currentMail.equals(configService.getEmail())
-                    && server.getParticipantsByEventInviteCode(event.getInviteCode())
-                            .stream()
-                            .map(Participant::getEmail)
-                            .noneMatch(currentMail::equals)) {
+            if (!currentMail.equals(prevMail) && !currentMail.equals(configService.getEmail()) && server.getParticipantsByEventInviteCode(event.getInviteCode()).stream().map(Participant::getEmail).noneMatch(currentMail::equals)) {
 
-                if (emailService.sendInviteEmail(participant.getEmail(), event.getInviteCode(),
-                        participant.getFirstName())) {
-                    // ToDo: Show Invite email sent
+                if (emailService.sendInviteEmail(participant.getEmail(), event.getInviteCode(), participant.getFirstName())) {
+                    mainCtrl.email = participant.getEmail();
+                    // ToDo: Show Email sent
                 } else {
                     // ToDo: Show No email sent
                 }
@@ -191,22 +175,6 @@ public class AddParticipantCtrl implements Initializable {
         goBack();
 
     }
-    
-    /**
-     * Checks that the length of the text is not too long and sets the error message visible or not
-     * @return returns true if there is a field that violates the length condition
-     */
-    private boolean doesNotSatisfyTextRequirements() {
-
-        firstNameErrorLabel.setVisible(firstName.getText().length() > 255);
-        lastNameErrorLabel.setVisible(lastName.getText().length() > 255);
-        emailErrorLabel.setVisible(email.getText().length() > 255);
-        ibanErrorLabel.setVisible(iban.getText().length() > 255);
-        bicErrorLabel.setVisible(bic.getText().length() > 255);
-
-        return (firstName.getText().isBlank() || firstName.getText().length() > 255 || lastName.getText().length() > 255
-            || email.getText().length() > 255 || iban.getText().length() > 255 || bic.getText().length() > 255);
-    }
 
     public void setEvent(Event event) {
         this.event = event;
@@ -218,14 +186,7 @@ public class AddParticipantCtrl implements Initializable {
      * @return - the Participant created
      */
     public Participant getParticipant() {
-        return new Participant(
-            firstName.getText(),
-            lastName.getText(),
-            email.getText(),
-            iban.getText(),
-            bic.getText(),
-            event.getInviteCode()
-        );
+        return new Participant(firstNameField.getText(), lastNameField.getText(), emailField.getText(), ibanField.getText(), bicField.getText(), event.getInviteCode());
     }
 
     public void addParticipant(Event event) {
@@ -242,27 +203,10 @@ public class AddParticipantCtrl implements Initializable {
     public void edit(Event event, Participant participant) {
         this.event = event;
         this.participant = participant;
-        firstName.setText(participant.getFirstName());
-        lastName.setText(participant.getLastName());
-        email.setText(participant.getEmail());
-        iban.setText(participant.getIban());
-        bic.setText(participant.getBic());
-    }
-
-    /**
-     * Clears the field of the fxml file
-     */
-    public void resetFields() {
-        firstNameErrorLabel.setVisible(false);
-        lastNameErrorLabel.setVisible(false);
-        emailErrorLabel.setVisible(false);
-        ibanErrorLabel.setVisible(false);
-        bicErrorLabel.setVisible(false);
-
-        firstName.clear();
-        lastName.clear();
-        email.clear();
-        iban.clear();
-        bic.clear();
+        firstNameField.setText(participant.getFirstName());
+        lastNameField.setText(participant.getLastName());
+        emailField.setText(participant.getEmail());
+        ibanField.setText(participant.getIban());
+        bicField.setText(participant.getBic());
     }
 }

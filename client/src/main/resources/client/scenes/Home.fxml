@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<HBox alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="client.scenes.HomeCtrl">
+  <VBox alignment="CENTER" prefWidth="450.0" spacing="20.0">
+    <StackPane>
+      <Circle fill="DODGERBLUE" radius="100.0"/>
+      <ImageView fitHeight="180.0" fitWidth="180.0">
+        <Image url="@/images/Splitty_Logo2.png"/>
+      </ImageView>
+    </StackPane>
+    <Region minHeight="15.0"/>
+    <HBox alignment="TOP_CENTER" spacing="15.0">
+      <VBox>
+        <TextField fx:id="titleField" onAction="#createEvent" styleClass="big-text-field"
+                   promptText="Titlul evenimentului"/>
+        <Label fx:id="titleErrorLabel" styleClass="warning"/>
+      </VBox>
+      <Button fx:id="createButton" onAction="#createEvent" styleClass="big-button"
+              text="Evenement aanmaken"/>
+    </HBox>
+    <HBox alignment="TOP_CENTER" spacing="15.0">
+      <VBox>
+        <TextField fx:id="codeField" onAction="#joinEvent" styleClass="big-text-field"
+                   promptText="Codul evenimentului"/>
+        <Label fx:id="codeErrorLabel" styleClass="warning"/>
+      </VBox>
+      <Button fx:id="joinButton" onAction="#joinEvent" styleClass="big-button" text="Alătură-te"/>
+    </HBox>
+    <HBox alignment="TOP_CENTER" spacing="15.0">
+      <VBox>
+        <PasswordField fx:id="passwordField" onAction="#adminLogin" styleClass="big-text-field"
+                       promptText="Wachtwoord"/>
+        <Label fx:id="passwordErrorLabel" styleClass="warning"/>
+      </VBox>
+      <Button fx:id="loginButton" onAction="#adminLogin" styleClass="big-button"
+              text="Conectează-te ca administrator"/>
+    </HBox>
+  </VBox>
+  <VBox alignment="CENTER" prefWidth="450.0" spacing="10.0">
+    <Label fx:id="recentEventsLabel" styleClass="title" text="Recent events"/>
+    <HBox alignment="CENTER">
+      <ListView fx:id="eventsListView" focusTraversable="false" prefWidth="326.0"/>
+    </HBox>
+  </VBox>
+</HBox>

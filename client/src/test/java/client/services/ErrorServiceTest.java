@@ -1,7 +1,6 @@
 package client.services;
 
 
-
 import commons.Expense;
 import commons.Participant;
 import javafx.application.Platform;
@@ -14,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.testfx.framework.junit5.ApplicationExtension;
-
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -36,7 +34,7 @@ class ErrorServiceTest {
 
     @BeforeEach
     public void setup() {
-        map = configService.readJsonToMap("src/main/java/client/languages/Dutch.json");
+        map = configService.readJsonToMap("src/main/java/client/languages/Messages_nl.json");
         errorService.changeLanguage(map);
 
     }
@@ -240,7 +238,7 @@ class ErrorServiceTest {
     @Test
     public void testCannotDelete() {
         Platform.runLater(() -> {
-            Alert alert = errorService.cannotDelete("delExpense", "noExpenseDelete");
+            Alert alert = errorService.cannotDelete("delete_expense", "no_expenses_to_delete");
             assertEquals("Verwijder uitgave", alert.getTitle());
             assertEquals("Geen uitgaven om te verwijderen", alert.getHeaderText());
         });

@@ -1,14 +1,12 @@
 package client.services;
 
 import com.google.inject.Inject;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
-@Service
-public class EmailService {
+final public class EmailService {
     private final ConfigService configService;
 
     @Inject
@@ -26,8 +24,7 @@ public class EmailService {
         if(receiver == null || receiver.isEmpty()) {
             return false;
         }
-        String body = "You received the default email";
-        return sendMail(receiver, "Default mail", body);
+        return sendMail(receiver, "Default mail", "You received the default email");
     }
 
     /**

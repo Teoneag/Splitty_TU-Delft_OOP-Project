@@ -16,6 +16,7 @@
 package client.scenes;
 
 import client.services.ConfigService;
+import client.services.ErrorService;
 import client.services.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,15 +28,17 @@ public class MainCtrlTest {
     private MainCtrl sut;
     private ConfigService configService;
     private EventService eventService;
+    private ErrorService errorService;
 
     @BeforeEach
     public void setup() {
         // Mock the ConfigService dependency
         configService = mock(ConfigService.class);
         eventService = mock(EventService.class);
+        errorService = mock(ErrorService.class);
 
         // Initialize your System Under Test (sut) with the mock
-        sut = new MainCtrl(configService, eventService);
+        sut = new MainCtrl(configService, eventService, errorService);
     }
 
     @Test

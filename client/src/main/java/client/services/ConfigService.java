@@ -2,7 +2,6 @@ package client.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,8 +10,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Properties;
 
-@Service
-public class ConfigService {
+final public class ConfigService {
     private final String configFilePath = "src/main/java/client/config/user_configs.properties";
 
     /**
@@ -49,6 +47,30 @@ public class ConfigService {
         }
     }
 
+    public String getTheme() {
+        try {
+            return getProperties().getProperty("theme");
+        } catch (IOException e) {
+            // ToDo show Error. Switching to default theme: dark
+            return "dark";
+        }
+    }
+
+    public void setTheme(String theme) {
+        try {
+            //load config file
+            Properties p = getProperties();
+            p.setProperty("theme", theme);
+
+            //write the new server url to the config file
+            FileOutputStream outputStream = new FileOutputStream(configFilePath);
+            p.store(outputStream, "Updated theme");
+            outputStream.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * checks what language is in the config file
      *
@@ -57,11 +79,11 @@ public class ConfigService {
     public String getConfigLanguage() {
         try {
             final String language = getProperties().getProperty("language");
-            if (language == null || language.isEmpty()) return "english";
+            if (language == null || language.isEmpty()) return "English";
             return language;
         } catch (IOException e) {
             // ToDO show Error. Switching to default language: English
-            return "english";
+            return "English";
         }
     }
 
@@ -120,10 +142,25 @@ public class ConfigService {
      */
     public String getEmail() {
         try {
-            return getProperties().getProperty("email");
+            return getProperties().getProperty("email_field");
         } catch (IOException e) {
             // ToDo show Error. No email available
             return "";
+        }
+    }
+
+    public void setEmail(String email) {
+        try {
+            // load config file
+            Properties p = getProperties();
+            p.setProperty("email", email);
+
+            // write the new currency to the config file
+            FileOutputStream outputStream = new FileOutputStream(configFilePath);
+            p.store(outputStream, null);
+            outputStream.close();
+        } catch (IOException e) {
+            // ToDo show Error saving the email.
         }
     }
 

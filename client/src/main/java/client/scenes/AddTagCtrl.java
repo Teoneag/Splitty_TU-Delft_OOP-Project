@@ -4,38 +4,39 @@
 package client.scenes;
 
 import client.services.ErrorService;
+import client.services.I18NService;
 import client.services.ServerUtils;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Tag;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.TextField;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 
-import java.util.HashMap;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class AddTagCtrl {
+public class AddTagCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final ErrorService errorService;
+    private final I18NService i18NService;
+
     private Event event;
     private Tag tag;
     private boolean fromManage;
 
     @FXML
-    private TextField tagName;
+    private Label addTagLabel;
+    @FXML
+    private TextField tagNameField;
     @FXML
     private ColorPicker tagColor;
-
     @FXML
-    private Button addTagConfirm;
-    @FXML
-    private Button backButton;
+    private Button confirmButton;
 
     /**
      * Constructor for the AddTagCtrl.
@@ -48,12 +49,27 @@ public class AddTagCtrl {
      */
     @Inject
     public AddTagCtrl(ServerUtils server, MainCtrl mainCtrl, Event event, Tag tag,
-                      ErrorService errorService) {
+                      ErrorService errorService, I18NService i18NService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.event = event;
         this.tag = tag;
         this.errorService = errorService;
+        this.i18NService = i18NService;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        setLanguage();
+    }
+
+    /**
+     * Set the language of the page
+     */
+    public void setLanguage() {
+        i18NService.setTranslation(addTagLabel, "add.tag");
+        i18NService.setTranslation(tagNameField, "tag.name");
+        i18NService.setTranslation(confirmButton, "confirm");
     }
 
     /**
@@ -70,7 +86,7 @@ public class AddTagCtrl {
     /**
      * Refreshes the event and expense, and resets the tag.
      *
-     * @param event   The event to refresh.
+     * @param event The event to refresh.
      */
     public void refreshEdit(Event event) {
         this.event = event;
@@ -85,7 +101,7 @@ public class AddTagCtrl {
 
 
         try {
-            String newName = tagName.getText();
+            String newName = tagNameField.getText();
             if (newName.isEmpty())
                 throw new IllegalArgumentException("Tag cannot have empty name");
             if (newName.equals("Payment"))
@@ -122,7 +138,7 @@ public class AddTagCtrl {
     public void editTag(Event event, Tag tag) {
         this.event = event;
         this.tag = tag;
-        tagName.setText(tag.getName());
+        tagNameField.setText(tag.getName());
         tagColor.setValue(javaFXColorToAwtColor(tag));
         fromManage = true;
     }
@@ -147,7 +163,7 @@ public class AddTagCtrl {
      * Clears the input fields.
      */
     private void clearFields() {
-        tagName.clear();
+        tagNameField.clear();
         tagColor.setValue(Color.WHITE);
     }
 
@@ -179,21 +195,5 @@ public class AddTagCtrl {
         java.awt.Color tagColor =
             new java.awt.Color((int) (red * 255), (int) (green * 255), (int) (blue * 255));
         return tagColor.getRGB();
-    }
-
-
-    /**
-     * Set the language of the page
-     *
-     * @param map the language map which contains the translation
-     */
-    public void setLanguage(HashMap<String, Object> map) {
-        tagName.setText((String) map.get("tagName"));
-        addTagConfirm.setText((String) map.get("addTagConfirm"));
-        backButton.setText((String) map.get("backButton"));
-
-        // Set button sizes based on text length
-        mainCtrl.setDynamicButtonSize(addTagConfirm);
-        mainCtrl.setDynamicButtonSize(backButton);
     }
 }

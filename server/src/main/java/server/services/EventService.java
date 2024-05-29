@@ -1,22 +1,28 @@
 package server.services;
 
 import commons.Event;
+import commons.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.database.EventRepository;
+import server.database.TagRepository;
 
+import java.awt.*;
+import java.util.List;
 import java.util.Random;
 
 @Service
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final TagRepository tagRepository;
     private final Random random;
     private final char[] chars = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890").toCharArray();
 
     @Autowired
-    public EventService(EventRepository eventRepository, Random random) {
+    public EventService(EventRepository eventRepository, TagRepository tagRepository, Random random) {
         this.eventRepository = eventRepository;
+        this.tagRepository = tagRepository;
         this.random = random;
     }
 
@@ -30,7 +36,17 @@ public class EventService {
     public Event createEvent(String title, String description) {
         String inviteCode = generateUniqueInviteCode();
         Event event = new Event(inviteCode, title, description);
-        return eventRepository.save(event);
+
+        Event res = eventRepository.save(event);
+
+        tagRepository.saveAll(List.of(
+                new Tag("Food", new Color(0, 255, 0).getRGB(), event),
+                new Tag("Entrance Fees", new Color(0, 0, 255).getRGB(), event),
+                new Tag("Travel", new Color(255, 0, 0).getRGB(), event),
+                new Tag("Payment", Color.BLACK.getRGB(), event)
+        ));
+
+        return res;
     }
 
     /**
@@ -48,6 +64,7 @@ public class EventService {
 
     /**
      * generates a random invite code
+     *
      * @return the generated invite code
      */
     public String generateRandomInviteCode() {

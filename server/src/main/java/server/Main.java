@@ -15,12 +15,12 @@
  */
 package server;
 
+import com.google.inject.Inject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import server.services.RandomGeneratorService;
-import com.google.inject.Inject;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"commons", "server"})
@@ -45,7 +45,7 @@ public class Main {
      * Print the admin password to the console
      */
     public void passwordToConsole() {
-        System.out.println("\033[0;1m" + "\u001B[36m" + "Admin password: " + randomGeneratorService.generatePassword());
-        // ToDo remove color after this line
+        System.out.println("\033[0;1m" + "\u001B[36m" + "Admin password: " +
+            randomGeneratorService.generatePassword() + "\033[0m");
     }
 }

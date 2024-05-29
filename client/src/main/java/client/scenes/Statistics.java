@@ -3,7 +3,8 @@
  */
 package client.scenes;
 
-import client.services.DebtUtils;
+import client.services.DebtService;
+import client.services.I18NService;
 import client.services.ServerUtils;
 import com.google.inject.Inject;
 import commons.Event;
@@ -17,10 +18,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.text.Text;
 
 import java.awt.*;
 import java.net.ConnectException;
@@ -30,48 +31,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class ManageTagsCtrl implements Initializable {
+public class Statistics implements Initializable {
 
-    private final ServerUtils server;
+    private final ServerUtils serverUtils;
     private final MainCtrl mainCtrl;
-    private final DebtUtils debt;
+    private final I18NService i18NService;
+    private final DebtService debtService;
+
     private Event event;
     private Map<PieChart.Data, Integer> dataColors;
 
     @FXML
-    private Text eventTotal;
+    private Label statisticsAndTagsLabel;
     @FXML
     private TableView<Tag> tagsTable;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private PieChart pieChart;
     @FXML
     private TableColumn<Tag, String> tagName;
     @FXML
     private TableColumn<Tag, String> tagAmount;
     @FXML
-    private PieChart pieChart;
-
-    @FXML
-    private Button backButton;
-    @FXML
-    private Button deleteButton;
-    @FXML
-    private Text eventTotalText;
-
-
+    private Label eventTotal;
 
     /**
      * Constructor for the ManageTagsCtrl.
      *
-     * @param server   The server utility.
-     * @param mainCtrl The main controller.
-     * @param debt     The debt utility.
-     * @param event    The event.
+     * @param serverUtils The server utility.
+     * @param mainCtrl    The main controller.
+     * @param debtService The debt utility.
+     * @param event       The event.
      */
     @Inject
-    public ManageTagsCtrl(ServerUtils server, MainCtrl mainCtrl, DebtUtils debt, Event event) {
-        this.server = server;
+    public Statistics(ServerUtils serverUtils, MainCtrl mainCtrl, DebtService debtService, Event event, I18NService i18NService) {
+        this.serverUtils = serverUtils;
         this.mainCtrl = mainCtrl;
-        this.debt = debt;
+        this.debtService = debtService;
         this.event = event;
+        this.i18NService = i18NService;
     }
 
     /**
@@ -82,10 +81,10 @@ public class ManageTagsCtrl implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setLanguage();
+
         tagName.setCellValueFactory(t -> new ReadOnlyObjectWrapper<>(t.getValue().getName()));
-        tagAmount.setCellValueFactory(t -> new ReadOnlyObjectWrapper<>(
-                debt.formattedAmount(getTagAmount(t.getValue()))
-        ));
+        tagAmount.setCellValueFactory(t -> new ReadOnlyObjectWrapper<>(debtService.formattedAmount(getTagAmount(t.getValue()))));
         tagName.setCellFactory(tc -> new TableCell<>() {
             {
                 itemProperty().addListener((observable, oldValue, newValue) -> {
@@ -95,11 +94,25 @@ public class ManageTagsCtrl implements Initializable {
                     } else {
                         setText(getItem());
                         Color c = new Color(getTableRow().getItem().getColor());
-                        setStyle(EventOverviewCtrl.cString(c));
+                        setStyle(EventCtrl.cString(c));
                     }
                 });
             }
         });
+    }
+
+    /**
+     * Set the language of the page
+     */
+    public void setLanguage() {
+        i18NService.setTranslation(statisticsAndTagsLabel, "statistics");
+        i18NService.setTranslation(tagName, "tag.name");
+        i18NService.setTranslation(tagAmount, "tag.amount");
+        i18NService.setTranslation(tagsTable, "table.noContent");
+        i18NService.setTranslation(deleteButton, "delete");
+        i18NService.localeProperty().addListener((observable, oldValue, newValue) -> pieChart.setTitle(i18NService.get("expenses.by.tag")));
+        i18NService.setTranslation(eventTotal, "event.total",
+            debtService.formattedAmount(debtService.expenseTotal(event)));
     }
 
     /**
@@ -109,7 +122,7 @@ public class ManageTagsCtrl implements Initializable {
      */
     public void refresh(Event event) {
         this.event = event;
-        eventTotal.setText(debt.formattedAmount(debt.expenseTotal(event)));
+//        eventTotal.setText(debtService.formattedAmount(debtService.expenseTotal(event))); ToDO
         populateTable();
         populatePieChart();
     }
@@ -118,7 +131,7 @@ public class ManageTagsCtrl implements Initializable {
      * Navigates back to the event overview screen.
      */
     public void back() {
-        mainCtrl.showEventOverview(event.getInviteCode());
+        mainCtrl.showEvent(event.getInviteCode());
     }
 
     /**
@@ -132,7 +145,7 @@ public class ManageTagsCtrl implements Initializable {
         int i = tagsTable.getSelectionModel().getFocusedIndex();
         Tag tag = tagsTable.getItems().get(i);
 
-        if(getTagAmount(tag) != 0){
+        if (getTagAmount(tag) != 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Cannot delete tag");
@@ -148,7 +161,7 @@ public class ManageTagsCtrl implements Initializable {
         alert.setContentText("You are about to delete tag: " + tag.getName() + "\nThis action cannot be undone.");
         alert.showAndWait().filter(response -> response == ButtonType.OK).ifPresent(response -> {
             try {
-                server.deleteTagById(tag.getId());
+                serverUtils.deleteTagById(tag.getId());
                 populateTable();
             } catch (ProcessingException e) {
                 if (e.getCause().getClass() == ConnectException.class) {
@@ -190,7 +203,7 @@ public class ManageTagsCtrl implements Initializable {
      */
     public void populateTable() {
         try {
-            List<Tag> tags = server.getTagsByEvent(event.getInviteCode());
+            List<Tag> tags = serverUtils.getTagsByEvent(event.getInviteCode());
             tagsTable.getItems().clear();
             tagsTable.getItems().addAll(tags);
             tagsTable.refresh();
@@ -209,7 +222,7 @@ public class ManageTagsCtrl implements Initializable {
     public void populatePieChart() {
         dataColors = new HashMap<>();
 
-        List<Tag> allTags = server.getTagsByEvent(event.getInviteCode());
+        List<Tag> allTags = serverUtils.getTagsByEvent(event.getInviteCode());
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         for (Tag t : allTags) {
             PieChart.Data data = pieChartDataBuilder(t);
@@ -218,19 +231,13 @@ public class ManageTagsCtrl implements Initializable {
         }
 
         pieChart.setData(pieChartData);
-        pieChart.setTitle("Event By Tag");
-        //TODO change this dynamically
 
         pieChart.getData().forEach(data -> {
-            String percentage = String.format("%.2f%%", (data.getPieValue() / getTotal() * 100)) +
-                    "\n" + debt.formattedAmount((float) data.getPieValue());
+            String percentage = String.format("%.2f%%", (data.getPieValue() / getTotal() * 100)) + "\n" + debtService.formattedAmount((float) data.getPieValue());
             Tooltip tooltip = new Tooltip(percentage);
             Tooltip.install(data.getNode(), tooltip);
             Color c = new Color(dataColors.get(data));
-            String cString = String.format(
-                    "rgba(%d,%d,%d,1)",
-                    c.getRed(), c.getGreen(), c.getBlue()
-            );
+            String cString = String.format("rgba(%d,%d,%d,1)", c.getRed(), c.getGreen(), c.getBlue());
             data.getNode().setStyle("-fx-pie-color: " + cString);
         });
     }
@@ -241,7 +248,7 @@ public class ManageTagsCtrl implements Initializable {
      * @param tag The tag to build the data for.
      * @return The data for the pie chart.
      */
-    public PieChart.Data pieChartDataBuilder(Tag tag){
+    public PieChart.Data pieChartDataBuilder(Tag tag) {
         return new PieChart.Data(tag.getName(), getTagAmount(tag));
     }
 
@@ -251,9 +258,11 @@ public class ManageTagsCtrl implements Initializable {
      * @return The total amount of the event.
      */
     private float getTotal() {
-        String[] totalAmount = eventTotal.getText().split(" ");
-        String totalWithDot = totalAmount[1].replace(",", ".");
-        return Float.parseFloat(totalWithDot);
+        // ToDo
+//        String[] totalAmount = eventTotal.getText().split(" ");
+//        String totalWithDot = totalAmount[1].replace(",", ".");
+//        return Float.parseFloat(totalWithDot);
+        return 0.0F;
     }
 
     /**
@@ -263,27 +272,7 @@ public class ManageTagsCtrl implements Initializable {
      * @return The total amount of expenses associated with the tag.
      */
     public float getTagAmount(Tag tag) {
-        List<Expense> expenseList = server.getTransactionsByCurrency(event.getInviteCode());
-        return (float) expenseList.stream()
-                .filter(e -> e.getTag().equals(tag))
-                .mapToDouble(Expense::getAmount)
-                .sum();
-    }
-
-    /**
-     * Set the language of the page
-     *
-     * @param map the language map which contains the translation
-     */
-    public void setLanguage(HashMap<String, Object> map) {
-        tagName.setText((String) map.get("tagNameColumn"));
-        tagAmount.setText((String) map.get("tagAmountColumn"));
-        backButton.setText((String) map.get("backButton"));
-        deleteButton.setText((String) map.get("deleteButton"));
-        eventTotalText.setText((String) map.get("eventTotalText"));
-
-        // Set button sizes based on text length
-        mainCtrl.setDynamicButtonSize(backButton);
-        mainCtrl.setDynamicButtonSize(deleteButton);
+        List<Expense> expenseList = serverUtils.getTransactionsByCurrency(event.getInviteCode());
+        return (float) expenseList.stream().filter(e -> e.getTag().equals(tag)).mapToDouble(Expense::getAmount).sum();
     }
 }

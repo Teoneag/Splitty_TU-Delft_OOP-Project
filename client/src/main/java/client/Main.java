@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 
 import static com.google.inject.Guice.createInjector;
 
+
 public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
@@ -48,48 +49,24 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
-        var addEventOverview = FXML.load(AddEventCtrl.class, "client", "scenes", "addEvent.fxml");
-        var addExpenseOverview =
-            FXML.load(AddExpenseCtrl.class, "client", "scenes", "addExpense.fxml");
-        var addParticipantOverview =
-            FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
-        var homeOverview =
-            FXML.load(HomeOverviewCtrl.class, "client", "scenes", "HomeOverview.fxml");
-        var eventOverview =
-            FXML.load(EventOverviewCtrl.class, "client", "scenes", "EventOverview.fxml");
-        var adminOverview =
-            FXML.load(AdminOverviewCtrl.class, "client", "scenes", "AdminOverview.fxml");
-        var settingsOverview =
-            FXML.load(SettingsOverviewCtrl.class, "client", "scenes", "SettingsOverview.fxml");
-        var shortcutsPageOverview =
-            FXML.load(ShortcutsCtrl.class, "client", "scenes", "Shortcuts.fxml");
-        var debtOverview =
-            FXML.load(DebtOverviewCtrl.class, "client", "scenes", "DebtOverview.fxml");
-        var addTagOverview =
-            FXML.load(AddTagCtrl.class, "client", "scenes", "addTag.fxml");
-        var manageTagOverview =
-            FXML.load(ManageTagsCtrl.class, "client", "scenes", "manageTags.fxml");
-        var addPaymentOverview =
-            FXML.load(AddPaymentCtrl.class, "client", "scenes", "addPayment.fxml");
+        var pageWithMenu = FXML.load(PageWithMenuCtrl.class, "widgets", "PageWithMenu.fxml");
+        var home = FXML.load(HomeCtrl.class, "client", "scenes", "Home.fxml");
+        var settings = FXML.load(SettingsCtrl.class, "client", "scenes", "Settings.fxml");
+        var shortcuts = FXML.load(ShortcutsCtrl.class, "client", "scenes", "Shortcuts.fxml");
+        var admin = FXML.load(AdminCtrl.class, "client", "scenes", "Admin.fxml");
+        var event = FXML.load(EventCtrl.class, "client", "scenes", "Event.fxml");
+        var addExpense = FXML.load(AddExpenseCtrl.class, "client", "scenes", "AddExpense.fxml");
+        var addParticipant = FXML.load(AddParticipantCtrl.class, "client", "scenes", "AddParticipant.fxml");
+        var debt = FXML.load(DebtCtrl.class, "client", "scenes", "Debt.fxml");
+        var addTag = FXML.load(AddTagCtrl.class, "client", "scenes", "AddTag.fxml");
+        var manageTag = FXML.load(Statistics.class, "client", "scenes", "Statistics.fxml");
+        var addPayment = FXML.load(AddPaymentCtrl.class, "client", "scenes", "AddPayment.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        
-        primaryStage.setOnCloseRequest(e -> adminOverview.getKey().stop());
 
-        mainCtrl.initialize(primaryStage,
-            homeOverview,
-            addEventOverview,
-            eventOverview,
-            addExpenseOverview,
-            addParticipantOverview,
-            adminOverview,
-            settingsOverview,
-            shortcutsPageOverview,
-            debtOverview,
-            addTagOverview,
-            manageTagOverview,
-            addPaymentOverview
-        );
+        primaryStage.setOnCloseRequest(e -> admin.getKey().stop());
+
+        mainCtrl.initialize(primaryStage, pageWithMenu, home, event, addExpense, addParticipant, admin, settings, shortcuts, debt, addTag, manageTag, addPayment);
 
     }
 }

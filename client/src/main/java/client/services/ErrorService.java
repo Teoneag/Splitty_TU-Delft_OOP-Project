@@ -1,23 +1,144 @@
 package client.services;
 
+import com.google.inject.Inject;
 import commons.Expense;
 import commons.Participant;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Modality;
-import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
-@Service
-public class ErrorService {
-    private HashMap<String, Object> map;
+final public class ErrorService {
+    private final I18NService i18NService;
+    private final StyleService styleService;
 
-    public ErrorService() {
-        this.map = new HashMap<>();
+    private final Pattern validTextPattern = Pattern.compile("^[a-zA-Z0-9 .,!?&@#\\-]{0,100}$");
+    private final int minTitleLength = 3;
+    private final int maxTitleLength = 25;
+    private final int minDescriptionLength = 3;
+    private final int maxDescriptionLength = 69;
+    private final int inviteCodeLength = 6;
+    private final int passwordLength = 6;
+    private final int minFirstNameLength = 1;
+    private final int maxGenericLength = 25;
+    private final String invalidCharacters = "invalid_characters";
+    private final String tooShort = "too_short";
+    private final String tooLong = "too_long";
+
+
+
+    @Inject
+    public ErrorService(I18NService i18NService, StyleService styleService) {
+        this.i18NService = i18NService;
+        this.styleService = styleService;
     }
 
-    public void changeLanguage(HashMap<String, Object> map2) {
-        this.map = map2;
+    public void bindTitleCheck(TextField field, Label error) {
+        applyValidation(field, error, minTitleLength, maxTitleLength);
+    }
+
+    public void bindCodeCheck(TextField field, Label error) {
+        applyValidation(field, error, inviteCodeLength, inviteCodeLength);
+    }
+
+    public void bindPasswordCheck(TextField field, Label error) {
+        applyValidation(field, error, passwordLength, passwordLength);
+    }
+
+    public void bindDescriptionCheck(TextField field, Label error) {
+        applyValidation(field, error, minDescriptionLength, maxDescriptionLength);
+    }
+
+    public void bindFirstNameCheck(TextField field, Label error) {
+        applyValidation(field, error, minFirstNameLength, maxGenericLength);
+    }
+
+    public void bindGenericCheck(TextField field, Label error) {
+        applyValidation(field, error, 0, maxGenericLength);
+    }
+
+    public boolean validateTitle(TextField title, Label error) {
+        return validateField(title, error, minTitleLength, maxTitleLength);
+    }
+
+    public boolean validateCode(TextField code, Label error) {
+        return validateField(code, error, inviteCodeLength, inviteCodeLength);
+    }
+
+    public boolean validatePassword(TextField password, Label error) {
+        return validateField(password, error, passwordLength, passwordLength);
+    }
+
+    public boolean validateFirstName(TextField firstName, Label error) {
+        return validateField(firstName, error, minFirstNameLength, maxGenericLength);
+    }
+
+    /**
+     * Validates the text field
+     *
+     * @param field field
+     * @param error titleError
+     * @return true if good
+     */
+    public boolean validateField(TextField field, Label error, int minLength, int maxLength) {
+        final String resRes = validateText(field.getText(), minLength, maxLength);
+        if (resRes.isEmpty()) return true;
+        styleService.playFadeTransition(error, resRes);
+        return false;
+    }
+
+    /**
+     * Applies validation to a text field
+     *
+     * @param input     the text field to apply validation to
+     * @param error     the label to display the error message
+     * @param minLength the minimum acceptable length of the text
+     * @param maxLength the maximum acceptable length of the text
+     */
+    public void applyValidation(TextField input, Label error, int minLength, int maxLength) {
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            if (!change.isAdded() && !change.isDeleted() && !change.isReplaced()) return change;
+            String validation = validateText(change.getControlNewText(), minLength, maxLength);
+            if (validation.isEmpty()) {
+                i18NService.setText(error, "");
+                return change;
+            }
+            styleService.playFadeTransition(error, validation);
+            if (validation.equals(tooShort)) return change;
+            return null;
+        };
+        input.setTextFormatter(new TextFormatter<>(filter));
+    }
+
+    /**
+     * Validates text
+     *
+     * @param text      the text to validate
+     * @param minLength the minimum acceptable length of the text
+     * @param maxLength the maximum acceptable length of the text
+     * @return a validation response indicating success or the type of error
+     */
+    public String validateText(String text, int minLength, int maxLength) {
+        if (!validTextPattern.matcher(text).matches()) return invalidCharacters;
+        if (text.length() > maxLength) return tooLong;
+        if (text.length() < minLength) return tooShort;
+        return "";
+    }
+
+    public void infoAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        i18NService.setTranslation(alert, title, header, content);
+        alert.showAndWait();
+    }
+
+    public void errorAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        i18NService.setTranslation(alert, title, header, content);
+        alert.showAndWait();
     }
 
     /**
@@ -28,30 +149,7 @@ public class ErrorService {
      */
     public Alert wrongPassword() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(map.get("adminLoginAlertTitle").toString());
-        alert.setHeaderText(map.get("adminLoginHeader").toString());
-        String result = map.get("adminLoginContent").toString();
-        alert.setContentText(result);
-        return alert;
-    }
-
-    /**
-     * Method for creating an alert for when the user enters the wrong inviteCode
-     * for HomeOverviewCtrl
-     *
-     * @param inviteCode the invite code entered by the user
-     * @return the alert
-     */
-    public Alert joinCodeLength(String inviteCode) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.setContentText(
-            map.get("inviteCodeLength").toString());
-        if (inviteCode.length() < 6) {
-            alert.setHeaderText(map.get("inviteCodeShortHeader").toString());
-        } else {
-            alert.setHeaderText(map.get("inviteCodeLongHeader").toString());
-        }
+        i18NService.setTranslation(alert, "admin_login", "access_denied", "incorrect_password");
         return alert;
     }
 
@@ -66,9 +164,9 @@ public class ErrorService {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
         if (e.getMessage().contains("Bad Request")) {
-            alert.setContentText(map.get("eventCodeNotFound").toString());
+            alert.contentTextProperty().bind(i18NService.createStringBinding("code_404"));
         } else {
-            alert.setContentText(map.get("eventCodeNotFound2").toString());
+            alert.contentTextProperty().bind(i18NService.createStringBinding("code_error"));
         }
         return alert;
     }
@@ -81,8 +179,7 @@ public class ErrorService {
      */
     public Alert serverConnectionError() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(map.get("connectionError").toString());
-        alert.setHeaderText(map.get("connectionErrorHeader").toString());
+        i18NService.setTranslation(alert, "connection.error", "connection.error.header");
         return alert;
     }
 
@@ -95,9 +192,8 @@ public class ErrorService {
      */
     public Alert successServerChange(String url) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(map.get("serverSuccessTitle").toString());
-        alert.setHeaderText(map.get("serverHeader").toString() + url);
-        alert.setContentText(map.get("serverContent").toString());
+        i18NService.setTranslation(alert, "url_changed", "url_changed_to", "success_change_url");
+        alert.headerTextProperty().bind(i18NService.createStringBinding("url_changed_to", url));
         return alert;
     }
 
@@ -110,9 +206,9 @@ public class ErrorService {
      */
     public Alert wrongArgument(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(map.get("wrongArgument").toString());
+        alert.titleProperty().bind(i18NService.createStringBinding("wrong_input"));
         alert.setHeaderText(message);
-        alert.setContentText(map.get("wrongContent").toString());
+        alert.contentTextProperty().bind(i18NService.createStringBinding("try_again"));
         return alert;
     }
 
@@ -124,9 +220,7 @@ public class ErrorService {
      */
     public Alert somethingWrong() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(map.get("serverErrorTitle").toString());
-        alert.setHeaderText(map.get("serverErrorHeader").toString());
-        alert.setContentText(map.get("serverErrorContent").toString());
+        i18NService.setTranslation(alert, "url_not_changed", "error_changing_url", "incorrect_url");
         return alert;
     }
 
@@ -139,9 +233,8 @@ public class ErrorService {
      */
     public Alert confirmDeleteEvent(String inviteCode) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(map.get("delEvent").toString());
-        alert.setHeaderText(map.get("delHeader").toString());
-        alert.setContentText(map.get("delContext").toString() + inviteCode);
+        i18NService.setTranslation(alert, "delEvent", "delHeader");
+        alert.contentTextProperty().bind(i18NService.createStringBinding("are.you.sure.delete.event", inviteCode));
         return alert;
     }
 
@@ -169,7 +262,7 @@ public class ErrorService {
     public Alert numberFormatError() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
-        alert.setContentText(map.get("noNumbers").toString());
+        alert.contentTextProperty().bind(i18NService.createStringBinding("enter_amount"));
         return alert;
     }
 
@@ -182,7 +275,7 @@ public class ErrorService {
     public Alert noFirstName() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
-        alert.setContentText(map.get("noFirstName").toString());
+        alert.contentTextProperty().bind(i18NService.createStringBinding("put_first_name"));
         return alert;
     }
 
@@ -194,42 +287,40 @@ public class ErrorService {
      */
     public Alert confirmDeleteParticipant(Participant participant) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(map.get("delParticipant").toString());
-        alert.setHeaderText(map.get("delParticipantHeader").toString());
-        alert.setContentText(map.get("first_name").toString() + participant.getFirstName() +
-            "\n" + map.get("last_name").toString() +
-            participant.getLastName() + "\n" + map.get("email").toString() +
-            participant.getEmail() + "\n" +
-            map.get("iban").toString() +
-            participant.getIban() + "\n" + map.get("bic").toString() + participant.getBic());
+        i18NService.setTranslation(alert, "delete_participant", "delete_participant_confirmation");
+//        alert.setContentText(map.get("first_name").toString() + participant.getFirstName() + "\n" + map.get("last_name").toString() + participant.getLastName() + "\n" + map.get("email").toString() + participant.getEmail() + "\n" + map.get("iban").toString() + participant.getIban() + "\n" + map.get("bic").toString() + participant.getBic()); ToDo
         return alert;
     }
 
     /**
      * Method for creating a confirmation alert for when the user tries to delete a payment or expense from an event
+     *
      * @param isPayment boolean to check if it is a payment or expense
-     * @param expense the expense to be deleted or payment to be deleted
+     * @param expense   the expense to be deleted or payment to be deleted
      * @return the confirmation alert
      */
-    public Alert confirmDelete(boolean isPayment, Expense expense){
+    public Alert confirmDelete(boolean isPayment, Expense expense) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(isPayment ?  map.get("delPayment").toString() : map.get("delExpense").toString());
-        alert.setHeaderText(map.get("delHeader2").toString() +
-            (isPayment ? map.get("payment").toString() : map.get("expense").toString()) + "?");
+        if (isPayment) alert.titleProperty().bind(i18NService.createStringBinding("delete_payment"));
+        else alert.titleProperty().bind(i18NService.createStringBinding("delete_expense"));
+
+        // ToDo
+        alert.setHeaderText(i18NService.get("delete_this_confirmation") + (isPayment ?
+            i18NService.get("payment") : i18NService.get("expense")) + "?");
         alert.setContentText(expense.getTitle() + "\n" + expense.getAmount() + "\n" + expense.getDate());
         return alert;
     }
-    
+
     /**
      * Creates an error alert for when something cannot be deleted
-     * @param titleCode the error code to get the translation for the title
+     *
+     * @param titleCode  the error code to get the translation for the title
      * @param headerCode the error code to get the translation for the header
      * @return the alert created
      */
     public Alert cannotDelete(String titleCode, String headerCode) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(map.get(titleCode).toString());
-        alert.setHeaderText(map.get(headerCode).toString());
+        i18NService.setTranslation(alert, titleCode, headerCode);
         return alert;
     }
 

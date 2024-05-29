@@ -1,0 +1,160 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom, #1a1a1a, #232341);
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.label, .tab .tab-label, .check-box .text, .date-picker .arrow-button .arrow, .chart-pie-label {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.custom-menu-bar {
+    -fx-background-color: linear-gradient(to bottom, #1a1a1a, #232341);
+}
+
+.menu-bar {
+    -fx-background-color: linear-gradient(to bottom, #1a1a1a, #232341);
+    -fx-pref-height: 35px;
+    -fx-alignment: center;
+}
+
+.context-menu, .table-view .column-header, .table-view .column-header-background,
+.table-view .column-header-background .filler, .table-view .scroll-bar .thumb, .scroll-pane .scroll-bar .thumb,
+.titled-pane .content {
+    -fx-background-color: #232341;
+}
+
+.title {
+    -fx-font-size: 32px;
+}
+
+.sub-title {
+    -fx-font-size: 20px;
+}
+
+.warning {
+    -fx-text-fill: red;
+}
+
+.warning-vbox {
+    -fx-border-color: red;
+    -fx-padding: 10px;
+}
+
+.big-button {
+    -fx-pref-height: 50px;
+    -fx-padding: 10px;
+}
+
+.big-text-field {
+    -fx-pref-height: 50px;
+    -fx-pref-width: 150px;
+}
+
+.confirmation {
+    -fx-text-fill: #7CFC00;
+}
+
+.button, .text-field, .choice-box, .menu-item, .tooltip, .list-view, .table-view, .menu:hover, .table-view .scroll-bar,
+.scroll-pane .scroll-bar, .check-box .box, .date-picker .arrow-button, .combo-box, .color-picker,
+.accordion, .titled-pane, .titled-pane .title {
+    -fx-background-color: #373765;
+    -fx-border-color: #515198;
+    -fx-background-radius: 5px;
+    -fx-text-fill: white;
+    -fx-fill: white;
+    -fx-border-radius: 5px;
+    -fx-border-width: 2px;
+}
+
+.button:focused, .text-field:focused, .choice-box:focused, .menu-item:focused, .combo-box:focused, .date-picker .arrow-button:focused, .check-box:focused, .color-picker:focused {
+    -fx-effect: dropshadow(one-pass-box, rgba(253, 250, 250, 0.5), 5, 0, 0, 0); /* Softer shadow for focused */
+}
+
+.button:hover, .text-field:hover, .choice-box:hover, .combo-box:hover, .date-picker .arrow-button:hover, .check-box:hover, .color-picker:hover {
+    -fx-translate-y: -4;
+    -fx-translate-x: -4;
+    -fx-effect: dropshadow(one-pass-box, rgb(253, 250, 250), 10, 0, 0, 1); /* Stronger shadow for hover */
+}
+
+.button:pressed, .choice-box:pressed, .combo-box:pressed, .date-picker .arrow-button:pressed, .check-box:pressed, .color-picker:pressed {
+    -fx-translate-y: 0;
+    -fx-translate-x: 0;
+    -fx-effect: dropshadow(one-pass-box, rgb(35, 255, 0), 10, 0, 0, 1);
+}
+
+.button {
+    -fx-font-family: "System";
+    -fx-font-weight: bold;
+}
+
+.text-field {
+    -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%); /* This makes prompt visible even when text field is selected */
+    -fx-background-color: #232341;
+}
+
+.table-view .corner {
+    -fx-border-width: 0;
+}
+
+.menu-item:hover {
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
+    -fx-effect: dropshadow(one-pass-box, rgb(253, 250, 250), 10, 0, 0, 1); /* Stronger shadow for hover */
+}
+
+.menu-item:pressed {
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: dropshadow(one-pass-box, rgb(35, 255, 0), 10, 0, 0, 1);
+}
+
+.list-cell, .tab-pane .tab-header-area .tab-header-background, .date-picker, .scroll-pane, .table-view .corner,
+.scroll-pane .corner, .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.table-view {
+    -fx-control-inner-background: #373765;
+}
+
+.table-view .cell, .table-view .column-header {
+    -fx-border-color: #515198;
+    -fx-border-width: 0 2px 1px 0;
+}
+
+.tab {
+    -fx-background-color: linear-gradient(to bottom, #494970, #38386c);
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+.tab:selected {
+    -fx-background-color: linear-gradient(to bottom, #5f5f8c, #4e4e8c);
+}
+
+.tab:selected .focus-indicator {
+    -fx-border-radius: 5px 5px 0 0;
+}
+
+.combo-box, .scroll-pane {
+    -fx-padding: -2px;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.choice-box .arrow, .combo-box .arrow, .check-box:selected .box .mark, .titled-pane .arrow {
+    -fx-background-color: white;
+}
+
+.chart {
+    -fx-legend-visible: false
+}
+
+.anchor-pane {
+    -fx-background-color: #373765; /* or any other desired color */
+}

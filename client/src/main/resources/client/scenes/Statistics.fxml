@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.Statistics">
+  <Label fx:id="statisticsAndTagsLabel" styleClass="title" text="Statistics &amp; Tags" />
+  <HBox alignment="CENTER" spacing="50.0">
+    <VBox alignment="CENTER" spacing="10.0">
+      <TableView fx:id="tagsTable" onMouseClicked="#tagsOnClick" prefHeight="400.0" prefWidth="300.0">
+        <columns>
+          <TableColumn fx:id="tagName" prefWidth="150.0" text="Tag" />
+          <TableColumn fx:id="tagAmount" prefWidth="150.0" text="Total amount" />
+        </columns>
+      </TableView>
+      <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteTag" prefHeight="25.0" prefWidth="100.0" text="Delete 🗑" textFill="RED" />
+    </VBox>
+    <VBox alignment="CENTER" spacing="10.0">
+      <PieChart fx:id="pieChart" />
+      <Label fx:id="eventTotal" styleClass="sub-title" text="Event Total: EUR 0.00" />
+    </VBox>
+  </HBox>
+</VBox>

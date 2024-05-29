@@ -7,7 +7,6 @@ import commons.Expense;
 import commons.Participant;
 import commons.Tag;
 import jakarta.ws.rs.ProcessingException;
-import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
@@ -19,35 +18,31 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
-import javafx.scene.layout.Pane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
-import org.springframework.core.io.ClassPathResource;
 
 import java.awt.*;
-import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
-
-public class EventOverviewCtrl implements Initializable {
+public class EventCtrl implements Initializable {
 
     private final ServerUtils server;
-    private final StyleUtils style;
+    private final StyleService style;
     private final MainCtrl mainCtrl;
     private final ErrorService errorService;
-    private final LanguageService languageService;
+    private final I18NService i18NService;
     private final ConfigService configService;
     private final EventService eventService;
+    private final StyleService styleService;
+
     private Event event;
     private ObservableList<Expense> backer;
     private Predicate<Expense> expensesPred;
@@ -73,12 +68,27 @@ public class EventOverviewCtrl implements Initializable {
     @FXML
     private Label inviteCode;
     @FXML
-    private Label copiedLabel;
-
+    private Label copiedInviteCode;
     @FXML
     private Label createdDate;
     @FXML
-    private Label lastUpdatedDate;
+    private Label lastModifiedDate;
+
+    @FXML
+    private Label emailSendLabel;
+    @FXML
+    private TableView<Participant> participantTable;
+    @FXML
+    private TableColumn<Participant, String> colParticipant;
+    @FXML
+    private Button addParticipantButton;
+    @FXML
+    private Button deleteParticipantButton;
+
+    @FXML
+    private Button tagsButton;
+    @FXML
+    private Button debtsButton;
 
     @FXML
     private TabPane transactionTables;
@@ -86,22 +96,6 @@ public class EventOverviewCtrl implements Initializable {
     private Tab expenseTab;
     @FXML
     private Tab paymentTab;
-
-    @FXML
-    private Pane filterPane;
-    @FXML
-    private Label filterLabel;
-    @FXML
-    private TextField filterTitle;
-    @FXML
-    private ComboBox<Participant> filterSponsor;
-    @FXML
-    private ComboBox<Participant> filterDebtor;
-    @FXML
-    private ComboBox<Tag> filterTag;
-    @FXML
-    private Button filterButton;
-
     @FXML
     private TableView<Expense> expenseTable;
     @FXML
@@ -110,7 +104,6 @@ public class EventOverviewCtrl implements Initializable {
     private TableColumn<Expense, String> expenseAmount;
     @FXML
     private TableColumn<Expense, String> expenseType;
-
     @FXML
     private TableView<Expense> paymentTable;
     @FXML
@@ -119,49 +112,55 @@ public class EventOverviewCtrl implements Initializable {
     private TableColumn<Expense, String> paymentRecipient;
     @FXML
     private TableColumn<Expense, String> paymentAmount;
-
-    @FXML
-    private TableView<Participant> participantTable;
-    @FXML
-    private TableColumn<Participant, String> colParticipantFullName;
-    @FXML
-    private Button addParticipantButton;
-    @FXML
-    private Button deleteParticipantButton;
-
     @FXML
     private Button addExpenseButton;
     @FXML
     private Button deleteExpenseButton;
-    @FXML
-    private Button debtsButton;
-    @FXML
-    private ComboBox<String> languageBox;
-    @FXML
-    private Button backButton;
 
+    @FXML
+    private VBox filterPane;
+    @FXML
+    private Label filterLabel;
+    @FXML
+    private TextField filterTitle;
+    @FXML
+    private Label sponsorLabel;
+    @FXML
+    private ChoiceBox<Participant> filterSponsor;
+    @FXML
+    private Label debtorLabel;
+    @FXML
+    private ChoiceBox<Participant> filterDebtor;
+    @FXML
+    private Label labelLabel;
+    @FXML
+    private ChoiceBox<Tag> filterTag;
+    @FXML
+    private Button clearFiltersButton;
 
     /**
      * Constructor
      *
-     * @param server          the server utils
-     * @param style           the style utils
-     * @param mainCtrl        the main controller
-     * @param languageService the language service
-     * @param configService   the config service
-     * @param eventService    the event service
-     * @param errorService    the error service
+     * @param server        the server utils
+     * @param style         the style utils
+     * @param mainCtrl      the main controller
+     * @param i18NService   the language service
+     * @param configService the config service
+     * @param eventService  the event service
+     * @param errorService  the error service
      */
     @Inject
-    public EventOverviewCtrl(ServerUtils server, StyleUtils style, MainCtrl mainCtrl, LanguageService languageService,
-                             ConfigService configService, EventService eventService, ErrorService errorService) {
+    public EventCtrl(ServerUtils server, StyleService style, MainCtrl mainCtrl, I18NService i18NService,
+                     ConfigService configService, EventService eventService, ErrorService errorService,
+                     StyleService styleService) {
         this.server = server;
         this.style = style;
         this.mainCtrl = mainCtrl;
-        this.languageService = languageService;
+        this.i18NService = i18NService;
         this.configService = configService;
         this.eventService = eventService;
         this.errorService = errorService;
+        this.styleService = styleService;
     }
 
     /**
@@ -174,30 +173,25 @@ public class EventOverviewCtrl implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setLanguage();
+
         expenseTable.setOnMouseClicked(expenseOnClick());
         paymentTable.setOnMouseClicked(paymentOnClick());
         participantTable.setOnMouseClicked(participantOnClick());
 
-        languageService.setLanguagesComboBox(languageBox);
-
         transactionTables.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        expenseTab.selectedProperty().addListener((observable, oldValue, newValue) ->
-                filterPane.setVisible(newValue)
-        );
+        expenseTab.selectedProperty().addListener((observable, oldValue, newValue) -> filterPane.setVisible(newValue));
 
         backer = expenseTable.getItems();
 
         updatePred();
         expenseTable.setItems(new FilteredList<>(backer, expensesPred));
 
-        paymentTable.setItems(new FilteredList<>(backer,
-                e -> e.getTag().getName().equals("Payment")
-        ));
+        paymentTable.setItems(new FilteredList<>(backer, e -> e.getTag().getName().equals("Payment")));
 
         expenseTitle.setCellValueFactory(e -> new ReadOnlyObjectWrapper<>(e.getValue().getTitle()));
         expenseAmount.setCellValueFactory(e -> new ReadOnlyObjectWrapper<>(e.getValue().formattedAmount()));
-        expenseType.setCellValueFactory(e -> new ReadOnlyObjectWrapper<>(e.getValue().getTag() != null ?
-                e.getValue().getTag().getName() : ""));
+        expenseType.setCellValueFactory(e -> new ReadOnlyObjectWrapper<>(e.getValue().getTag() != null ? e.getValue().getTag().getName() : ""));
         expenseType.setCellFactory(tc -> new TableCell<>() {
             {
                 itemProperty().addListener((observable, oldValue, newValue) -> {
@@ -214,13 +208,10 @@ public class EventOverviewCtrl implements Initializable {
         });
 
         paymentSender.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getSponsor().getFullName()));
-        paymentRecipient.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(
-                p.getValue().getDebtors().stream().findFirst().orElseThrow().getFullName()
-        ));
+        paymentRecipient.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getDebtors().stream().findFirst().orElseThrow().getFullName()));
         paymentAmount.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().formattedAmount()));
 
-        colParticipantFullName.setCellValueFactory(p ->
-                new ReadOnlyObjectWrapper<>(p.getValue().getFullName()));
+        colParticipant.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getFullName()));
 
         titleTextField.setOnKeyPressed(event -> {
             if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
@@ -237,97 +228,66 @@ public class EventOverviewCtrl implements Initializable {
         setFilterControls();
     }
 
-    public static String cString(Color c) {
-        String textColor = c.getRed()*0.299 + c.getGreen()*0.587 + c.getBlue()*0.114 > 145
-                ? "black" : "white";
-        return String.format(
-                "-fx-background-color: rgba(%d,%d,%d,1); " +
-                        "-fx-background-radius: 5px; " +
-                        "-fx-text-fill: %s",
-                c.getRed(), c.getGreen(), c.getBlue(), textColor
-        );
-    }
-
-    /**
-     * change the language of the application without restarting it
-     */
-    @FXML
-    public void changeLang() {
-        languageService.changeLanguage(mainCtrl, languageBox);
-    }
-
     /**
      * Set the language of the user
-     *
-     * @param map      the language map which contains the translation
-     * @param language the language to set
      */
-    public void setLanguage(HashMap<String, Object> map, String language) {
-        eventService.setLanguage(map);
-        backButton.setText((String) map.get("back"));
-        addParticipantButton.setText((String) map.get("addButton"));
-        deleteParticipantButton.setText((String) map.get("deleteButton"));
-        addExpenseButton.setText((String) map.get("addButton"));
-        deleteExpenseButton.setText((String) map.get("deleteButton"));
-        debtsButton.setText((String) map.get("debtsButton"));
-
-        expenseTab.setText((String) map.get("expenseTab"));
-        paymentTab.setText((String) map.get("paymentTab"));
-
-        copiedLabel.setText((String) map.get("copiedToClipboard"));
-
-        expenseTitle.setText((String) map.get("expenseTitle"));
-        expenseAmount.setText((String) map.get("expenseAmount"));
-        expenseType.setText((String) map.get("expenseTypeCol"));
-        paymentSender.setText((String) map.get("expenseSponsor"));
-        paymentRecipient.setText((String) map.get("recipient"));
-        paymentAmount.setText((String) map.get("expenseAmount"));
-        colParticipantFullName.setText((String) map.get("participantsCol"));
-
-        createdDate.setText(getCreatedString());
-        lastUpdatedDate.setText(getLastModifiedString());
-
-        filterLabel.setText((String) map.get("filter"));
-        filterTitle.setPromptText((String) map.get("expenseTitle"));
-        filterSponsor.setPromptText((String) map.get("expenseSponsor"));
-        filterDebtor.setPromptText((String) map.get("expenseDebtor"));
-        filterTag.setPromptText((String) map.get("expenseTypeCol"));
-        filterButton.setText((String) map.get("clearFilters"));
-
-        mainCtrl.setDynamicButtonSize(addParticipantButton);
-        mainCtrl.setDynamicButtonSize(deleteParticipantButton);
-        mainCtrl.setDynamicButtonSize(addExpenseButton);
-        mainCtrl.setDynamicButtonSize(deleteExpenseButton);
-        mainCtrl.setDynamicButtonSize(backButton);
-        mainCtrl.setDynamicButtonSize(debtsButton);
-
-        languageBox.setValue(language);
-        errorService.changeLanguage(map);
+    public void setLanguage() {
+        i18NService.setTranslation(copiedInviteCode, "invite.code.copied");
+        i18NService.setTranslation(emailSendLabel, "email.send.to", configService.getEmail());
+        i18NService.setTranslation(participantTable, "table.noContent");
+        i18NService.setTranslation(colParticipant, "participants");
+        i18NService.setTranslation(addParticipantButton, "add");
+        i18NService.setTranslation(deleteParticipantButton, "delete");
+        i18NService.setTranslation(tagsButton, "statistics");
+        i18NService.setTranslation(debtsButton, "debts");
+        i18NService.setTranslation(expenseTab, "expenses");
+        i18NService.setTranslation(paymentTab, "payments");
+        i18NService.setTranslation(expenseTable, "table.noContent");
+        i18NService.setTranslation(expenseTitle, "title");
+        i18NService.setTranslation(expenseAmount, "amount");
+        i18NService.setTranslation(expenseType, "type");
+        i18NService.setTranslation(paymentTable, "table.noContent");
+        i18NService.setTranslation(paymentSender, "sponsor");
+        i18NService.setTranslation(paymentRecipient, "recipient");
+        i18NService.setTranslation(paymentAmount, "amount");
+        i18NService.setTranslation(addExpenseButton, "add");
+        i18NService.setTranslation(deleteExpenseButton, "delete");
+        i18NService.setTranslation(filterLabel, "filter.expenses");
+        i18NService.setTranslation(filterTitle, "expense.title");
+        i18NService.setTranslation(sponsorLabel, "sponsor");
+        i18NService.setTranslation(debtorLabel, "debtor");
+        i18NService.setTranslation(labelLabel, "label");
+        i18NService.setTranslation(clearFiltersButton, "clear.filters");
     }
 
-    /**
-     * Refreshes the event overview with the given invite code.
-     *
-     * @param inviteCode the invite code of the event used as uid
-     */
-    public void refresh(String inviteCode) {
-        try {
-            event = server.getEvent(inviteCode);
-            refresh(event);
-
-            if (!connectWebsocket()) {
-                mainCtrl.serverConnectionAlert();
-                return;
-            }
-            server.registerForEvents(inviteCode, this::refreshWs);
-            server.registerForParticipants(inviteCode, this::updateParticipants);
-            server.registerForExpenses(inviteCode, this::updateExpenses);
-        } catch (ProcessingException e) {
-            if (e.getCause().getClass() == ConnectException.class) {
-                mainCtrl.serverConnectionAlert();
-            }
-        }
+    public static String cString(Color c) {
+        String textColor = c.getRed() * 0.299 + c.getGreen() * 0.587 + c.getBlue() * 0.114 > 145 ? "black" : "white";
+        return String.format("-fx-background-color: rgba(%d,%d,%d,1); " + "-fx-background-radius: 5px; " + "-fx-text-fill: %s", c.getRed(), c.getGreen(), c.getBlue(), textColor);
     }
+
+//    /**
+//     * Refreshes the event overview with the given invite code.
+//     *
+//     * @param inviteCode the invite code of the event used as uid
+//     */
+//    public void refresh(String inviteCode) {
+//        try {
+//            event = server.getEvent(inviteCode);
+//            refresh(event);
+//
+//            if (!connectWebsocket()) {
+//                mainCtrl.serverConnectionAlert();
+//                return;
+//            }
+//            server.registerForEvents(inviteCode, this::refreshWs);
+//            server.registerForParticipants(inviteCode, this::updateParticipants);
+//            server.registerForExpenses(inviteCode, this::updateExpenses);
+//        } catch (ProcessingException e) {
+//            if (e.getCause().getClass() == ConnectException.class) {
+//                mainCtrl.serverConnectionAlert();
+//            }
+//        }
+//    }
 
 
     /**
@@ -340,8 +300,8 @@ public class EventOverviewCtrl implements Initializable {
         title.setText(event.getTitle());
         description.setText(event.getDescription());
         this.inviteCode.setText(String.valueOf(event.getInviteCode()));
-        createdDate.setText(getCreatedString());
-        lastUpdatedDate.setText(getLastModifiedString());
+        i18NService.setTranslation(createdDate, "created", event.getCreationDate());
+        i18NService.setTranslation(lastModifiedDate, "last.modified", event.getLastModified());
         refreshExpenses();
         refreshParticipants();
         refreshTags();
@@ -353,39 +313,13 @@ public class EventOverviewCtrl implements Initializable {
     }
 
     /**
-     * Returns the created date of the event as a string
-     *
-     * @return string which says created in the preferred language and the date
-     */
-    public String getCreatedString() {
-        try {
-            return (String) configService.getLanguage().get("createdE") + event.getCreationDate();
-        } catch (Exception e) {
-            return "Wrong";
-        }
-    }
-
-    /**
-     * Returns the last modified date of the event as a string
-     *
-     * @return string which says last modified in the preferred language and the date
-     */
-    public String getLastModifiedString() {
-        try {
-            return (String) configService.getLanguage().get("lastModifiedE") + event.getLastModified();
-        } catch (Exception e) {
-            return "Wrong";
-        }
-    }
-
-    /**
      * Updates the last modified date of the event.
      */
     public void updateLastModified() {
         try {
             event.onUpdate();
             server.updateEvent(event);
-            lastUpdatedDate.setText(getLastModifiedString());
+//            lastUpdatedDate.setText(getLastModifiedString()); ToDo
         } catch (ProcessingException e) {
             if (e.getCause().getClass() == ConnectException.class) {
                 mainCtrl.serverConnectionAlert();
@@ -502,14 +436,8 @@ public class EventOverviewCtrl implements Initializable {
         });
 
         this.inviteCode.setText(String.valueOf(event.getInviteCode()));
-        createdDate.setText(getCreatedString());
-        lastUpdatedDate.setText(getLastModifiedString());
-    }
-
-    @FXML
-    public void goBack() {
-        server.disconnectWs();
-        mainCtrl.showOverview();
+//        createdDate.setText(getCreatedString()); ToDo
+//        lastUpdatedDate.setText(getLastModifiedString());
     }
 
     @FXML
@@ -523,8 +451,7 @@ public class EventOverviewCtrl implements Initializable {
      */
     public void deleteParticipant() {
         try {
-            if (participantTable.getSelectionModel().isEmpty())
-                throw new IllegalArgumentException();
+            if (participantTable.getSelectionModel().isEmpty()) throw new IllegalArgumentException();
             int i = participantTable.getSelectionModel().getFocusedIndex();
             Participant participant = participantTable.getItems().get(i);
             Alert alert = errorService.confirmDeleteParticipant(participant);
@@ -533,16 +460,14 @@ public class EventOverviewCtrl implements Initializable {
                 updateLastModified();
                 refresh(event);
             });
-        }
-        catch (ProcessingException e) {
+        } catch (ProcessingException e) {
             if (e.getCause().getClass() == ConnectException.class) {
                 mainCtrl.serverConnectionAlert();
                 return;
             }
             throw e;
-        }
-        catch (IllegalArgumentException e) {
-            Alert alert = errorService.cannotDelete("delParticipant", "noParticipantDelete");
+        } catch (IllegalArgumentException e) {
+            Alert alert = errorService.cannotDelete("delete_participant", "no_participant_to_delete");
             alert.show();
         }
     }
@@ -591,9 +516,8 @@ public class EventOverviewCtrl implements Initializable {
                 return;
             }
             throw e;
-        }
-        catch (IllegalArgumentException e) {
-            Alert alert = errorService.cannotDelete("delExpense", "noExpenseDelete");
+        } catch (IllegalArgumentException e) {
+            Alert alert = errorService.cannotDelete("delete_expense", "no_expenses_to_delete");
             alert.show();
         }
     }
@@ -608,7 +532,7 @@ public class EventOverviewCtrl implements Initializable {
         titleTextField.setVisible(true);
         title.setVisible(false);
         titleTextField.requestFocus();
-        eventService.titleCheck(titleTextField, titleErrorMessage);
+        errorService.bindTitleCheck(titleTextField, titleErrorMessage);
         modifyTextFieldLength(titleTextField);
     }
 
@@ -621,8 +545,7 @@ public class EventOverviewCtrl implements Initializable {
             if (titleTextField.getText().isEmpty()) {
                 titleTextField.setText(configService.getLanguage().get("title").toString());
             } else {
-                titleTextField.setText(titleTextField.getText() +
-                    configService.getLanguage().get("titleTooShort").toString());
+                titleTextField.setText(titleTextField.getText() + configService.getLanguage().get("is_too_short").toString());
             }
         }
         title.setText(titleTextField.getText());
@@ -632,43 +555,14 @@ public class EventOverviewCtrl implements Initializable {
         updateLastModified();
     }
 
-    /**
-     * Copies the invite code to the clipboard.
-     */
     @FXML
     public void copyInviteCode() {
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
-        content.putString(inviteCode.getText());
-        clipboard.setContent(content);
-        showInviteCode();
-        playSoundEffect();
+        styleService.copyInviteCode(copiedInviteCode, inviteCode.getText());
     }
 
-    /**
-     * Shows the copied label and fades it out after 2 seconds.
-     */
-    public void showInviteCode() {
-        copiedLabel.setOpacity(1.0);
-        copiedLabel.setVisible(true);
-
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), copiedLabel);
-        fadeTransition.setFromValue(1.0);
-        fadeTransition.setToValue(0.0);
-        fadeTransition.play();
-    }
-
-    /**
-     * Plays a sound effect when the invite code is copied.
-     */
-    public void playSoundEffect() {
-        try {
-            final URI uri = new ClassPathResource("Heavenly Sound Effect Meme (Perfectly Cut).mp3").getURI();
-            MediaPlayer mediaPlayer = new MediaPlayer(new Media(uri.toString()));
-            mediaPlayer.play();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void showEmailSent(String email) {
+        emailSendLabel.setText(configService.getLanguage().get("emailSentTo").toString() + email);
+        styleService.playFadeTransition(emailSendLabel);
     }
 
     /**
@@ -681,7 +575,7 @@ public class EventOverviewCtrl implements Initializable {
         description.setVisible(false);
         descriptionTextField.requestFocus();
 
-        eventService.descriptionCheck(descriptionTextField, descriptionErrorMessage);
+        errorService.bindDescriptionCheck(descriptionTextField, descriptionErrorMessage);
         modifyTextFieldLength(descriptionTextField);
     }
 
@@ -692,9 +586,9 @@ public class EventOverviewCtrl implements Initializable {
     public void descriptionShowLabel() {
         if (descriptionTextField.getText().length() < 3) {
             if (descriptionTextField.getText().isEmpty()) {
-                descriptionTextField.setText(configService.getLanguage().get("description").toString());
+                descriptionTextField.setText(configService.getLanguage().get("desc").toString());
             } else {
-                descriptionTextField.setText(descriptionTextField.getText() + " - is too short");
+                descriptionTextField.setText(descriptionTextField.getText() + configService.getLanguage().get("is_too_short").toString());
             }
         }
         description.setText(descriptionTextField.getText());
@@ -817,14 +711,30 @@ public class EventOverviewCtrl implements Initializable {
      */
     public void setFilterControls() {
         StringConverter<Participant> pConverter = new StringConverter<>() {
-            @Override public String toString(Participant participant) {return participant.getFullName();}
-            @Override public Participant fromString(String string) {return null;}
+            @Override
+            public String toString(Participant participant) {
+                if (participant == null) return "";
+                return participant.getFullName();
+            }
+
+            @Override
+            public Participant fromString(String string) {
+                return null;
+            }
         };
         filterSponsor.setConverter(pConverter);
         filterDebtor.setConverter(pConverter);
         filterTag.setConverter(new StringConverter<>() {
-            @Override public String toString(Tag tag) {return tag.getName();}
-            @Override public Tag fromString(String string) {return null;}
+            @Override
+            public String toString(Tag tag) {
+                if (tag == null) return "";
+                return tag.getName();
+            }
+
+            @Override
+            public Tag fromString(String string) {
+                return null;
+            }
         });
     }
 
@@ -833,11 +743,7 @@ public class EventOverviewCtrl implements Initializable {
      */
     public void updatePred() {
         expensesPred = e -> !e.getTag().getName().equals("Payment");
-        expensesPred = expensesPred
-                .and(titlePred == null ? e -> true : titlePred)
-                .and(sponsorPred == null ? e -> true : sponsorPred)
-                .and(debtorPred == null ? e -> true : debtorPred)
-                .and(tagPred == null ? e -> true : tagPred);
+        expensesPred = expensesPred.and(titlePred == null ? e -> true : titlePred).and(sponsorPred == null ? e -> true : sponsorPred).and(debtorPred == null ? e -> true : debtorPred).and(tagPred == null ? e -> true : tagPred);
         expenseTable.setItems(new FilteredList<>(backer, expensesPred));
     }
 
@@ -845,10 +751,8 @@ public class EventOverviewCtrl implements Initializable {
      * onAction for the title filter
      */
     public void titleFilterOnAction() {
-        if (filterTitle.getText() == null || filterTitle.getText().isEmpty())
-            titlePred = e -> true;
-        else
-            titlePred = ex -> ex.getTitle().contains(filterTitle.getText());
+        if (filterTitle.getText() == null || filterTitle.getText().isEmpty()) titlePred = e -> true;
+        else titlePred = ex -> ex.getTitle().contains(filterTitle.getText());
         updatePred();
     }
 
@@ -856,10 +760,8 @@ public class EventOverviewCtrl implements Initializable {
      * onAction for the sponsor filter
      */
     public void sponsorFilterOnAction() {
-        if (filterSponsor.getValue() == null)
-            sponsorPred = e -> true;
-        else
-            sponsorPred = e -> e.getSponsor().equals(filterSponsor.getValue());
+        if (filterSponsor.getValue() == null) sponsorPred = e -> true;
+        else sponsorPred = e -> e.getSponsor().equals(filterSponsor.getValue());
         updatePred();
     }
 
@@ -867,10 +769,8 @@ public class EventOverviewCtrl implements Initializable {
      * onAction for the debtor filter
      */
     public void debtorFilterOnAction() {
-        if (filterDebtor.getValue() == null)
-            debtorPred = e -> true;
-        else
-            debtorPred = e -> e.getDebtors().contains(filterDebtor.getValue());
+        if (filterDebtor.getValue() == null) debtorPred = e -> true;
+        else debtorPred = e -> e.getDebtors().contains(filterDebtor.getValue());
         updatePred();
     }
 
@@ -878,10 +778,8 @@ public class EventOverviewCtrl implements Initializable {
      * onAction for the tag filter
      */
     public void tagFilterOnAction() {
-        if (filterTag.getValue() == null)
-            tagPred = e -> true;
-        else
-            tagPred = e -> e.getTag().equals(filterTag.getValue());
+        if (filterTag.getValue() == null) tagPred = e -> true;
+        else tagPred = e -> e.getTag().equals(filterTag.getValue());
         updatePred();
     }
 

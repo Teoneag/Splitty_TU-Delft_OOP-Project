@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(ApplicationExtension.class)
-public class DebtUtilsTest {
+public class DebtServiceTest {
     
-    private DebtUtils debtUtils;
+    private DebtService debtService;
     
     private Event event;
     
@@ -29,6 +29,8 @@ public class DebtUtilsTest {
     private ServerUtils server;
     @Mock
     private ConfigService configService;
+    @Mock
+    private I18NService i18NService;
     
     @BeforeAll
     public static void setUpClass() {
@@ -46,7 +48,7 @@ public class DebtUtilsTest {
             when(configService.getConfigCurrency()).thenReturn("USD");
 
             event = new Event("EVENT1", "title", "description");
-            this.debtUtils = new DebtUtils(server, configService);
+            this.debtService = new DebtService(server, configService, i18NService);
         }
     }
 
@@ -65,14 +67,14 @@ public class DebtUtilsTest {
         
         when(server.getExpensesByCurrency("EVENT1")).thenReturn(expenses);
         
-        assertEquals(expected, debtUtils.expenseTotal(event));
+        assertEquals(expected, debtService.expenseTotal(event));
     }
     
     @Test
     public void testFormattedAmount() {
         when(configService.getConfigCurrency()).thenReturn("USD");
         String currencySymbol = Currency.getInstance("USD").getSymbol();
-        assertEquals(currencySymbol + " 20.00", debtUtils.formattedAmount(20));
+        assertEquals(currencySymbol + " 20.00", debtService.formattedAmount(20));
     }
     
     @Test
@@ -80,7 +82,7 @@ public class DebtUtilsTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("owes", " owes ");
         languageMap.put("isOwedBy", " owes ");
-        debtUtils.setLanguageMap(languageMap);
+        debtService.setLanguageMap(languageMap);
         
         Participant picked = new Participant("pickedName", "");
         Participant participant = new Participant("participantName", "");
@@ -88,7 +90,7 @@ public class DebtUtilsTest {
         String currencySymbol = Currency.getInstance("USD").getSymbol();
         String expected = "pickedName owes participantName "+ currencySymbol+ " 20.00";
         
-        assertEquals(expected, debtUtils.getInstructionLine(picked, participant, 20));
+        assertEquals(expected, debtService.getInstructionLine(picked, participant, 20));
     }
     
     @Test
@@ -96,7 +98,7 @@ public class DebtUtilsTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("owes", " owes ");
         languageMap.put("isOwedBy", " is owed by ");
-        debtUtils.setLanguageMap(languageMap);
+        debtService.setLanguageMap(languageMap);
         
         Participant picked = new Participant("pickedName", "");
         Participant participant = new Participant("participantName", "");
@@ -104,7 +106,7 @@ public class DebtUtilsTest {
         String currencySymbol = Currency.getInstance("USD").getSymbol();
         String expected = "pickedName is owed by participantName " + currencySymbol + " 20.00";
         
-        assertEquals(expected, debtUtils.getInstructionLine(picked, participant, -20));
+        assertEquals(expected, debtService.getInstructionLine(picked, participant, -20));
     }
     
     @Test
@@ -113,16 +115,16 @@ public class DebtUtilsTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("noBankDetails", "No bank details: ");
         
-        debtUtils.setLanguageMap(languageMap);
+        debtService.setLanguageMap(languageMap);
         
-        Participant participant = new Participant("participantName", "", "email", "", "", "EVENT1");
+        Participant participant = new Participant("participantName", "", "email_field", "", "", "EVENT1");
         
         TextArea expected = new TextArea();
         expected.setDisable(true);
         expected.setStyle("-fx-text-fill: red");
         expected.setText(languageMap.get("noBankDetails") + "participantName");
         
-        TextArea actual = debtUtils.getTextAreaInfo(participant, 20);
+        TextArea actual = debtService.getTextAreaInfo(participant, 20);
         
         assertEquals(expected.getText(), actual.getText());
         assertEquals(expected.getStyle(), actual.getStyle());}
@@ -134,7 +136,7 @@ public class DebtUtilsTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("noMail", " does not have a mail");
         
-        debtUtils.setLanguageMap(languageMap);
+        debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "", "", "", "EVENT1");
         
@@ -143,7 +145,7 @@ public class DebtUtilsTest {
         expected.setStyle("-fx-text-fill: red");
         expected.setText("participantName" + languageMap.get("noMail"));
         
-        TextArea actual = debtUtils.getTextAreaInfo(participant, -1);
+        TextArea actual = debtService.getTextAreaInfo(participant, -1);
         
         assertEquals(expected.getText(), actual.getText());
         assertEquals(expected.getStyle(), actual.getStyle());
@@ -155,7 +157,7 @@ public class DebtUtilsTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("contactInformation", "Contact information for: ");
         
-        debtUtils.setLanguageMap(languageMap);
+        debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "", "", "EVENT1");
         
@@ -165,7 +167,7 @@ public class DebtUtilsTest {
                 + "\nEmail: mail@mail.com"
                 );
         
-        TextArea actual = debtUtils.getTextAreaInfo(participant, -1);
+        TextArea actual = debtService.getTextAreaInfo(participant, -1);
         
         assertEquals(expected.getText(), actual.getText());
         assertEquals(expected.getStyle(), actual.getStyle());
@@ -177,7 +179,7 @@ public class DebtUtilsTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("bankDetails", "Bank details for: ");
         
-        debtUtils.setLanguageMap(languageMap);
+        debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "iban", "bic", "EVENT1");
         
@@ -189,7 +191,7 @@ public class DebtUtilsTest {
                 + "\nEmail: mail@mail.com"
         );
         
-        TextArea actual = debtUtils.getTextAreaInfo(participant, 1);
+        TextArea actual = debtService.getTextAreaInfo(participant, 1);
         
         assertEquals(expected.getText(), actual.getText());
         assertEquals(expected.getStyle(), actual.getStyle());
@@ -201,7 +203,7 @@ public class DebtUtilsTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("bankDetails", "Bank details for: ");
         
-        debtUtils.setLanguageMap(languageMap);
+        debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "", "", "bic", "EVENT1");
         
@@ -211,7 +213,7 @@ public class DebtUtilsTest {
                 + "\nBIC: bic"
         );
         
-        TextArea actual = debtUtils.getTextAreaInfo(participant, 1);
+        TextArea actual = debtService.getTextAreaInfo(participant, 1);
         
         assertEquals(expected.getText(), actual.getText());
         assertEquals(expected.getStyle(), actual.getStyle());
@@ -225,7 +227,7 @@ public class DebtUtilsTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("bankDetails", "Bank details for: ");
         
-        debtUtils.setLanguageMap(languageMap);
+        debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "iban", "", "EVENT1");
         
@@ -236,7 +238,7 @@ public class DebtUtilsTest {
                 + "\nEmail: mail@mail.com"
         );
         
-        TextArea actual = debtUtils.getTextAreaInfo(participant, 1);
+        TextArea actual = debtService.getTextAreaInfo(participant, 1);
         
         assertEquals(expected.getText(), actual.getText());
         assertEquals(expected.getStyle(), actual.getStyle());
@@ -268,8 +270,8 @@ public class DebtUtilsTest {
         when(configService.getConfigCurrency()).thenReturn("USD");
         when(server.getRate("USD", "USD", date.toString())).thenReturn(1f);
         
-        assertEquals(expectedDebtSponsor, debtUtils.groupDebt(event, sponsor, expenses));
-        assertEquals(expectedDebtDebtor, debtUtils.groupDebt(event, debtor, expenses));
+        assertEquals(expectedDebtSponsor, debtService.groupDebt(event, sponsor, expenses));
+        assertEquals(expectedDebtDebtor, debtService.groupDebt(event, debtor, expenses));
     }
     
     @Test
@@ -281,7 +283,7 @@ public class DebtUtilsTest {
         when(configService.getConfigCurrency()).thenReturn("USD");
         when(server.getTransactions(event.getInviteCode())).thenReturn(expenses);
         
-        assertEquals(0, debtUtils.groupDebt(event, null, null));
+        assertEquals(0, debtService.groupDebt(event, null, null));
         verify((server), times(1)).getTransactions(event.getInviteCode());
     }
     
@@ -321,7 +323,7 @@ public class DebtUtilsTest {
         expected.put(sponsor, expectedDebtSponsor);
         expected.put(debtor, expectedDebtDebtor);
         
-        assertEquals(expected, debtUtils.getAllGroupDept(event));
+        assertEquals(expected, debtService.getAllGroupDept(event));
     }
     
     @Test
@@ -362,8 +364,8 @@ public class DebtUtilsTest {
         Map<Participant, Float> expectedSimplestDebtDebtor = new HashMap<>();
         expectedSimplestDebtDebtor.put(sponsor, expectedDebtDebtor);
         
-        assertEquals(expectedSimplesDebtSponsor, debtUtils.specificSimplestDebt(event, sponsor));
-        assertEquals(expectedSimplestDebtDebtor, debtUtils.specificSimplestDebt(event, debtor));
+        assertEquals(expectedSimplesDebtSponsor, debtService.specificSimplestDebt(event, sponsor));
+        assertEquals(expectedSimplestDebtDebtor, debtService.specificSimplestDebt(event, debtor));
     }
     
     

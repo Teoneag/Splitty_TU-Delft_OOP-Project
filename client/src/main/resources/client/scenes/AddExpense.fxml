@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.CheckComboBox?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddExpenseCtrl">
+  <Label fx:id="addExpenseLabel" styleClass="title" text="Add Expense" />
+  <Region prefHeight="0.0" />
+  <HBox alignment="CENTER">
+    <Label fx:id="titleLabel" styleClass="sub-title" text="Title">
+      <HBox.margin>
+        <Insets right="10.0" />
+      </HBox.margin>
+    </Label>
+    <TextField fx:id="titleField" promptText="Expense Title" />
+    <Button onAction="#undoTitle" text="↩" />
+  </HBox>
+  <HBox alignment="CENTER">
+    <Label fx:id="amountLabel" styleClass="sub-title" text="Amount">
+      <HBox.margin>
+        <Insets right="10.0" />
+      </HBox.margin>
+    </Label>
+    <TextField fx:id="amountField" promptText="0.00" />
+    <ChoiceBox fx:id="currencyChoiceBox" />
+    <Button onAction="#undoAmountCurrency" text="↩" />
+  </HBox>
+  <HBox alignment="CENTER">
+    <Label fx:id="dateLabel" styleClass="sub-title" text="Date">
+      <HBox.margin>
+        <Insets right="10.0" />
+      </HBox.margin>
+    </Label>
+    <DatePicker fx:id="datePicker" />
+    <Button onAction="#undoDate" text="↩" />
+  </HBox>
+  <VBox alignment="CENTER" spacing="10.0">
+    <HBox alignment="CENTER">
+      <Label fx:id="sponsorLabel" styleClass="sub-title" text="Sponsor">
+        <HBox.margin>
+          <Insets right="10.0" />
+        </HBox.margin>
+      </Label>
+      <ChoiceBox fx:id="sponsorSelect" onAction="#sponsorChanged" />
+      <Button onAction="#undoSponsor" text="↩" />
+    </HBox>
+    <HBox alignment="CENTER" spacing="20.0">
+      <CheckBox fx:id="addAll" onAction="#addAll" text="Add All" />
+      <CheckBox fx:id="addOthers" onAction="#addOthers" text="Add All Others" />
+    </HBox>
+  </VBox>
+  <HBox alignment="CENTER">
+    <Label fx:id="debtorsLabel" styleClass="sub-title" text="Debtors">
+      <HBox.margin>
+        <Insets right="10.0" />
+      </HBox.margin>
+    </Label>
+    <CheckComboBox fx:id="debtorSelect" title="Select Debtors" />
+    <Button onAction="#undoDebtor" text="↩" />
+  </HBox>
+  <HBox alignment="CENTER">
+    <Label fx:id="tagLabel" styleClass="sub-title" text="Tag">
+      <HBox.margin>
+        <Insets right="10.0" />
+      </HBox.margin>
+    </Label>
+    <ChoiceBox fx:id="tagSelect" />
+    <Button onAction="#createNewTag" text="+" />
+    <Button onAction="#undoTag" text="↩" />
+  </HBox>
+  <HBox alignment="CENTER" spacing="100.0">
+    <Button fx:id="cancelButton" onAction="#cancel" styleClass="big-button" text="Cancel" />
+    <Button fx:id="createButton" onAction="#createExpense" styleClass="big-button" text="Confirm" />
+  </HBox>
+</VBox>

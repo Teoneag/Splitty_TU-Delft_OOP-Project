@@ -43,7 +43,7 @@ public class ParticipantControllerTest {
     
     @Test
     public void testAddParticipant() {
-        Participant participant = new Participant("john", "smith", "email", "iban", "bic", "BOOB69");
+        Participant participant = new Participant("john", "smith", "email_field", "iban", "bic", "BOOB69");
         sut.add(participant);
         assertTrue(repo.calledMethods.contains("save"));
         assertTrue(repo.participants.contains(participant));
@@ -51,7 +51,7 @@ public class ParticipantControllerTest {
     
     @Test
     public void testGetAll() {
-        Participant participant = new Participant("john", "smith", "email", "iban", "bic", "BOOB69");
+        Participant participant = new Participant("john", "smith", "email_field", "iban", "bic", "BOOB69");
         Participant participant2 = new Participant("john2", "smith2", "email2", "iban2", "bic2", "BOOB69");
         sut.add(participant);
         sut.add(participant2);
@@ -65,7 +65,7 @@ public class ParticipantControllerTest {
     
     @Test
     public void testGetById() {
-        Participant participant = new Participant("john", "smith", "email", "iban", "bic", "BOOB69");
+        Participant participant = new Participant("john", "smith", "email_field", "iban", "bic", "BOOB69");
         Participant participant2 = new Participant("john2", "smith2", "email2", "iban2", "bic2", "BOOB69");
         Participant participant3 = new Participant("john3", "smith3", "email3", "iban3", "bic3", "BOOB69");
         sut.add(participant);
@@ -80,7 +80,7 @@ public class ParticipantControllerTest {
     
     @Test
     public void testDeleteById() {
-        Participant participant = new Participant("john", "smith", "email", "iban", "bic", "BOOB69");
+        Participant participant = new Participant("john", "smith", "email_field", "iban", "bic", "BOOB69");
         Participant participant2 = new Participant("john2", "smith2", "email2", "iban2", "bic2", "BOOB69");
         sut.add(participant);
         sut.add(participant2);
@@ -121,7 +121,7 @@ public class ParticipantControllerTest {
         eventRepo.save(event2);
         
         
-        Participant participant = new Participant(1, "john", "smith", "email", "iban", "bic", "EVENT2");
+        Participant participant = new Participant(1, "john", "smith", "email_field", "iban", "bic", "EVENT2");
         Participant participant2 = new Participant(2, "john2", "smith2", "email2", "iban2", "bic2", "EVENT2");
         Participant participant3 = new Participant(3, "john3", "smith3", "email3", "iban3", "bic3", "EVENT1");
         
@@ -151,7 +151,7 @@ public class ParticipantControllerTest {
     
     @Test
     public void testDeleteParticipants() {
-        Participant participant = new Participant(1, "john", "smith", "email", "iban", "bic", "EVENT2");
+        Participant participant = new Participant(1, "john", "smith", "email_field", "iban", "bic", "EVENT2");
         Participant participant2 = new Participant(2, "john2", "smith2", "email2", "iban2", "bic2", "EVENT2");
         Participant participant3 = new Participant(3, "john3", "smith3", "email3", "iban3", "bic3", "EVENT2");
         
@@ -179,7 +179,7 @@ public class ParticipantControllerTest {
     
     @Test
     public void testUpdateParticipant() {
-        Participant participant = new Participant(1, "john", "smith", "email", "iban", "bic", "EVENT2");
+        Participant participant = new Participant(1, "john", "smith", "email_field", "iban", "bic", "EVENT2");
         participant = sut.add(participant).getBody();
         
         ResponseEntity<Participant> expectedResponse = ResponseEntity.ok(participant);

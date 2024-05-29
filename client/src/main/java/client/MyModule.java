@@ -15,7 +15,7 @@
  */
 package client;
 
-import client.services.ServerUtils;
+import client.services.*;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -31,6 +31,14 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(ConfigService.class).in(Scopes.SINGLETON);
+        binder.bind(CurrencyService.class).in(Scopes.SINGLETON);
+        binder.bind(DebtService.class).in(Scopes.SINGLETON);
+        binder.bind(EmailService.class).in(Scopes.SINGLETON);
+        binder.bind(ErrorService.class).in(Scopes.SINGLETON);
+        binder.bind(EventService.class).in(Scopes.SINGLETON);
+        binder.bind(I18NService.class).in(Scopes.SINGLETON);
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
+        binder.bind(StyleService.class).in(Scopes.SINGLETON);
     }
 }
