@@ -9,7 +9,7 @@ By [Teodor Neagoe](https://github.com/Teoneag), [Nicolas Laplagne](https://githu
 </div>
 
 <img src="gifs/Splitty Preview.gif" alt="GDB-Driver Preview"/>
-<img src="gifs/Splitty Preview.gif" alt="GDB-Driver Preview-2"/>
+<img src="gifs/Splitty Preview-2.gif" alt="GDB-Driver Preview-2"/>
 </div>
 
 ## Getting Started
