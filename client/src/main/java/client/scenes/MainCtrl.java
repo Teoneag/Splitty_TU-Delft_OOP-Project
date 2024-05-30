@@ -32,6 +32,7 @@ import javafx.util.Pair;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Stack;
 
 
 public class MainCtrl {
@@ -46,6 +47,7 @@ public class MainCtrl {
 
     private Scene pageWithMenu;
     private PageWithMenuCtrl pageWithMenuCtrl;
+    private final Stack<NavigationEntry> navigationHistory = new Stack<>();
 
     private Node home;
     private HomeCtrl homeCtrl;
@@ -184,6 +186,23 @@ public class MainCtrl {
 //        KeyCombination forwardCombination = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN);
     }
 
+    public void navigateTo(Node node, String title) {
+        i18NService.setTranslation(primaryStage, title);
+        navigationHistory.push(new NavigationEntry(node, title));
+        pageWithMenuCtrl.setCenter(node);
+        if (navigationHistory.size() > 1) pageWithMenuCtrl.showBackButton();
+    }
+
+    public void goBack() {
+        if (navigationHistory.size() == 1) return;
+
+        navigationHistory.pop();
+        NavigationEntry entry = navigationHistory.peek();
+        i18NService.setTranslation(primaryStage, entry.title());
+        pageWithMenuCtrl.setCenter(entry.node());
+        if (navigationHistory.size() == 1) pageWithMenuCtrl.hideBackButton();
+    }
+
     public void setTheme(String theme) {
         Platform.runLater(() -> pageWithMenu.getStylesheets().setAll("/stylesheets/" + theme + ".css"));
     }
@@ -214,8 +233,7 @@ public class MainCtrl {
      * Set title to Splitty
      */
     public void showHome() {
-        i18NService.setText(primaryStage, "splitty");
-        pageWithMenuCtrl.setCenter(home, true);
+        navigateTo(home, "splitty.home");
         homeCtrl.focusTitleField();
         homeCtrl.refresh();
     }
@@ -224,25 +242,22 @@ public class MainCtrl {
      * Shows the settings overview
      */
     public void showSettings() {
-        i18NService.setTranslation(primaryStage, "settings.title");
-        pageWithMenuCtrl.setCenter(settings);
+        navigateTo(settings, "settings.title");
     }
 
     /**
      * Shows the shortcuts page
      */
     public void showShortcuts() {
-        i18NService.setTranslation(primaryStage, "shortcuts.title");
-        pageWithMenuCtrl.setCenter(shortcuts);
+        navigateTo(shortcuts, "shortcuts.title");
     }
 
     /**
      * Shows the admin overview
      */
     public void showAdminOverview() {
-        i18NService.setTranslation(primaryStage, "admin.overview");
+        navigateTo(admin, "admin.overview");
         adminCtrl.refresh();
-        pageWithMenuCtrl.setCenter(admin);
     }
 
     /**
@@ -261,14 +276,13 @@ public class MainCtrl {
      * @param event the event to show
      */
     public void showEvent(Event event) {
-        i18NService.setTranslation(primaryStage, "event.overview");
         eventService.addToRecentEvents(event.getInviteCode());
         if (!email.isEmpty()) {
             eventCtrl.showEmailSent(email);
             email = "";
         }
         eventCtrl.refresh(event);
-        pageWithMenuCtrl.setCenter(this.event);
+        navigateTo(this.event, "event.overview");
     }
 
     /**
@@ -277,9 +291,8 @@ public class MainCtrl {
      * @param event - The event to add a participant to
      */
     public void showAddParticipant(Event event) {
-        i18NService.setTranslation(primaryStage, "add.participant");
+        navigateTo(addParticipant, "add.participant");
         addParticipantCtrl.addParticipant(event);
-        pageWithMenuCtrl.setCenter(addParticipant);
     }
 
     /**
@@ -289,9 +302,8 @@ public class MainCtrl {
      * @param participant The participant that is being edited
      */
     public void showEditParticipant(Event event, Participant participant) {
-        i18NService.setTranslation(primaryStage, "edit.participant");
+        navigateTo(addParticipant, "edit.participant");
         addParticipantCtrl.edit(event, participant);
-        pageWithMenuCtrl.setCenter(addParticipant);
     }
 
     /**
@@ -300,9 +312,8 @@ public class MainCtrl {
      * @param event parent event
      */
     public void showAddExpense(Event event) {
-        i18NService.setTranslation(primaryStage, "add.expense");
+        navigateTo(addExpense, "add.expense");
         addExpenseCtrl.refresh(event);
-        pageWithMenuCtrl.setCenter(addExpense);
     }
 
     /**
@@ -311,9 +322,8 @@ public class MainCtrl {
      * @param tag the newly added tag
      */
     public void showAddExpenseReduced(Tag tag) {
-        i18NService.setTranslation(primaryStage, "add.expense");
+        navigateTo(addExpense, "add.expense");
         addExpenseCtrl.reducedRefresh(tag);
-        pageWithMenuCtrl.setCenter(addExpense);
     }
 
     /**
@@ -323,15 +333,13 @@ public class MainCtrl {
      * @param expense expense to edit
      */
     public void showEditExpense(Event event, Expense expense) {
-        i18NService.setTranslation(primaryStage, "edit.expense");
+        navigateTo(addExpense, "edit.expense");
         addExpenseCtrl.edit(event, expense);
-        pageWithMenuCtrl.setCenter(addExpense);
     }
 
     public void showSettleDebt(Event event) {
-        i18NService.setTranslation(primaryStage, "settle.debts");
+        navigateTo(addPayment, "settle.debts");
         addPaymentCtrl.refresh(event, false);
-        pageWithMenuCtrl.setCenter(addPayment);
 
     }
 
@@ -341,44 +349,40 @@ public class MainCtrl {
      * @param event event
      */
     public void showDebtOverview(Event event) {
-        i18NService.setTranslation(primaryStage, "debt.overview");
+        navigateTo(debt, "debt.overview");
         debtCtrl.refresh(event);
-        pageWithMenuCtrl.setCenter(debt);
     }
 
     public void showAddTag(Event event, Expense expense) {
-        i18NService.setTranslation(primaryStage, "add.tag");
+        navigateTo(addTag, "add.tag");
         addtagCtrl.refreshEdit(event);
-        pageWithMenuCtrl.setCenter(addTag);
     }
 
     public void showAddTagNoExpense(Event event) {
-        i18NService.setTranslation(primaryStage, "add.tag");
+        navigateTo(addTag, "add.tag");
         addtagCtrl.refresh(event);
-        pageWithMenuCtrl.setCenter(addTag);
     }
 
     public void showManageTags(Event event) {
-        i18NService.setTranslation(primaryStage, "statistics");
+        navigateTo(manageTags, "statistics");
         statistics.refresh(event);
-        pageWithMenuCtrl.setCenter(manageTags);
     }
 
     public void showEditTag(Event event, Tag tag) {
-        i18NService.setTranslation(primaryStage, "edit.tag");
+        navigateTo(addTag, "edit.tag");
         addtagCtrl.editTag(event, tag);
-        pageWithMenuCtrl.setCenter(addTag);
     }
 
     public void showAddPayment(Event event, boolean fromEvent) {
-        i18NService.setTranslation(primaryStage, "add.payment");
+        navigateTo(addPayment, "add.payment");
         addPaymentCtrl.refresh(event, fromEvent);
-        pageWithMenuCtrl.setCenter(addPayment);
     }
 
     public void showEditPayment(Event event, Expense expense) {
-        i18NService.setTranslation(primaryStage, "edit.payment");
+        navigateTo(addPayment, "edit.payment");
         addPaymentCtrl.edit(event, expense);
-        pageWithMenuCtrl.setCenter(addPayment);
     }
+}
+
+record NavigationEntry(Node node, String title) {
 }

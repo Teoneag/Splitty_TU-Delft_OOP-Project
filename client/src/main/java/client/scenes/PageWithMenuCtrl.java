@@ -40,7 +40,8 @@ public class PageWithMenuCtrl implements Initializable {
     private Button backButton;
 
     @Inject
-    public PageWithMenuCtrl(MainCtrl mainCtrl, I18NService i18NService, CurrencyService currencyService, ConfigService configService) {
+    public PageWithMenuCtrl(MainCtrl mainCtrl, I18NService i18NService, CurrencyService currencyService,
+                            ConfigService configService) {
         this.mainCtrl = mainCtrl;
         this.i18NService = i18NService;
         this.currencyService = currencyService;
@@ -56,13 +57,16 @@ public class PageWithMenuCtrl implements Initializable {
     }
 
     public void setCenter(Node node) {
-        setCenter(node, false);
-    }
-
-    public void setCenter(Node node, boolean isHome) {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(node);
-        backButton.setVisible(!isHome);
+    }
+
+    public void hideBackButton() {
+        backButton.setVisible(false);
+    }
+
+    public void showBackButton() {
+        backButton.setVisible(true);
     }
 
     private void setLanguage() {
@@ -120,6 +124,6 @@ public class PageWithMenuCtrl implements Initializable {
 
     @FXML
     public void backToHome() {
-        mainCtrl.showHome();
+        mainCtrl.goBack();
     }
 }
