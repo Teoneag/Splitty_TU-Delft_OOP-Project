@@ -146,46 +146,42 @@ public class MainCtrl {
         this.addPaymentCtrl = addPayment.getKey();
         this.addPayment = addPayment.getValue();
 
-        // ToDo by using - mnemonic parsing and accelerator (add documentation + make them work for all pages and all languages)
-//        KeyCombination backCombination = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN);
-//        KeyCombination forwardCombination = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN);
-//        KeyCombination ctrlP = new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN);
-//        KeyCombination ctrlE = new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN);
-//
-//        final int MOUSE_BACK_BUTTON = MouseButton.BACK.ordinal();
-//
-//        showShortcuts(this.home);
-//
-//        addKeyEventFilter(this.event, backCombination, eventCtrl::goBack);
-//        addKeyEventFilter(this.event, ctrlP, eventCtrl::addParticipant);
-//        addKeyEventFilter(this.event, ctrlE, eventCtrl::addExpense);
-//        addMouseEventFilter(this.event, MOUSE_BACK_BUTTON, eventCtrl::goBack);
-//        showShortcuts(this.event);
-//
-//        addKeyEventFilter(this.addParticipant, backCombination, addParticipantCtrl::goBack);
-//        addMouseEventFilter(this.addParticipant, MOUSE_BACK_BUTTON, addParticipantCtrl::goBack);
-//        showShortcuts(this.addParticipant);
-//
-//        addKeyEventFilter(this.addExpense, backCombination, addExpenseCtrl::goBack);
-//        addMouseEventFilter(this.addExpense, MOUSE_BACK_BUTTON, addExpenseCtrl::goBack);
-//        showShortcuts(this.addExpense);
-//
-//        addKeyEventFilter(this.admin, backCombination, adminCtrl::goBack);
-//        addMouseEventFilter(this.admin, MOUSE_BACK_BUTTON, adminCtrl::goBack);
-//        showShortcuts(this.admin);
-//
-//        addKeyEventFilter(this.shortcuts, backCombination, shortcutsPageCtrl::goBack);
-//        addMouseEventFilter(this.shortcuts, MOUSE_BACK_BUTTON, shortcutsPageCtrl::goBack);
-//        showShortcuts(this.shortcuts);
-//
-//        addKeyEventFilter(this.settings, backCombination, settingsCtrl::goBack);
-//        addMouseEventFilter(this.settings, MOUSE_BACK_BUTTON, settingsCtrl::goBack);
-//        showShortcuts(this.settings);
+        setShortcuts();
 
         showPageWithMenu();
         showHome();
         primaryStage.show();
+    }
 
+    private void setShortcuts() {
+        KeyCombination backCombination = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN);
+        KeyCombination ctrlShiftSlash = new KeyCodeCombination(KeyCode.SLASH, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+        KeyCombination ctrlSlash = new KeyCodeCombination(KeyCode.SLASH, KeyCombination.CONTROL_DOWN);
+        this.pageWithMenu.setOnKeyPressed(e -> {
+            if (backCombination.match(e)) {
+                pageWithMenuCtrl.backToHome();
+            } else if (ctrlShiftSlash.match(e) || ctrlSlash.match(e)) {
+                showShortcuts();
+            }
+        });
+
+        this.pageWithMenu.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+            if (e.getButton().ordinal() == MouseButton.BACK.ordinal()) {
+                pageWithMenuCtrl.backToHome();
+                e.consume();
+            }
+        });
+
+        KeyCombination ctrlP = new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN);
+        KeyCombination ctrlE = new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN);
+        this.event.setOnKeyPressed(e -> {
+            if (ctrlP.match(e)) {
+                eventCtrl.addParticipant();
+            } else if (ctrlE.match(e)) {
+                eventCtrl.addExpense();
+            }
+        });
+//        KeyCombination forwardCombination = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN);
     }
 
     public void setTheme(String theme) {
@@ -195,51 +191,6 @@ public class MainCtrl {
     public void setCurrency(String currency) {
         configService.setConfigCurrency(currency);
         // ToDO update live currency for table
-    }
-
-    /**
-     * Shows the shortcuts page
-     *
-     * @param scene the scene to show the shortcuts on
-     */
-    private void showShortcuts(Scene scene) {
-        KeyCombination ctrlShiftSlash = new KeyCodeCombination(KeyCode.SLASH, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        KeyCombination ctrlSlash = new KeyCodeCombination(KeyCode.SLASH, KeyCombination.CONTROL_DOWN);
-
-        addKeyEventFilter(scene, ctrlShiftSlash, this::showShortcuts);
-        addKeyEventFilter(scene, ctrlSlash, this::showShortcuts);
-    }
-
-    /**
-     * Adds a key event filter to a node
-     *
-     * @param node           the node to add the filter to
-     * @param keyCombination the key combination to filter for
-     * @param action         the action to run when the key combination is pressed
-     */
-    private void addKeyEventFilter(Scene node, KeyCombination keyCombination, Runnable action) {
-        node.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (keyCombination.match(event)) {
-                action.run();
-                event.consume();
-            }
-        });
-    }
-
-    /**
-     * Adds a mouse event filter to a node
-     *
-     * @param node               the node to add the filter to
-     * @param mouseButtonOrdinal the ordinal of the mouse button to filter for
-     * @param action             the action to run when the mouse button is pressed
-     */
-    private void addMouseEventFilter(Scene node, int mouseButtonOrdinal, Runnable action) {
-        node.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            if (event.getButton().ordinal() == mouseButtonOrdinal) {
-                action.run();
-                event.consume();
-            }
-        });
     }
 
     public void showPageWithMenu() {

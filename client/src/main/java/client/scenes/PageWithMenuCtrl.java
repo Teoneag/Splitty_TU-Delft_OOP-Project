@@ -119,7 +119,7 @@ public class PageWithMenuCtrl implements Initializable {
     }
 
     @FXML
-    private void backToHome() {
+    public void backToHome() {
         mainCtrl.showHome();
     }
 }

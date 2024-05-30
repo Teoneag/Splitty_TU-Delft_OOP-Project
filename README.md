@@ -7,9 +7,25 @@ Splitty is an expense management app that can be used to create and join events 
 - https://www.sothawo.com/2016/09/how-to-implement-a-javafx-ui-where-the-language-can-be-changed-dynamically/
 
 ## ToDo
-- mnemonic parsing and accelerator (add documentation + make them work for all pages and all languages)
-- undo (use stack)
-- fix currency
+- undo (use stack): 15m
+  - read documentation + examples: 5m
+  - implement undo for all pages: 10m
+  - implement redo?
+- fix currency: 15m
+  - read task: 5m
+  - implement: 10m
+- ReadMe: 20m
+  - add link to backlog (task vs result): 1m
+  - ASCII art: 1m
+  - app preview gif: 5m
+  - tidy: 5m
+
+- Bugs
+  - fix expense limit
+- look at other projects for best practices
+- home
+  - reorder recent events
+  - only retrieve events with the invite codes u provide
 - settings
   - make server change work without restarting
   - make impossible to change to non-existing server
@@ -21,8 +37,7 @@ Splitty is an expense management app that can be used to create and join events 
   - add tag
   - when remove tag if used change to no tag
 - add participant
-  - romanian translation termite
-  - email verification
+  - email, iban, bic verification
   - show that email was send
     - show sending email, error, success
 - add tag
@@ -30,22 +45,9 @@ Splitty is an expense management app that can be used to create and join events 
 - add expense
   - don't let people get here without having participants
   - add warning labels here as well
-- ToDos from the project
-- Bugs
-  - fix expense limit
-- Testing
+- testing
   - Java with Gradle
   - GitHub testing
-- looking at other projects for best practices
-- ReadMe
-  - add link to backlog (task vs result)
-  - (ASCII art, demo online, ss and gif from the app)
-- put somewhere eventRequest
-- common classes: do I need event user and so on?
-- request only recent events
-  - remove the ones not found
-
-### Later
 - theme
   - light theme: make it look good
   - make border red when wrong input in text field
@@ -56,13 +58,13 @@ Splitty is an expense management app that can be used to create and join events 
   - make the shortcuts page only a semi-transparent overlay
 - add new language: from download language template to importing it with the new flag
 - edit menu: undo, redo
-- reorder recent events
 - refactor
   - refactor messages_en.properties: use naming like 
     - prompt.search_query=Enter search query
-  - Only retrieve events with the invite codes u provide
   - rename every i18nService to languageService
   - refactor config service
+  - put somewhere eventRequest
+  - common classes: do I need event user and so on?
 - fix
   - import event errors (google drive dirs)
   - email logic (settings page)
@@ -71,8 +73,14 @@ Splitty is an expense management app that can be used to create and join events 
       reason: class file for jakarta.persistence.GenerationType not found
       warning: unknown enum constant GenerationType.AUTO
       warning: unknown enum constant GenerationType.AUTO
+  - ToDos from the project
+- demo online
 
 ## Done
+- mnemonic parsing and accelerators (add to shortcuts page + make them work for all pages and all languages): 15m -> 32m
+  - read documentation + examples: 5m
+  - make list of shortcuts + display them in the shortcuts page: 5m
+  - implement them: 5m
 - after admin password blue set terminal color to white again
 - print please wait, server starting - actually just re-enabled the info statements
 - finish re-doing all the pages
@@ -86,11 +94,15 @@ Splitty is an expense management app that can be used to create and join events 
   - email send label
 - event
   - make last updated date work
+- add participant
+  - romanian translation termite
 - home
   - remove recent event
   - handle enter for all text fields
   - verify invite code length
   - if title good remove showing error
+- shortcut
+  - make table with only 2 shortcuts
 - navigation bar
   - currency
   - language

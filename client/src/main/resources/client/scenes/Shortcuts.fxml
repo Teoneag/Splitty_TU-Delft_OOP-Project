@@ -7,13 +7,12 @@
 
 <VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ShortcutsCtrl">
   <Label fx:id="titleLabel" styleClass="title" text="Shortcuts" />
-  <TableView fx:id="shortcutsTable" maxHeight="235" maxWidth="540">
+  <TableView fx:id="shortcutsTable" maxHeight="260" maxWidth="540">
     <columns>
       <TableColumn fx:id="actionColumn" text="Action" />
       <TableColumn fx:id="pageColumn" text="Page" />
       <TableColumn fx:id="shortcut1Column" text="Shortcut 1" />
       <TableColumn fx:id="shortcut2Column" text="Shortcut 2" />
-      <TableColumn fx:id="shortcut3Column" text="Shortcut 3" />
     </columns>
   </TableView>
 </VBox>
