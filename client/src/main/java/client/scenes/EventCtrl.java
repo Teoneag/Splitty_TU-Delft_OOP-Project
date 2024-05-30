@@ -18,8 +18,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.awt.*;
@@ -210,6 +213,24 @@ public class EventCtrl implements Initializable {
         paymentAmount.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().formattedAmount()));
 
         colParticipant.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getFullName()));
+        colParticipant.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Participant, String> call(TableColumn<Participant, String> param) {
+                return new TableCell<Participant, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item);
+                            setStyle("-fx-alignment: CENTER;");
+                        }
+                    }
+                };
+            }
+        });
 
         titleTextField.setOnKeyPressed(event -> {
             if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {

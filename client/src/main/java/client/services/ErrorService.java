@@ -24,7 +24,7 @@ final public class ErrorService {
     private final int inviteCodeLength = 6;
     private final int passwordLength = 6;
     private final int minFirstNameLength = 1;
-    private final int maxGenericLength = 25;
+    private final int maxGenericLength = 50;
     private final String invalidCharacters = "invalid_characters";
     private final String tooShort = "too_short";
     private final String tooLong = "too_long";
