@@ -7,9 +7,6 @@ Splitty is an expense management app that can be used to create and join events 
 - https://www.sothawo.com/2016/09/how-to-implement-a-javafx-ui-where-the-language-can-be-changed-dynamically/
 
 ## ToDo
-- fix currency: 15m
-  - read task: 5m
-  - implement: 10m
 - ReadMe: 20m
   - add link to backlog (task vs result): 1m
   - ASCII art: 1m
@@ -74,6 +71,9 @@ Splitty is an expense management app that can be used to create and join events 
 - demo online
 
 ## Done
+- fix currency: 15m -> 9m
+  - read task: 5m
+  - implement: 10m
 - undo (use stack): 15m -> 1h
   - read documentation + examples: 5m
   - implement undo for all pages: 10m

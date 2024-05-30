@@ -168,7 +168,7 @@ public class AddExpenseCtrl implements Initializable {
      * @param expense expense being edited
      */
     public void edit(Event event, Expense expense) {
-        addExpenseLabel.textProperty().bind(i18NService.createStringBinding("expenseEdit"));
+        addExpenseLabel.textProperty().bind(i18NService.createStringBinding("edit.expense"));
         this.event = event;
         this.expense = server.getExpense(expense.getId());
         expense = this.expense;

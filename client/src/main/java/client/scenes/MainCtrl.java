@@ -209,7 +209,7 @@ public class MainCtrl {
 
     public void setCurrency(String currency) {
         configService.setConfigCurrency(currency);
-        // ToDO update live currency for table
+        eventCtrl.refreshExpenses();
     }
 
     public void showPageWithMenu() {
