@@ -155,6 +155,7 @@ For now, we also added a dummy email address in the user config file so that you
 ## ToDo
 
 - Bugs
+  - when creating event, can't see it without restarting the app?!
   - fix expense limit
   - when renaming an event, rename it in the recent events as well
 - implement redo for navigation
