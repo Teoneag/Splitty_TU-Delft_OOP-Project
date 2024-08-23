@@ -3,20 +3,21 @@ package client.scenes;
 import client.services.*;
 import com.google.inject.Inject;
 import commons.Event;
+import commons.Expense;
 import commons.Participant;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.util.*;
 
-public class DebtCtrl implements Initializable {
+public class    DebtCtrl implements Initializable {
     private final ServerUtils server;
     private final DebtService debt;
     private final MainCtrl mainCtrl;
@@ -124,10 +125,38 @@ public class DebtCtrl implements Initializable {
             if (participantDebts.get(participant) == null) continue;
             float debtAmount = participantDebts.get(participant);
             if (debtAmount == 0) continue;
+            
+            Button debtButton = new Button("Click to settle debt");
+            debtButton.setOnAction(event -> {
+                float amount = debtAmount;
+                Participant sponsor = picked;
+                Participant debtor = participant;
+                if (debtAmount < 0) {
+                    amount = -debtAmount;
+                    sponsor = participant;
+                    debtor = picked;
+                }
+                Expense expense = new Expense(
+                        amount,
+                        this.event,
+                        "payment",
+                        LocalDate.now(),
+                        sponsor,
+                        Set.of(debtor),
+                        server.getPaymentTag(this.event)
+                );
+                expense.setCurrency(Currency.getInstance(debt.getUsedCurrency()));
+                server.addExpense(expense);
+                pick();
+            });
+            
             accordion.getPanes().add(new TitledPane(
                 debt.getInstructionLine(picked, participant, debtAmount),
-                debt.getTextAreaInfo(participant, debtAmount))
-            );
+                    new VBox(
+                            debt.getTextAreaInfo(participant, debtAmount),
+                            debtButton
+                    )
+            ));
         }
         if (accordion.getPanes().isEmpty()) {
             // ToDo
