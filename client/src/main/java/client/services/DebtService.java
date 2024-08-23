@@ -45,6 +45,10 @@ final public class DebtService {
 
         return total;
     }
+    
+    public String getUsedCurrency() {
+        return configService.getConfigCurrency();
+    }
 
     /**
      * Gives the net debt of the participant to the whole event group (ignores currency)
@@ -169,10 +173,10 @@ final public class DebtService {
      */
     public String getInstructionLine(Participant picked, Participant participant, float amount) {
         if (amount > 0) {
-            return picked.getFullName() + i8NService.get("owes")  + " "
+            return picked.getFullName() + " " + i8NService.get("owes")  + " "
                 + participant.getFullName() + " " + formattedAmount(amount);
         } else {
-            return picked.getFullName() + i8NService.get("is.owed.by") + " " + participant.getFullName()
+            return picked.getFullName() + " " + i8NService.get("is.owed.by") + " " + participant.getFullName()
                 + " " + formattedAmount(-1 * amount);
         }
     }
