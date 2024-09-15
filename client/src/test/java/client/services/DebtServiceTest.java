@@ -82,7 +82,7 @@ public class DebtServiceTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("owes", " owes ");
         languageMap.put("isOwedBy", " owes ");
-        debtService.setLanguageMap(languageMap);
+        //debtService.setLanguageMap(languageMap);
         
         Participant picked = new Participant("pickedName", "");
         Participant participant = new Participant("participantName", "");
@@ -98,7 +98,7 @@ public class DebtServiceTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("owes", " owes ");
         languageMap.put("isOwedBy", " is owed by ");
-        debtService.setLanguageMap(languageMap);
+        //debtService.setLanguageMap(languageMap);
         
         Participant picked = new Participant("pickedName", "");
         Participant participant = new Participant("participantName", "");
@@ -115,7 +115,7 @@ public class DebtServiceTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("noBankDetails", "No bank details: ");
         
-        debtService.setLanguageMap(languageMap);
+        //debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "email_field", "", "", "EVENT1");
         
@@ -136,7 +136,7 @@ public class DebtServiceTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("noMail", " does not have a mail");
         
-        debtService.setLanguageMap(languageMap);
+        //debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "", "", "", "EVENT1");
         
@@ -157,7 +157,7 @@ public class DebtServiceTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("contactInformation", "Contact information for: ");
         
-        debtService.setLanguageMap(languageMap);
+        //debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "", "", "EVENT1");
         
@@ -179,7 +179,7 @@ public class DebtServiceTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("bankDetails", "Bank details for: ");
         
-        debtService.setLanguageMap(languageMap);
+        //debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "iban", "bic", "EVENT1");
         
@@ -203,7 +203,7 @@ public class DebtServiceTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("bankDetails", "Bank details for: ");
         
-        debtService.setLanguageMap(languageMap);
+        //debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "", "", "bic", "EVENT1");
         
@@ -227,7 +227,7 @@ public class DebtServiceTest {
         HashMap<String, Object> languageMap = new HashMap<>();
         languageMap.put("bankDetails", "Bank details for: ");
         
-        debtService.setLanguageMap(languageMap);
+        //debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "iban", "", "EVENT1");
         
