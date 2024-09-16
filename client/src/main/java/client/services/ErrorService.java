@@ -305,7 +305,7 @@ final public class ErrorService {
         else alert.titleProperty().bind(i18NService.createStringBinding("delete_expense"));
 
         // ToDo
-        alert.setHeaderText(i18NService.get("delete_this_confirmation") + (isPayment ?
+        alert.setHeaderText(i18NService.get("delete_this_confirmation") + " " +(isPayment ?
             i18NService.get("payment") : i18NService.get("expense")) + "?");
         alert.setContentText(expense.getTitle() + "\n" + expense.getAmount() + "\n" + expense.getDate());
         return alert;
