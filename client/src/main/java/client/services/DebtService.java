@@ -205,13 +205,14 @@ final public class DebtService {
                 + (participant.getEmail().isEmpty() ? "" : "\nEmail: " + participant.getEmail()));
         } else {
             if (participant.getEmail().isEmpty()) {
-                res.setText(participant.getFullName() + i8NService.get("noMail") + " ");
+                res.setText(participant.getFullName() + " " + i8NService.get("noMail"));
                 res.setStyle("-fx-text-fill: red");
                 return res;
             }
             res.setText(i8NService.get("contactInformation") + " " + participant.getFullName()
                 + "\nEmail: " + participant.getEmail());
         }
+        res.setStyle("-fx-text-fill: white");
         return res;
     }
 }
