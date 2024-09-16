@@ -38,15 +38,22 @@ subprojects {
 	}
 
 	dependencies {
+
+
 		implementation 'org.apache.commons:commons-lang3:3.12.0'
 		implementation 'org.openjfx:javafx-controls:21.0.2'
 		implementation 'org.openjfx:javafx-fxml:21.0.2'
 		implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0-rc1'
 		implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '3.2.4'
 
+		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+		testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
 		testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 		testImplementation group: 'io.projectreactor', name: 'reactor-test', version: '3.1.0.RELEASE'
 		testImplementation 'org.mockito:mockito-core:5.11.0'
+		testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.11.0'
+
 		testImplementation group: 'org.testfx', name: 'testfx-core', version: '4.0.18'
 		testImplementation group: 'org.testfx', name: 'testfx-junit5', version: '4.0.18'
 		testImplementation group: 'org.testfx', name: 'openjfx-monocle', version: '21.0.2'

@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class HomeCtrl implements Initializable {
+public class    HomeCtrl implements Initializable {
     private final ServerUtils server;
     private final StyleService styleService;
     private final MainCtrl mainCtrl;
@@ -206,11 +206,11 @@ public class HomeCtrl implements Initializable {
     @FXML
     private void joinEvent() {
         if (!errorService.validateCode(codeField, codeErrorLabel)) return;
-        codeField.clear();
-        i18NService.setText(codeErrorLabel, "");
         try {
             Event event = server.getEvent(codeField.getText());
             mainCtrl.showEvent(event.getInviteCode());
+            codeField.clear();
+            i18NService.setText(codeErrorLabel, "");
         } catch (ProcessingException e) {
             if (e.getCause().getClass() == ConnectException.class) {
                 mainCtrl.serverConnectionAlert();

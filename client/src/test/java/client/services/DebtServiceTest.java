@@ -79,10 +79,8 @@ public class DebtServiceTest {
     
     @Test
     public void testGetInstructionLinePositiveAmount() {
-        HashMap<String, Object> languageMap = new HashMap<>();
-        languageMap.put("owes", " owes ");
-        languageMap.put("isOwedBy", " owes ");
-        debtService.setLanguageMap(languageMap);
+        when(i18NService.get("owes")).thenReturn("owes");
+        when(i18NService.get("is.owed.by")).thenReturn("owes");
         
         Participant picked = new Participant("pickedName", "");
         Participant participant = new Participant("participantName", "");
@@ -95,10 +93,9 @@ public class DebtServiceTest {
     
     @Test
     public void testGetInstructionLineNegativeAmount() {
-        HashMap<String, Object> languageMap = new HashMap<>();
-        languageMap.put("owes", " owes ");
-        languageMap.put("isOwedBy", " is owed by ");
-        debtService.setLanguageMap(languageMap);
+
+        when(i18NService.get("owes")).thenReturn("owes");
+        when(i18NService.get("is.owed.by")).thenReturn("is owed by");
         
         Participant picked = new Participant("pickedName", "");
         Participant participant = new Participant("participantName", "");
@@ -112,17 +109,14 @@ public class DebtServiceTest {
     @Test
     public void testGetTextAreaInfoNoBankDetailsPositiveAmount() {
         
-        HashMap<String, Object> languageMap = new HashMap<>();
-        languageMap.put("noBankDetails", "No bank details: ");
-        
-        debtService.setLanguageMap(languageMap);
+        when(i18NService.get("noBankDetails")).thenReturn("No bank details:");
         
         Participant participant = new Participant("participantName", "", "email_field", "", "", "EVENT1");
         
         TextArea expected = new TextArea();
         expected.setDisable(true);
         expected.setStyle("-fx-text-fill: red");
-        expected.setText(languageMap.get("noBankDetails") + "participantName");
+        expected.setText("No bank details: " + "participantName");
         
         TextArea actual = debtService.getTextAreaInfo(participant, 20);
         
@@ -131,19 +125,16 @@ public class DebtServiceTest {
     
     @Test
     public void testGetTextAreaInfoNoEmailNegativeAmount() {
+
+        when(i18NService.get("noMail")).thenReturn("does not have an email");
         
-        
-        HashMap<String, Object> languageMap = new HashMap<>();
-        languageMap.put("noMail", " does not have a mail");
-        
-        debtService.setLanguageMap(languageMap);
         
         Participant participant = new Participant("participantName", "", "", "", "", "EVENT1");
         
         TextArea expected = new TextArea();
         expected.setDisable(true);
         expected.setStyle("-fx-text-fill: red");
-        expected.setText("participantName" + languageMap.get("noMail"));
+        expected.setText("participantName does not have an email");
         
         TextArea actual = debtService.getTextAreaInfo(participant, -1);
         
@@ -153,19 +144,16 @@ public class DebtServiceTest {
     
     @Test
     public void testGetTextAreaInfoEmailNegativeAmount() {
-        
-        HashMap<String, Object> languageMap = new HashMap<>();
-        languageMap.put("contactInformation", "Contact information for: ");
-        
-        debtService.setLanguageMap(languageMap);
+        when(i18NService.get("contactInformation")).thenReturn("Contact information for:");
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "", "", "EVENT1");
         
         TextArea expected = new TextArea();
         expected.setDisable(true);
-        expected.setText(languageMap.get("contactInformation") + "participantName"
+        expected.setText("Contact information for: participantName"
                 + "\nEmail: mail@mail.com"
                 );
+        expected.setStyle("-fx-text-fill: white");
         
         TextArea actual = debtService.getTextAreaInfo(participant, -1);
         
@@ -175,21 +163,18 @@ public class DebtServiceTest {
     
     @Test
     public void testGetTextAreaInfoBankPositiveAmount() {
-        
-        HashMap<String, Object> languageMap = new HashMap<>();
-        languageMap.put("bankDetails", "Bank details for: ");
-        
-        debtService.setLanguageMap(languageMap);
+        when(i18NService.get("bankDetails")).thenReturn("Bank details for:");
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "iban", "bic", "EVENT1");
         
         TextArea expected = new TextArea();
         expected.setDisable(true);
-        expected.setText(languageMap.get("bankDetails") + "participantName"
+        expected.setText("Bank details for: participantName"
                 + "\nIBAN: iban"
                 + "\nBIC: bic"
                 + "\nEmail: mail@mail.com"
         );
+        expected.setStyle("-fx-text-fill: white");
         
         TextArea actual = debtService.getTextAreaInfo(participant, 1);
         
@@ -199,19 +184,16 @@ public class DebtServiceTest {
     
     @Test
     public void testGetTextAreaInfoBankPositiveAmountNoMailNoIban() {
-        
-        HashMap<String, Object> languageMap = new HashMap<>();
-        languageMap.put("bankDetails", "Bank details for: ");
-        
-        debtService.setLanguageMap(languageMap);
+        when(i18NService.get("bankDetails")).thenReturn("Bank details for:");
         
         Participant participant = new Participant("participantName", "", "", "", "bic", "EVENT1");
         
         TextArea expected = new TextArea();
         expected.setDisable(true);
-        expected.setText(languageMap.get("bankDetails") + "participantName"
+        expected.setText("Bank details for: participantName"
                 + "\nBIC: bic"
         );
+        expected.setStyle("-fx-text-fill: white");
         
         TextArea actual = debtService.getTextAreaInfo(participant, 1);
         
@@ -222,21 +204,17 @@ public class DebtServiceTest {
     
     @Test
     public void testGetTextAreaInfoBankPositiveAmountNoBic() {
-
-        
-        HashMap<String, Object> languageMap = new HashMap<>();
-        languageMap.put("bankDetails", "Bank details for: ");
-        
-        debtService.setLanguageMap(languageMap);
+        when(i18NService.get("bankDetails")).thenReturn("Bank details for:");
         
         Participant participant = new Participant("participantName", "", "mail@mail.com", "iban", "", "EVENT1");
         
         TextArea expected = new TextArea();
         expected.setDisable(true);
-        expected.setText(languageMap.get("bankDetails") + "participantName"
+        expected.setText("Bank details for: participantName"
                 + "\nIBAN: iban"
                 + "\nEmail: mail@mail.com"
         );
+        expected.setStyle("-fx-text-fill: white");
         
         TextArea actual = debtService.getTextAreaInfo(participant, 1);
         

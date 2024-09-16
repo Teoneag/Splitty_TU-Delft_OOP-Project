@@ -15,9 +15,7 @@
  */
 package client.scenes;
 
-import client.services.ConfigService;
-import client.services.ErrorService;
-import client.services.EventService;
+import client.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +27,9 @@ public class MainCtrlTest {
     private ConfigService configService;
     private EventService eventService;
     private ErrorService errorService;
+    private CurrencyService currencyService;
+    private I18NService i18NService;
+    private ServerUtils serverUtils;
 
     @BeforeEach
     public void setup() {
@@ -36,9 +37,12 @@ public class MainCtrlTest {
         configService = mock(ConfigService.class);
         eventService = mock(EventService.class);
         errorService = mock(ErrorService.class);
+        currencyService = mock(CurrencyService.class);
+        i18NService = mock(I18NService.class);
+        serverUtils = mock(ServerUtils.class);
 
         // Initialize your System Under Test (sut) with the mock
-        sut = new MainCtrl(configService, eventService, errorService);
+        sut = new MainCtrl(configService, eventService, errorService, currencyService, i18NService, serverUtils);
     }
 
     @Test
